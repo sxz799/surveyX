@@ -1,0 +1,11 @@
+db :
+  sqlType : sqlite  # mysql || sqlite
+  database: survey
+  username : root
+  password : 123456
+  port : 3306
+  host : 177.7.0.13
+server :
+  port : 3000
+  ginMode : debug # debug || release || test
+
