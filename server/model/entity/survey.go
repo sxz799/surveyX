@@ -5,7 +5,7 @@ type Survey struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	Status      string `json:"status"`
-	Questions   []int  `gorm:"-"`
+	Questions   []int  `gorm:"-" json:"questions"`
 }
 
 type Question struct {
@@ -13,7 +13,7 @@ type Question struct {
 	SurveyID int      `json:"surveyID"`
 	Text     string   `json:"text"`
 	Type     int      `json:"type"`
-	Options  []Option `gorm:"-"`
+	Options  []Option `gorm:"-" json:"options"`
 	Order    int      `json:"order"`
 }
 

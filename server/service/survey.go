@@ -18,7 +18,7 @@ func (ts *SurveyService) List(pi request.PageInfo) (response.PageResult, error) 
 	db := utils.DB.Model(&entity.Survey{})
 	db.Count(&total)
 	db = db.Limit(limit).Offset(offset)
-	err := db.Order("id DESC").Find(&surveys).Error
+	err := db.Debug().Order("id DESC").Find(&surveys).Error
 	return response.PageResult{
 		List:     surveys,
 		Total:    total,
@@ -32,7 +32,7 @@ func (ts *SurveyService) Add(s entity.Survey) (err error) {
 }
 
 func (ts *SurveyService) Update(s entity.Survey) error {
-	err := utils.DB.Debug().Updates(&s).Error
+	err := utils.DB.Debug().Where("id=?", s.Id).Updates(&s).Error
 	return err
 }
 
@@ -46,6 +46,6 @@ func (ts *SurveyService) Del(id int) (err error) {
 
 func (ts *SurveyService) Get(id int) (s entity.Survey, err error) {
 	s.Id = id
-	err = utils.DB.Find(&s).Error
+	err = utils.DB.First(&s).Error
 	return
 }

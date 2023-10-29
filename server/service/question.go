@@ -12,7 +12,7 @@ type QuestionService struct {
 
 var optionService OptionService
 
-func (ts *QuestionService) List(pi request.PageInfo) (response.PageResult, error) {
+func (ts *QuestionService) List(pi request.PageInfo, sId int) (response.PageResult, error) {
 	var qs []entity.Question
 	var total int64
 	limit := pi.PageSize
@@ -20,7 +20,7 @@ func (ts *QuestionService) List(pi request.PageInfo) (response.PageResult, error
 	db := utils.DB.Model(&entity.Question{})
 	db.Count(&total)
 	db = db.Limit(limit).Offset(offset)
-	err := db.Order("id DESC").Find(&qs).Error
+	err := db.Where("survey_id=?", sId).Order("id DESC").Find(&qs).Error
 
 	for _, q := range qs {
 		ops := optionService.List(q.Id)

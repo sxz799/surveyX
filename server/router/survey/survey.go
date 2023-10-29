@@ -10,7 +10,7 @@ func Survey(e *gin.Engine) {
 	{
 		g.GET("/list", surveyApi.List)
 		g.POST("/", surveyApi.Add)
-		g.PUT("/:id", surveyApi.Update)
+		g.PUT("/", surveyApi.Update)
 		g.GET("/:id", surveyApi.Get)
 		g.DELETE("/:id", surveyApi.Del)
 	}

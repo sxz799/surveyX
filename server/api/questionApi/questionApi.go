@@ -11,14 +11,14 @@ import (
 
 var qs service.QuestionService
 
-// @BasePath /api
-
 // List godoc
-// @Summary 问卷调查列表
-// @Description 获取问卷调查列表
-// @Schemes
-// @Tags 问卷调查
-// @Router /survey/list [get]
+// @Summary 题目列表
+// @Description 获取题目列表列表
+// @Tags 题目
+// @Produce  json
+// @Param page query request.PageInfo false "分页信息"
+// @Param id path int true "题目id"
+// @Router /question/list/{id} [get]
 func List(c *gin.Context) {
 	var pi request.PageInfo
 	err := c.ShouldBindQuery(&pi)
@@ -26,7 +26,8 @@ func List(c *gin.Context) {
 		response.FailWithMessage("参数有误", c)
 		return
 	}
-	if list, err := qs.List(pi); err == nil {
+	id, _ := strconv.Atoi(c.Param("id"))
+	if list, err := qs.List(pi, id); err == nil {
 		response.OkWithData(list, c)
 	} else {
 		response.Fail(c)
@@ -34,9 +35,13 @@ func List(c *gin.Context) {
 }
 
 // Add godoc
-// @Summary 新建
-// @Description 新建问卷调查
-// @Tags 问卷调查
+// @Summary 添加
+// @Description 添加题目
+// @Tags 题目
+// @Accept json
+// @Produce json
+// @Param question body entity.Question true "题目"
+// @Router /question/ [post]
 func Add(c *gin.Context) {
 	var q entity.Question
 	err := c.ShouldBind(&q)
@@ -54,8 +59,12 @@ func Add(c *gin.Context) {
 
 // Update godoc
 // @Summary 更新
-// @Description 更新问卷调查
-// @Tags 问卷调查
+// @Description 更新题目
+// @Tags 题目
+// @Accept json
+// @Produce json
+// @Param question body entity.Question true "题目"
+// @Router /question/ [put]
 func Update(c *gin.Context) {
 	var q entity.Question
 	err := c.ShouldBind(&q)
@@ -71,9 +80,11 @@ func Update(c *gin.Context) {
 }
 
 // Get godoc
-// @Summary 查询
-// @Description 获取一个问卷调查
-// @Tags 问卷调查
+// @Summary 获取
+// @Description 获取题目
+// @Tags 题目
+// @Produce  json
+// @Router /question/{id} [get]
 func Get(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -90,8 +101,10 @@ func Get(c *gin.Context) {
 
 // Del godoc
 // @Summary 删除
-// @Description 删除一个问卷调查
-// @Tags 问卷调查
+// @Description 删除题目
+// @Tags 题目
+// @Produce  json
+// @Router /question/{id} [delete]
 func Del(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

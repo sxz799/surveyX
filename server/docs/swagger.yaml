@@ -1,13 +1,215 @@
+definitions:
+  entity.Option:
+    properties:
+      id:
+        type: integer
+      label:
+        type: string
+      questionId:
+        type: integer
+      value:
+        type: string
+    type: object
+  entity.Question:
+    properties:
+      id:
+        type: integer
+      options:
+        items:
+          $ref: '#/definitions/entity.Option'
+        type: array
+      order:
+        type: integer
+      surveyID:
+        type: integer
+      text:
+        type: string
+      type:
+        type: integer
+    type: object
+  entity.Survey:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      questions:
+        items:
+          type: integer
+        type: array
+      status:
+        type: string
+      title:
+        type: string
+    type: object
 info:
   contact: {}
   title: 问卷调查SurveyX API
   version: "1.0"
 paths:
+  /question/:
+    post:
+      consumes:
+      - application/json
+      description: 添加题目
+      parameters:
+      - description: 题目
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Question'
+      produces:
+      - application/json
+      responses: {}
+      summary: 添加
+      tags:
+      - 题目
+    put:
+      consumes:
+      - application/json
+      description: 更新题目
+      parameters:
+      - description: 题目
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Question'
+      produces:
+      - application/json
+      responses: {}
+      summary: 更新
+      tags:
+      - 题目
+  /question/{id}:
+    delete:
+      description: 删除题目
+      produces:
+      - application/json
+      responses: {}
+      summary: 删除
+      tags:
+      - 题目
+    get:
+      description: 获取题目
+      produces:
+      - application/json
+      responses: {}
+      summary: 获取
+      tags:
+      - 题目
+  /question/list/{id}:
+    get:
+      description: 获取题目列表列表
+      parameters:
+      - description: 关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页大小
+        in: query
+        name: pageSize
+        type: integer
+      - description: 题目id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      summary: 题目列表
+      tags:
+      - 题目
+  /survey/:
+    post:
+      consumes:
+      - application/json
+      description: 添加问卷
+      parameters:
+      - description: 问卷
+        in: body
+        name: survey
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Survey'
+      produces:
+      - application/json
+      responses: {}
+      summary: 添加
+      tags:
+      - 问卷
+    put:
+      consumes:
+      - application/json
+      description: 更新问卷
+      parameters:
+      - description: 问卷
+        in: body
+        name: survey
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Survey'
+      produces:
+      - application/json
+      responses: {}
+      summary: 更新
+      tags:
+      - 问卷
+  /survey/{id}:
+    delete:
+      description: 删除问卷
+      parameters:
+      - description: 问卷id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses: {}
+      summary: 删除
+      tags:
+      - 问卷
+    get:
+      consumes:
+      - application/json
+      description: 获取获取
+      parameters:
+      - description: 题目id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      summary: 获取
+      tags:
+      - 问卷
   /survey/list:
     get:
-      description: 获取问卷调查列表
+      description: 获取题目列表列表
+      parameters:
+      - description: 关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页大小
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
       responses: {}
-      summary: 问卷调查列表
+      summary: 问卷列表
       tags:
-      - 问卷调查
+      - 问卷
 swagger: "2.0"

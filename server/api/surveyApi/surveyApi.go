@@ -11,6 +11,13 @@ import (
 
 var ss service.SurveyService
 
+// List godoc
+// @Summary 问卷列表
+// @Description 获取题目列表列表
+// @Tags 问卷
+// @Produce  json
+// @Param page query request.PageInfo false "分页信息"
+// @Router /survey/list [get]
 func List(c *gin.Context) {
 	var pi request.PageInfo
 	err := c.ShouldBindQuery(&pi)
@@ -24,6 +31,15 @@ func List(c *gin.Context) {
 		response.Fail(c)
 	}
 }
+
+// Add godoc
+// @Summary 添加
+// @Description 添加问卷
+// @Tags 问卷
+// @Accept json
+// @Produce json
+// @Param survey body entity.Survey true "问卷"
+// @Router /survey/ [post]
 func Add(c *gin.Context) {
 	var s entity.Survey
 	err := c.ShouldBind(&s)
@@ -38,6 +54,15 @@ func Add(c *gin.Context) {
 	}
 
 }
+
+// Update godoc
+// @Summary 更新
+// @Description 更新问卷
+// @Tags 问卷
+// @Accept json
+// @Produce json
+// @Param survey body entity.Survey true "问卷"
+// @Router /survey/ [put]
 func Update(c *gin.Context) {
 	var s entity.Survey
 	err := c.ShouldBind(&s)
@@ -52,6 +77,14 @@ func Update(c *gin.Context) {
 	}
 }
 
+// Get godoc
+// @Summary 获取
+// @Description 获取获取
+// @Tags 问卷
+// @Accept json
+// @Produce json
+// @Param id path int true "题目id"
+// @Router /survey/{id} [get]
 func Get(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -65,6 +98,13 @@ func Get(c *gin.Context) {
 	}
 
 }
+
+// Del godoc
+// @Summary 删除
+// @Description 删除问卷
+// @Tags 问卷
+// @Param id path int true "问卷id"
+// @Router /survey/{id} [delete]
 func Del(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
