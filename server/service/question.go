@@ -5,6 +5,7 @@ import (
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
 	"github.com/sxz799/surveyX/utils"
+	"log"
 )
 
 type QuestionService struct {
@@ -36,16 +37,26 @@ func (ts *QuestionService) List(pi request.PageInfo, sId int) (response.PageResu
 
 func (ts *QuestionService) Add(q entity.Question) (err error) {
 
-	optionService.Add(q.Options)
-
 	err = utils.DB.Debug().Create(&q).Error
+
+	log.Println("q.id:", q.Id)
+
+	for i := range q.Options {
+		q.Options[i].QuestionId = q.Id
+	}
+
+	optionService.Add(q.Options)
 	return
 }
 
 func (ts *QuestionService) Update(q entity.Question) (err error) {
+
+	err = utils.DB.Debug().Updates(&q).Error
+	for i := range q.Options {
+		q.Options[i].QuestionId = q.Id
+	}
 	optionService.Del(q.Id)
 	optionService.Add(q.Options)
-	err = utils.DB.Debug().Updates(&q).Error
 	return
 }
 

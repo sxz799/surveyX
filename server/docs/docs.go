@@ -269,7 +269,7 @@ const docTemplate = `{
                 "label": {
                     "type": "string"
                 },
-                "questionId": {
+                "question_id": {
                     "type": "integer"
                 },
                 "value": {
@@ -292,7 +292,7 @@ const docTemplate = `{
                 "order": {
                     "type": "integer"
                 },
-                "surveyID": {
+                "survey_id": {
                     "type": "integer"
                 },
                 "text": {

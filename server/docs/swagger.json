@@ -260,7 +260,7 @@
                 "label": {
                     "type": "string"
                 },
-                "questionId": {
+                "question_id": {
                     "type": "integer"
                 },
                 "value": {
@@ -283,7 +283,7 @@
                 "order": {
                     "type": "integer"
                 },
-                "surveyID": {
+                "survey_id": {
                     "type": "integer"
                 },
                 "text": {
