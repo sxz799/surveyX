@@ -5,7 +5,6 @@ import (
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
 	"github.com/sxz799/surveyX/utils"
-	"log"
 )
 
 type QuestionService struct {
@@ -21,11 +20,11 @@ func (ts *QuestionService) List(pi request.PageInfo, sId int) (response.PageResu
 	db := utils.DB.Model(&entity.Question{})
 	db.Count(&total)
 	db = db.Limit(limit).Offset(offset)
-	err := db.Where("survey_id=?", sId).Order("id DESC").Find(&qs).Error
+	err := db.Debug().Where("survey_id=?", sId).Order("`order`").Find(&qs).Error
 
-	for _, q := range qs {
-		ops := optionService.List(q.Id)
-		q.Options = ops
+	for i := range qs {
+		ops := optionService.List(qs[i].Id)
+		qs[i].Options = ops
 	}
 
 	return response.PageResult{
@@ -39,10 +38,9 @@ func (ts *QuestionService) Add(q entity.Question) (err error) {
 
 	err = utils.DB.Debug().Create(&q).Error
 
-	log.Println("q.id:", q.Id)
-
 	for i := range q.Options {
 		q.Options[i].QuestionId = q.Id
+		q.Options[i].SurveyId = q.SurveyId
 	}
 
 	optionService.Add(q.Options)
@@ -54,6 +52,7 @@ func (ts *QuestionService) Update(q entity.Question) (err error) {
 	err = utils.DB.Debug().Updates(&q).Error
 	for i := range q.Options {
 		q.Options[i].QuestionId = q.Id
+		q.Options[i].SurveyId = q.SurveyId
 	}
 	optionService.Del(q.Id)
 	optionService.Add(q.Options)
@@ -66,6 +65,12 @@ func (ts *QuestionService) Del(id int) (err error) {
 	}
 	err = utils.DB.Delete(&q).Error
 	optionService.Del(id)
+	return
+}
+
+func (ts *QuestionService) DelBySurveyId(surveyId int) (err error) {
+	err = utils.DB.Debug().Where("survey_id=?", surveyId).Delete(&entity.Question{}).Error
+	optionService.DelBySurveyId(surveyId)
 	return
 }
 

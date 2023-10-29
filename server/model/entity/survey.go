@@ -20,6 +20,7 @@ type Question struct {
 type Option struct {
 	Id         int    `gorm:"primary_key" json:"id"`
 	QuestionId int    `json:"question_id"`
+	SurveyId   int    `json:"survey_id"`
 	Label      string `json:"label"`
 	Value      string `json:"value"`
 }

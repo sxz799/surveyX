@@ -26,7 +26,7 @@ export function add(data) {
 
 export function update(data) {
     return request({
-        url: '/survey',
+        url: '/question',
         method: 'put',
         data
     })

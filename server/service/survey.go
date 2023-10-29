@@ -10,6 +10,8 @@ import (
 type SurveyService struct {
 }
 
+var questionService QuestionService
+
 func (ts *SurveyService) List(pi request.PageInfo) (response.PageResult, error) {
 	var surveys []entity.Survey
 	var total int64
@@ -40,6 +42,7 @@ func (ts *SurveyService) Del(id int) (err error) {
 	s := entity.Survey{
 		Id: id,
 	}
+	_ = questionService.DelBySurveyId(id)
 	err = utils.DB.Delete(&s).Error
 	return
 }
