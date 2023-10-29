@@ -31,8 +31,9 @@ func (ts *SurveyService) Add(s entity.Survey) (err error) {
 	return
 }
 
-func (ts *SurveyService) Update(s entity.Survey) {
-	utils.DB.Debug().Updates(&s)
+func (ts *SurveyService) Update(s entity.Survey) error {
+	err := utils.DB.Debug().Updates(&s).Error
+	return err
 }
 
 func (ts *SurveyService) Del(id int) (err error) {
@@ -43,8 +44,8 @@ func (ts *SurveyService) Del(id int) (err error) {
 	return
 }
 
-func (ts *SurveyService) Get(id int) (s entity.Survey) {
+func (ts *SurveyService) Get(id int) (s entity.Survey, err error) {
 	s.Id = id
-	utils.DB.Find(&s)
+	err = utils.DB.Find(&s).Error
 	return
 }

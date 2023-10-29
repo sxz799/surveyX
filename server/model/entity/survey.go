@@ -9,18 +9,19 @@ type Survey struct {
 }
 
 type Question struct {
-	Id       int    `gorm:"primary_key"`
-	SurveyID int    `json:"surveyID"`
-	Text     string `json:"text"`
-	Type     int    `json:"type"`
-	Options  []int  `gorm:"-"`
-	Order    int    `json:"order"`
+	Id       int      `gorm:"primary_key"`
+	SurveyID int      `json:"surveyID"`
+	Text     string   `json:"text"`
+	Type     int      `json:"type"`
+	Options  []Option `gorm:"-"`
+	Order    int      `json:"order"`
 }
 
 type Option struct {
-	Id    int    `gorm:"primary_key"`
-	Label string `json:"label"`
-	Value string `json:"value"`
+	Id         int    `gorm:"primary_key"`
+	QuestionId int    `json:"questionId"`
+	Label      string `json:"label"`
+	Value      string `json:"value"`
 }
 
 type Answer struct {

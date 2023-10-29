@@ -1,0 +1,20 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "问卷调查SurveyX API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/survey/list": {
+            "get": {
+                "description": "获取问卷调查列表",
+                "tags": [
+                    "问卷调查"
+                ],
+                "summary": "问卷调查列表",
+                "responses": {}
+            }
+        }
+    }
+}

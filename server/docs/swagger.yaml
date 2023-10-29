@@ -1,0 +1,13 @@
+info:
+  contact: {}
+  title: 问卷调查SurveyX API
+  version: "1.0"
+paths:
+  /survey/list:
+    get:
+      description: 获取问卷调查列表
+      responses: {}
+      summary: 问卷调查列表
+      tags:
+      - 问卷调查
+swagger: "2.0"
