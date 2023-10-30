@@ -1,7 +1,7 @@
 
 
 <template>
-  <Survey msg="123456"/>
+  <Survey/>
 </template>
 <script setup>
 import Survey from './views/SurveyList.vue'

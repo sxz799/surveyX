@@ -20,7 +20,7 @@
         <template #default="scope">
           <span v-if="scope.row.type === 'radio'">单选</span>
           <span v-if="scope.row.type === 'checkbox'">多选</span>
-          <span v-if="scope.row.type === 'text'">文本</span>
+          <span v-if="scope.row.type === 'text'">简答题</span>
         </template>
       </el-table-column>
       <el-table-column label="选项" align="center" key="options" prop="options" :show-overflow-tooltip="true">
@@ -67,10 +67,10 @@
               <el-select v-model="form.type" placeholder="请选择题目类型">
                 <el-option label="单选" value="radio"></el-option>
                 <el-option label="多选" value="checkbox"></el-option>
-                <el-option label="文本" value="text"></el-option>
+                <el-option label="简答题" value="text"></el-option>
               </el-select>
               <el-divider direction="vertical" />
-              <el-button @click="addOption">新增选项</el-button>
+              <el-button v-if="form.type !== 'text'" @click="addOption">新增选项</el-button>
             </el-form-item>
           </el-col>
           <el-col :span="24">

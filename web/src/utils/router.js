@@ -1,11 +1,10 @@
 // router.js
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../views/SurveyList.vue';
-import Question from '../views/QuestionList.vue';
 
+import SurveyPage from '../views/SurveyPage.vue';
 const routes = [
-    { path: '/', component: Home },
-    { path: '/question/:surveyID', name: 'Question',component: Question , props: true},
+    { path: '/index', component: SurveyPage },
+    { path: '/survey', name: 'SurveyPage',component: SurveyPage},
 ];
 
 const router = createRouter({

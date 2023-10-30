@@ -39,6 +39,7 @@
             <template #default="scope">
               <el-button link type="primary" @click="handleEdit(scope.row)" :icon="Edit">修改</el-button>
               <el-button link type="primary" @click="handleDelete(scope.row)" :icon="Delete">删除</el-button>
+              <el-button link type="primary" @click="handlePreview(scope.row)" >预览</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -87,6 +88,12 @@
             </div>
           </template>
         </el-dialog>
+
+        <el-dialog title="题目预览" v-model="openPreview" :width="dialogWidth" append-to-body>
+          <template #footer>
+            <SurveyPage :surveyId="surveyId"/>
+          </template>
+        </el-dialog>
       </div>
     </el-col>
     <el-col :span="6" :xs="0"/>
@@ -99,10 +106,13 @@ import {computed, reactive, ref, toRefs} from 'vue'
 import {list, add, del, update, get} from "../api/survey.js";
 import QuestionList from "./QuestionList.vue";
 import {Delete, Edit, Plus} from "@element-plus/icons";
+import SurveyPage from "./SurveyPage.vue";
 
+const language = ref('zh-cn')
 const surveyId = ref(0)
 const open = ref(false)
 const openDetails = ref(false)
+const openPreview = ref(false)
 const title = ref('')
 const surveyList = ref([])
 const total = ref(0)
@@ -154,6 +164,11 @@ function handleEdit(row) {
     title.value = '修改'
   })
 }
+function handlePreview(row) {
+  surveyId.value=row.id
+  openPreview.value=true
+}
+
 
 function handleDelete(row) {
   del(row.id).then(res => {
