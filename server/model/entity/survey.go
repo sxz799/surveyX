@@ -23,6 +23,7 @@ type Option struct {
 	SurveyId   int    `json:"survey_id"`
 	Label      string `json:"label"`
 	Value      string `json:"value"`
+	HasExtMsg  string `json:"has_ext_msg"`
 }
 
 type Answer struct {
@@ -30,4 +31,6 @@ type Answer struct {
 	SurveyId   int    `json:"survey_id"`
 	QuestionId int    `json:"question_id"`
 	Content    string `json:"content"`
+	Label      string `json:"label"`
+	ExtMsg     string `json:"ext_msg"`
 }
