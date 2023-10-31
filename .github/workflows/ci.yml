@@ -37,10 +37,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         
     - name: Build Web
-      run: |
-        rm vite.config.js -y
-        mv vite.config-docker.js vite.config.js
-        npm install && npm run build
+      run: npm install && npm run build
       working-directory: ./web
 
     - name: Move  Files
