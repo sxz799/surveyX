@@ -42,7 +42,7 @@ jobs:
 
     - name: Move  Files
       run: |
-        mkdir gsCheck
+        mkdir suveryX
         mv server/bin/app suveryX/
         mv web/dist suveryX/dist/
 
