@@ -35,9 +35,9 @@
 </template>
 <script setup>
 import {ref} from "vue";
-import {get} from "../api/survey.js";
-import {list} from "../api/question.js";
-import {add} from "../api/answer.js";
+import {get} from "../../api/survey.js";
+import {list} from "../../api/question.js";
+import {add} from "../../api/answer.js";
 
 
 const props = defineProps({
@@ -65,7 +65,6 @@ function initSurvey() {
 
 function submitAnswer() {
   let answerResult = []
-  console.log(survey.value.questions)
   for (let i = 0; i < survey.value.questions.length; i++) {
     let question = survey.value.questions[i]
     let options = question.options

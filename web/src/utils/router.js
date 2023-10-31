@@ -1,10 +1,13 @@
 // router.js
 import { createRouter, createWebHistory } from 'vue-router';
 
-import SurveyPage from '../views/SurveyPage.vue';
+import SurveyListAdmin from '../views/admin/SurveyList.vue';
+import SurveyListUser from '../views/user/SurveyList.vue';
+import SurveyPage from '../views/user/SurveyPage.vue';
 const routes = [
-    { path: '/index', component: SurveyPage },
-    { path: '/survey', name: 'SurveyPage',component: SurveyPage},
+    { path: '/', name: 'SurveyListUser',component: SurveyListUser},
+    { path: '/admin', name: 'SurveyListAdmin',component: SurveyListAdmin},
+    { path: '/survey/:id', name: 'SurveyPage',component: SurveyPage},
 ];
 
 const router = createRouter({

@@ -1,6 +1,5 @@
 <template>
   <el-row>
-
     <el-col :span="6" :xs="0"/>
     <el-col :span="12" :xs="24">
       <div class="app-container">
@@ -91,7 +90,7 @@
 
         <el-dialog title="题目预览" v-model="openPreview" :width="dialogWidth" append-to-body>
           <template #footer>
-            <SurveyPage :surveyId="surveyId"/>
+            <SurveyPreview :surveyId="surveyId"/>
           </template>
         </el-dialog>
       </div>
@@ -103,12 +102,11 @@
 
 <script setup>
 import {computed, reactive, ref, toRefs} from 'vue'
-import {list, add, del, update, get} from "../api/survey.js";
+import {list, add, del, update, get} from "../../api/survey.js";
 import QuestionList from "./QuestionList.vue";
 import {Delete, Edit, Plus} from "@element-plus/icons";
-import SurveyPage from "./SurveyPage.vue";
+import SurveyPreview from "./SurveyPreview.vue";
 
-const language = ref('zh-cn')
 const surveyId = ref(0)
 const open = ref(false)
 const openDetails = ref(false)
