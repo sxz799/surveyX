@@ -12,7 +12,7 @@ jobs:
         node-version: [16.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     runs-on: ubuntu-latest
-    #container: docker.io/centos:7
+    container: docker.io/centos:7
     steps:
     - uses: actions/checkout@v3
 
