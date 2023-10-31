@@ -14,7 +14,7 @@
 
     <el-table :data="questionList">
       <el-table-column type="selection" width="50" align="center"/>
-      <el-table-column label="问卷ID" align="center" key="survey_id" width="80" prop="survey_id" />
+      <el-table-column label="问卷ID" align="center" key="survey_id" width="80" prop="survey_id"/>
       <el-table-column label="题目" align="center" key="text" prop="text" :show-overflow-tooltip="true"/>
       <el-table-column label="类型" align="center" key="type" prop="type" :show-overflow-tooltip="true">
         <template #default="scope">
@@ -28,7 +28,7 @@
           <span v-if="scope.row.type !== 'text'">
             <span v-for="(option, index) in scope.row.options" :key="option.key">
               <span v-if="index !== 0">,</span>
-              <span>{{option.value}}</span>
+              <span>{{ option.value }}</span>
             </span>
           </span>
         </template>
@@ -37,7 +37,7 @@
       <el-table-column label="操作" align="center" width="150">
         <template #default="scope">
           <el-button link type="primary" @click="handleEdit(scope.row)" :icon="Edit">修改</el-button>
-          <el-button link type="primary" @click="handleDelete(scope.row)" :icon="Delete" >删除</el-button>
+          <el-button link type="primary" @click="handleDelete(scope.row)" :icon="Delete">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -59,7 +59,7 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="题目内容" prop="text">
-              <el-input v-model="form.text" placeholder="请输入题目内容"></el-input>
+              <el-input type="textarea" autosize v-model="form.text" placeholder="请输入题目内容"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -69,8 +69,8 @@
                 <el-option label="多选" value="checkbox"></el-option>
                 <el-option label="简答题" value="text"></el-option>
               </el-select>
-              <el-divider direction="vertical" />
-              <el-button v-if="form.type !== 'text'" @click="addOption">新增选项</el-button>
+              <el-divider v-if="form.type !== 'text'" direction="vertical"/>
+              <el-button v-if="form.type !== 'text'" type="primary" @click="addOption">新增选项</el-button>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -80,24 +80,24 @@
                           :key="option.key"
                           :prop="'option.' + index + '.value'">
               <el-row>
-
-                <el-col :span="2">
-                  <el-input v-model="option.label" placeholder="标签"></el-input>
+                <el-col :span="3">
+                  <el-select width="20%" v-model="option.label" placeholder="选择标签">
+                    <el-option v-for="letter in alphabet" :key="letter" :label="letter" :value="letter"></el-option>
+                  </el-select>
                 </el-col>
-                <el-col :span="17">
+
+                <el-col :span="20">
                   <el-input v-model="option.value">
+
                     <template #append>
-                      <el-checkbox v-model="option.has_ext_msg" true-label="Y" false-label="N" label="额外内容"/>
+                      <el-checkbox width="20%"  v-model="option.has_ext_msg" true-label="Y" false-label="N" label="备注"/>
                     </template>
                   </el-input>
                 </el-col>
-                <el-col :span="1"/>
-                <el-col :span="4">
-                  <el-button @click.prevent="removeOption(option)">删除</el-button>
+                <el-col :span="1">
+                  <el-button type="danger" @click.prevent="removeOption(option)">删除</el-button>
                 </el-col>
               </el-row>
-
-
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -124,24 +124,26 @@
 
 <script setup>
 import {computed, reactive, ref, toRefs, watch} from 'vue'
-import {list, add, del, update,get} from "../../api/question.js";
+import {list, add, del, update, get} from "../../api/question.js";
 
 import {Delete, Edit, Plus} from "@element-plus/icons";
+
 const props = defineProps({
   surveyId: Number,
 })
 
+const alphabet =ref(['A','B','C','D','E','F','G','H'])
 const open = ref(false)
 const title = ref('')
 const questionList = ref([])
 const total = ref(0)
 const dialogWidth = computed(() => {
-  return window.innerWidth>768?'60%':'90%'
+  return window.innerWidth > 768 ? '60%' : '90%'
 })
 
 const data = reactive({
   form: {
-    options:[]
+    options: []
   },
   queryParams: {
     pageNum: 1,

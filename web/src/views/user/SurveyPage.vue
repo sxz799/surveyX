@@ -4,32 +4,40 @@
     <el-col :span="12" :xs="24">
       <h2 class="survey-title">{{ survey.title }}</h2>
       <h4 class="survey-description">{{ survey.description }}</h4>
-      <div class="question-container" v-for="(question,index) in survey.questions">
-        <el-row>
+      <div class="question-container" v-for="(question , index) in survey.questions">
+        <el-row :gutter="10">
           <el-col :span="24">
+              <el-tag  v-if="question.type === 'radio'">{{index+1}} [单选]</el-tag>
+              <el-tag type="warning" v-if="question.type === 'checkbox'">{{index+1}} [多选]</el-tag>
+              <el-tag type="success" v-if="question.type === 'text'">{{index+1}} [简答题]</el-tag>
             <el-text>{{ question.text }}</el-text>
+
           </el-col>
         </el-row>
-        <el-row>
+        <br>
+        <el-row :gutter="10">
           <el-col :span="24">
-            <el-input type="textarea" v-model="answers[index]" v-if="question.type==='text'"
-                      placeholder="请输入答案"/>
+            <el-input type="textarea" autosize v-model="answers[question.id]" v-if="question.type==='text'"
+                      placeholder=""/>
 
-            <el-checkbox-group :max="1" v-model="answers[index]" v-if="question.type==='radio'">
-              <el-checkbox v-for="option in question.options"  :label=option.label @change="()=>{console.log(answers[index].toString())}">
+            <el-checkbox-group :max="1" v-model="answers[question.id]" v-if="question.type==='radio'">
+              <el-checkbox class="wrap-checkbox" v-for="option in question.options" :label=option.label>
                 {{ option.label }} ：{{ option.value }}
-                <el-input v-model="option['extMsg']"  v-if="option.has_ext_msg === 'Y'"
-                          placeholder="请输入答案"/>
+                <el-input v-model="option['extMsg']" size="small"
+                          v-if="answers[question.id]&& answers[question.id][0] === option.label &&  option.has_ext_msg === 'Y'"
+                          placeholder=""/>
               </el-checkbox>
             </el-checkbox-group>
 
-            <el-checkbox-group v-model="answers[index]" v-if="question.type==='checkbox'">
-              <el-checkbox v-for="option in question.options" :label="option.label">
+            <el-checkbox-group v-model="answers[question.id]" v-if="question.type==='checkbox'">
+              <el-checkbox class="wrap-checkbox" v-for="option in question.options" :label="option.label">
                 {{ option.label }} ：{{ option.value }}
-                <el-input v-model="option['extMsg']" v-if="option.has_ext_msg==='Y'"
-                          placeholder="请输入答案"/>
+                <el-input v-model="option['extMsg']" size="small"
+                          v-if="answers[question.id] && answers[question.id].toString().indexOf(option.label)>-1 && option.has_ext_msg==='Y'"
+                          placeholder=""/>
               </el-checkbox>
             </el-checkbox-group>
+
           </el-col>
         </el-row>
       </div>
@@ -46,11 +54,11 @@ import {get} from "../../api/survey.js";
 import {list} from "../../api/question.js";
 import {add} from "../../api/answer.js";
 import {useRoute} from "vue-router";
-
+import { ElMessage } from 'element-plus'
 
 const route = useRoute()
 
-const surveyId = route.params.id
+const surveyId = Number(route.params.id)
 
 const survey = ref({
   title: "",
@@ -58,7 +66,7 @@ const survey = ref({
   questions: [],
 })
 
-const answers = ref([])
+const answers = ref({})
 
 
 function initSurvey() {
@@ -73,24 +81,23 @@ function initSurvey() {
 
 function submitAnswer() {
   let answerResult = []
-  for (let i = 0; i < survey.value.questions.length; i++) {
-    let question = survey.value.questions[i]
+  for (const question of survey.value.questions) {
     let options = question.options
-    switch (survey.value.questions[i].type) {
+    switch (question.type) {
       case 'text':
         answerResult.push(
             {
               id: 0,
               survey_id: surveyId,
-              question_id: survey.value.questions[i].id,
-              content: answers.value[i],
+              question_id: question.id,
+              content: answers.value[question.id],
             }
         );
         break;
       case 'radio':
         let extMsg = ''
         for (let o of options) {
-          if (o.label === answers.value[i]) {
+          if (o.label === answers.value[question.id][0]) {
             extMsg = o.extMsg
           }
         }
@@ -99,13 +106,13 @@ function submitAnswer() {
               id: 0,
               survey_id: surveyId,
               question_id: question.id,
-              label: answers.value[i],
+              label: answers.value[question.id].toString(),
               ext_msg: extMsg,
             }
         );
         break;
       case 'checkbox':
-        const arr = answers.value[i]
+        const arr = answers.value[question.id]
         for (let str of arr) {
           let extMsg = ''
           for (let o of options) {
@@ -117,20 +124,21 @@ function submitAnswer() {
               {
                 id: 0,
                 survey_id: surveyId,
-                question_id: survey.value.questions[i].id,
+                question_id: question.id,
                 label: str,
                 ext_msg: extMsg,
               }
           );
+
         }
     }
-
-
   }
-
-
   add(answerResult).then(res => {
-    console.log(res.message)
+    if(res.success){
+      ElMessage.success(res.message)
+    }else {
+      ElMessage.error(res.message)
+    }
   })
 }
 
@@ -138,8 +146,12 @@ initSurvey()
 </script>
 
 <style scoped>
-.el-checkbox-group .el-checkbox {
-  display: block;
+:deep(.el-checkbox){
+  height:auto;
+  padding: 5px;
+}
+:deep(.el-checkbox__label){
+  white-space:pre-line;
 }
 
 .survey-container {
@@ -163,9 +175,9 @@ initSurvey()
 .question-container {
   background-color: #fff;
   padding: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   border: 1px solid #e0e0e0;
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
 .submit-button {
@@ -182,5 +194,8 @@ initSurvey()
 .submit-button:hover {
   background-color: #0056b3;
 }
+
+
+
 
 </style>

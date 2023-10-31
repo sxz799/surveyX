@@ -1,8 +1,9 @@
 <template>
-  <el-row>
-    <el-col :span="6" :xs="0"/>
-    <el-col :span="12" :xs="24">
-      <div class="app-container">
+  <div class="app-container">
+    <el-row>
+      <el-col :span="6" :xs="0"/>
+      <el-col :span="12" :xs="24">
+
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
             <el-button
@@ -14,21 +15,19 @@
             </el-button>
           </el-col>
         </el-row>
-        <el-table :data="surveyList">
+        <el-table border :data="surveyList">
           <el-table-column type="selection" width="50" align="center"/>
-          <el-table-column label="ID" align="center" key="id" prop="id"/>
+          <el-table-column label="ID" width="50" align="center" key="id" prop="id"/>
           <el-table-column label="标题" align="center" key="title" prop="title" :show-overflow-tooltip="true">
             <template #default="scope">
-              <el-link :icon="Edit" type="warning" @click="()=>{
-            surveyId=scope.row.id
-            openDetails=true
-          }">{{ scope.row.title }}
+              <el-link :icon="Edit" type="warning" @click="handleQuestion(scope.row.id)">{{ scope.row.title }}
               </el-link>
             </template>
           </el-table-column>
           <el-table-column label="描述" align="center" key="description" prop="description"
                            :show-overflow-tooltip="true"/>
-          <el-table-column label="状态" align="center" key="status" prop="status" :show-overflow-tooltip="true">
+          <el-table-column width="100" label="状态" align="center" key="status" prop="status"
+                           :show-overflow-tooltip="true">
             <template #default="scope">
               <span v-if="scope.row.status === 'Y'">启用</span>
               <span v-if="scope.row.status === 'N'">禁用</span>
@@ -37,12 +36,14 @@
           <el-table-column label="操作" align="center" width="150">
             <template #default="scope">
               <el-button link type="primary" @click="handleEdit(scope.row)" :icon="Edit">修改</el-button>
-              <el-button link type="primary" @click="handleDelete(scope.row)" :icon="Delete">删除</el-button>
-              <el-button link type="primary" @click="handlePreview(scope.row)" >预览</el-button>
+              <el-button link type="success" @click="handleQuestion(scope.row.id)" :icon="Tools">配置题目</el-button>
+              <el-button link type="danger" @click="handleDelete(scope.row)" :icon="Delete">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
         <el-pagination
+            small
+            layout="prev, pager, next"
             v-show="total > 0"
             :total="total"
             v-model:page="queryParams.pageNum"
@@ -88,29 +89,23 @@
           </template>
         </el-dialog>
 
-        <el-dialog title="题目预览" v-model="openPreview" :width="dialogWidth" append-to-body>
-          <template #footer>
-            <SurveyPreview :surveyId="surveyId"/>
-          </template>
-        </el-dialog>
-      </div>
-    </el-col>
-    <el-col :span="6" :xs="0"/>
-  </el-row>
-
+      </el-col>
+      <el-col :span="6" :xs="0"/>
+    </el-row>
+  </div>
 </template>
 
 <script setup>
 import {computed, reactive, ref, toRefs} from 'vue'
 import {list, add, del, update, get} from "../../api/survey.js";
 import QuestionList from "./QuestionList.vue";
-import {Delete, Edit, Plus} from "@element-plus/icons";
-import SurveyPreview from "./SurveyPreview.vue";
+import {Delete, Edit, Plus, Tools} from "@element-plus/icons";
+
 
 const surveyId = ref(0)
 const open = ref(false)
 const openDetails = ref(false)
-const openPreview = ref(false)
+
 const title = ref('')
 const surveyList = ref([])
 const total = ref(0)
@@ -162,11 +157,11 @@ function handleEdit(row) {
     title.value = '修改'
   })
 }
-function handlePreview(row) {
-  surveyId.value=row.id
-  openPreview.value=true
-}
 
+function handleQuestion(id) {
+  surveyId.value = id
+  openDetails.value = true
+}
 
 function handleDelete(row) {
   del(row.id).then(res => {
@@ -194,5 +189,13 @@ getList()
 </script>
 
 <style scoped>
+
+.app-container {
+  padding: 20px;
+}
+
+.mb8 {
+  margin-bottom: 8px;
+}
 
 </style>
