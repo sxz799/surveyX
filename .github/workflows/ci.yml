@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+
+  build:
+    strategy:
+      matrix:
+        node-version: [16.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    runs-on: ubuntu-latest
+    container: docker.io/centos:7
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: intall deps
+      run: |
+        yum install -y wget tar gcc automake autoconf libtool make
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.21
+
+    - name: Build Server
+      run:  go build -ldflags="-s -w" -o bin/app .
+      working-directory: ./server
+      
+
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        
+    - name: Build Web
+      run: yarn && yarn build
+      working-directory: ./web
+
+    - name: Move  Files
+      run: |
+        mkdir gsCheck
+        mv server/bin/app suveryX/
+        mv web/dist suveryX/dist/
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+       name: gscheck-artifact
+       path: ${{ github.workspace }}/suveryX
+
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v2.1.1
+      with:
+       name: suveryX-artifact
+    
