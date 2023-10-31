@@ -146,9 +146,11 @@ initSurvey()
 </script>
 
 <style scoped>
+
 :deep(.el-checkbox){
   height:auto;
   padding: 5px;
+  display: block;
 }
 :deep(.el-checkbox__label){
   white-space:pre-line;
