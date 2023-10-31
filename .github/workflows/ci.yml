@@ -44,6 +44,7 @@ jobs:
       run: |
         mkdir suveryX
         mv server/bin/app suveryX/
+        mv server/conf.yaml suveryX/
         mv web/dist suveryX/dist/
 
     - name: Upload artifact
