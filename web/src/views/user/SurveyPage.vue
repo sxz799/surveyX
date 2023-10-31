@@ -7,9 +7,9 @@
       <div class="question-container" v-for="(question , index) in survey.questions">
         <el-row :gutter="10">
           <el-col :span="24">
-              <el-tag  v-if="question.type === 'radio'">{{index+1}} [单选]</el-tag>
-              <el-tag type="warning" v-if="question.type === 'checkbox'">{{index+1}} [多选]</el-tag>
-              <el-tag type="success" v-if="question.type === 'text'">{{index+1}} [简答题]</el-tag>
+            <el-tag v-if="question.type === 'radio'">{{ index + 1 }} [单选]</el-tag>
+            <el-tag type="warning" v-if="question.type === 'checkbox'">{{ index + 1 }} [多选]</el-tag>
+            <el-tag type="success" v-if="question.type === 'text'">{{ index + 1 }} [简答题]</el-tag>
             <el-text>{{ question.text }}</el-text>
 
           </el-col>
@@ -21,23 +21,38 @@
                       placeholder=""/>
 
             <el-checkbox-group :max="1" v-model="answers[question.id]" v-if="question.type==='radio'">
-              <el-checkbox class="wrap-checkbox" v-for="option in question.options" :label=option.label>
-                {{ option.label }} ：{{ option.value }}
-                <el-input v-model="option['extMsg']" size="small"
-                          v-if="answers[question.id]&& answers[question.id][0] === option.label &&  option.has_ext_msg === 'Y'"
-                          placeholder=""/>
-              </el-checkbox>
+              <div v-for="option in question.options">
+                <el-row>
+                  <el-col :span="18">
+                    <el-checkbox :label=option.label>
+                      {{ option.label }} {{ option.value }}
+                    </el-checkbox>
+                  </el-col>
+                  <el-col style="display: flex" :span="6">
+                    <el-input v-model="option['extMsg']" size="small"
+                              v-if="answers[question.id]&& answers[question.id][0] === option.label &&  option.has_ext_msg === 'Y'"
+                              placeholder=""/>
+                  </el-col>
+                </el-row>
+              </div>
             </el-checkbox-group>
 
             <el-checkbox-group v-model="answers[question.id]" v-if="question.type==='checkbox'">
-              <el-checkbox class="wrap-checkbox" v-for="option in question.options" :label="option.label">
-                {{ option.label }} ：{{ option.value }}
-                <el-input v-model="option['extMsg']" size="small"
-                          v-if="answers[question.id] && answers[question.id].toString().indexOf(option.label)>-1 && option.has_ext_msg==='Y'"
-                          placeholder=""/>
-              </el-checkbox>
+              <div v-for="option in question.options">
+                <el-row>
+                  <el-col :span="18">
+                    <el-checkbox :label=option.label>
+                      {{ option.label }} {{ option.value }}
+                    </el-checkbox>
+                  </el-col>
+                  <el-col style="display: flex" :span="6">
+                    <el-input v-model="option['extMsg']" size="small"
+                              v-if="answers[question.id] && answers[question.id].toString().indexOf(option.label)>-1 && option.has_ext_msg==='Y'"
+                              placeholder=""/>
+                  </el-col>
+                </el-row>
+              </div>
             </el-checkbox-group>
-
           </el-col>
         </el-row>
       </div>
@@ -54,7 +69,7 @@ import {get} from "../../api/survey.js";
 import {list} from "../../api/question.js";
 import {add} from "../../api/answer.js";
 import {useRoute} from "vue-router";
-import { ElMessage } from 'element-plus'
+import {ElMessage} from 'element-plus'
 
 const route = useRoute()
 
@@ -134,9 +149,9 @@ function submitAnswer() {
     }
   }
   add(answerResult).then(res => {
-    if(res.success){
+    if (res.success) {
       ElMessage.success(res.message)
-    }else {
+    } else {
       ElMessage.error(res.message)
     }
   })
@@ -147,13 +162,13 @@ initSurvey()
 
 <style scoped>
 
-:deep(.el-checkbox){
-  height:auto;
+:deep(.el-checkbox) {
+  height: auto;
   padding: 5px;
-  display: block;
 }
-:deep(.el-checkbox__label){
-  white-space:pre-line;
+
+:deep(.el-checkbox__label) {
+  white-space: pre-line;
 }
 
 .survey-container {
@@ -196,8 +211,6 @@ initSurvey()
 .submit-button:hover {
   background-color: #0056b3;
 }
-
-
 
 
 </style>
