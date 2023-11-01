@@ -10,7 +10,6 @@ import (
 	"github.com/sxz799/surveyX/router"
 	"github.com/sxz799/surveyX/utils"
 	"log"
-	"os"
 )
 
 // @title 问卷调查SurveyX API
@@ -19,18 +18,6 @@ func main() {
 	utils.InitDB()
 	gin.SetMode(config.GinMode)
 	r := gin.Default()
-	_, err := os.Stat("dist")
-	if err == nil {
-		r.LoadHTMLGlob("dist/index.html")
-		r.Static("/dist", "dist")
-		r.GET("/", func(context *gin.Context) {
-			context.HTML(200, "index.html", "")
-		})
-		r.GET("/admin", func(context *gin.Context) {
-			context.HTML(200, "index.html", "")
-		})
-		log.Println("已开启前后端整合模式！")
-	}
 	r.Use(cors.Default())
 	docs.SwaggerInfo.BasePath = "/api"
 	router.RegRouter(r)
