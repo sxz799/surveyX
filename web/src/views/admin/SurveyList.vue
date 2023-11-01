@@ -41,6 +41,7 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-divider/>
         <el-pagination
             small
             :style="{'justify-content':'center'}"
@@ -139,13 +140,11 @@ function getList() {
 }
 
 function handleSizeChange(val) {
-
   queryParams.value.pageSize = val
   getList()
 }
 
 function handleCurrentChange(val) {
-
   queryParams.value.pageNum = val
   getList()
 }

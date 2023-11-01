@@ -18,10 +18,9 @@ func (ts *QuestionService) List(pi request.PageInfo, sId int) (response.PageResu
 	limit := pi.PageSize
 	offset := pi.PageSize * (pi.PageNum - 1)
 	db := utils.DB.Model(&entity.Question{})
+	db.Where("survey_id=?", sId)
 	db.Count(&total)
-	db = db.Limit(limit).Offset(offset)
-	err := db.Debug().Where("survey_id=?", sId).Order("`order`").Find(&qs).Error
-
+	err := db.Debug().Limit(limit).Offset(offset).Order("`order`").Find(&qs).Error
 	for i := range qs {
 		ops := optionService.List(qs[i].Id)
 		qs[i].Options = ops

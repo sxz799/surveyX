@@ -41,16 +41,23 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-divider/>
     <el-pagination
-        v-show="total > 0"
+        small
+        :style="{'justify-content':'center'}"
+        :background="true"
+        :hide-on-single-page="false"
+        :current-page="queryParams.pageNum"
+        :page-size="queryParams.pageSize"
+        :page-sizes="[2,5, 10, 30, 50]"
         :total="total"
-        v-model:page="queryParams.pageNum"
-        v-model:limit="queryParams.pageSize"
-        @pagination="getList"
+        layout=" sizes, prev, pager, next"
+        @current-change="handleCurrentChange"
+        @size-change="handleSizeChange"
     />
 
     <el-dialog :title="title" v-model="open" :width="dialogWidth" append-to-body>
-      <el-form ref="surveyRef" :model="form" label-width="150px">
+      <el-form ref="surveyRef" :model="form" label-width="25%">
         <el-row :gutter="10">
           <el-col :span="24">
             <el-form-item label="问卷ID" prop="surveyId">
@@ -76,25 +83,18 @@
           <el-col :span="24">
             <el-form-item v-if="form.type !== 'text'"
                           v-for="(option, index) in form.options"
-                          :label="'选项 ' + index"
+                          :label="'选项 ' + String.fromCharCode(65 + index)"
                           :key="option.key"
                           :prop="'option.' + index + '.value'">
-              <el-row>
-                <el-col :span="3">
-                  <el-select width="20%" v-model="option.label" placeholder="选择标签">
-                    <el-option v-for="letter in alphabet" :key="letter" :label="letter" :value="letter"></el-option>
-                  </el-select>
-                </el-col>
-
+              <el-row :gutter="2">
                 <el-col :span="20">
                   <el-input v-model="option.value">
-
                     <template #append>
-                      <el-checkbox width="20%"  v-model="option.has_ext_msg" true-label="Y" false-label="N" label="备注"/>
+                      <el-checkbox  v-model="option.has_ext_msg" true-label="Y" false-label="N" label="备注"/>
                     </template>
                   </el-input>
                 </el-col>
-                <el-col :span="1">
+                <el-col :span="4">
                   <el-button type="danger" @click.prevent="removeOption(option)">删除</el-button>
                 </el-col>
               </el-row>
@@ -161,19 +161,32 @@ watch(() => props.surveyId, (newValue, oldValue) => {
 
 function addOption() {
   form.value.options.push({
-        value: '',
-        key: Date.now()
+        label: String.fromCharCode(65 + form.value.options.length), // A B C D
+        value: '', // 选项的值
+        key: Date.now() // 选项的唯一标识
       }
   )
 }
 
+/**
+ * 删除选项
+ * @param op
+ */
 function removeOption(op) {
   const index = form.value.options.indexOf(op);
   if (index !== -1) {
+    // 删除选项
     form.value.options.splice(index, 1)
+    // 重新设置label A B C D
+    form.value.options.forEach((item, index) => {
+      item.label = String.fromCharCode(65 + index)
+    })
   }
 }
 
+/**
+ * 获取题目列表
+ */
 function getList() {
   list(queryParams.value, props.surveyId).then(res => {
     questionList.value = res.data.list
@@ -193,7 +206,7 @@ function reset() {
     text: '',
     type: 'radio',
     options: [],
-    order: 1,
+    order: total.value + 1, // 默认排序为当前题目数量+1
   }
 
 }
@@ -228,6 +241,16 @@ function submitForm() {
   }
 }
 
+function handleSizeChange(val) {
+  queryParams.value.pageSize = val
+  getList()
+}
+
+function handleCurrentChange(val) {
+  queryParams.value.pageNum = val
+  getList()
+}
+
 
 getList()
 
@@ -235,4 +258,10 @@ getList()
 
 <style scoped>
 
+:deep(.el-form-item__content .el-input-group){
+  vertical-align: middle;
+}
+:deep(.el-form-item__content){
+  display: inline;
+}
 </style>

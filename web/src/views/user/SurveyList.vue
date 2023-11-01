@@ -15,12 +15,19 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-divider/>
         <el-pagination
-            v-show="total > 0"
+            small
+            :style="{'justify-content':'center'}"
+            :background="true"
+            :hide-on-single-page="false"
+            :current-page="queryParams.pageNum"
+            :page-size="queryParams.pageSize"
+            :page-sizes="[2,5, 10, 30, 50]"
             :total="total"
-            v-model:page="queryParams.pageNum"
-            v-model:limit="queryParams.pageSize"
-            @pagination="getList"
+            layout=" sizes, prev, pager, next"
+            @current-change="handleCurrentChange"
+            @size-change="handleSizeChange"
         />
       </div>
     </el-col>
@@ -50,7 +57,15 @@ function getList() {
   })
 }
 
+function handleSizeChange(val) {
+  queryParams.value.pageSize = val
+  getList()
+}
 
+function handleCurrentChange(val) {
+  queryParams.value.pageNum = val
+  getList()
+}
 
 
 getList()
