@@ -20,37 +20,31 @@
             <el-input type="textarea" autosize v-model="answers[question.id]" v-if="question.type==='text'"
                       placeholder=""/>
 
-            <el-checkbox-group :max="1" v-model="answers[question.id]" v-if="question.type==='radio'">
+            <el-radio-group v-model="answers[question.id]" v-if="question.type==='radio'">
               <div v-for="option in question.options">
-                <el-row>
-                  <el-col :span="18">
-                    <el-checkbox :label=option.label>
-                      {{ option.label }} {{ option.value }}
-                    </el-checkbox>
-                  </el-col>
-                  <el-col style="display: flex" :span="6">
-                    <el-input v-model="option['extMsg']" size="small"
-                              v-if="answers[question.id]&& answers[question.id][0] === option.label &&  option.has_ext_msg === 'Y'"
-                              placeholder=""/>
-                  </el-col>
-                </el-row>
+                <el-radio :label=option.label>
+                  {{ option.label }} {{ option.value }}
+                </el-radio>
+                <div style="width: 65%;padding-left: 25px">
+                  <el-input v-model="option['extMsg']" size="small" type="textarea" autosize
+                            v-if="answers[question.id]&& answers[question.id][0] === option.label &&  option.has_ext_msg === 'Y'"
+                            placeholder="请在此处填写补充信息！"/>
+                </div>
               </div>
-            </el-checkbox-group>
+            </el-radio-group>
 
             <el-checkbox-group v-model="answers[question.id]" v-if="question.type==='checkbox'">
               <div v-for="option in question.options">
-                <el-row>
-                  <el-col :span="18">
-                    <el-checkbox :label=option.label>
-                      {{ option.label }} {{ option.value }}
-                    </el-checkbox>
-                  </el-col>
-                  <el-col style="display: flex" :span="6">
-                    <el-input v-model="option['extMsg']" size="small"
-                              v-if="answers[question.id] && answers[question.id].toString().indexOf(option.label)>-1 && option.has_ext_msg==='Y'"
-                              placeholder=""/>
-                  </el-col>
-                </el-row>
+
+                <el-checkbox :label=option.label>
+                  {{ option.label }} {{ option.value }}
+
+                </el-checkbox>
+                <div style="width: 94%;margin: auto">
+                  <el-input v-model="option['extMsg']" size="small" type="textarea" autosize
+                            v-if="answers[question.id] && answers[question.id].toString().indexOf(option.label)>-1 && option.has_ext_msg==='Y'"
+                            placeholder="请在此处填写补充信息！"/>
+                </div>
               </div>
             </el-checkbox-group>
           </el-col>
@@ -164,11 +158,32 @@ initSurvey()
 
 :deep(.el-checkbox) {
   height: auto;
+  min-height: 40px;
+  width: auto;
   padding: 5px;
+}
+
+:deep(.el-radio) {
+  height: auto;
+  min-height: 40px;
+  width: auto;
+  padding: 5px;
+}
+
+:deep(.el-radio__label) {
+  white-space: pre-line;
 }
 
 :deep(.el-checkbox__label) {
   white-space: pre-line;
+}
+
+:deep(.el-radio-group) {
+  display: grid;
+}
+
+:deep(.el-checkbox-group) {
+  display: grid;
 }
 
 .survey-container {

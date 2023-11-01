@@ -5,7 +5,7 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig(({mode, command}) => {
     return {
         plugins: [vue()],
-        base:'/dist/',
+        //base:'/dist/',
         server: {
             proxy: {
                 '/api': {
