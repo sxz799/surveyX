@@ -16,7 +16,7 @@ func (ts *QuestionService) List(pi request.PageInfo, sId int) (response.PageResu
 	var qs []entity.Question
 	var total int64
 	limit := pi.PageSize
-	offset := pi.PageSize * (pi.Page - 1)
+	offset := pi.PageSize * (pi.PageNum - 1)
 	db := utils.DB.Model(&entity.Question{})
 	db.Count(&total)
 	db = db.Limit(limit).Offset(offset)
@@ -30,7 +30,7 @@ func (ts *QuestionService) List(pi request.PageInfo, sId int) (response.PageResu
 	return response.PageResult{
 		List:     qs,
 		Total:    total,
-		Page:     pi.Page,
+		Page:     pi.PageNum,
 		PageSize: pi.PageSize}, err
 }
 

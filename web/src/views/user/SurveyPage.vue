@@ -11,7 +11,6 @@
             <el-tag type="warning" v-if="question.type === 'checkbox'">{{ index + 1 }} [多选]</el-tag>
             <el-tag type="success" v-if="question.type === 'text'">{{ index + 1 }} [简答题]</el-tag>
             <el-text>{{ question.text }}</el-text>
-
           </el-col>
         </el-row>
         <br>
@@ -19,28 +18,24 @@
           <el-col :span="24">
             <el-input type="textarea" autosize v-model="answers[question.id]" v-if="question.type==='text'"
                       placeholder=""/>
-
             <el-radio-group v-model="answers[question.id]" v-if="question.type==='radio'">
               <div v-for="option in question.options">
                 <el-radio :label=option.label>
                   {{ option.label }} {{ option.value }}
                 </el-radio>
-                <div style="width: 65%;padding-left: 25px">
+                <div class="extMsg">
                   <el-input v-model="option['extMsg']" size="small" type="textarea" autosize
                             v-if="answers[question.id]&& answers[question.id][0] === option.label &&  option.has_ext_msg === 'Y'"
                             placeholder="请在此处填写补充信息！"/>
                 </div>
               </div>
             </el-radio-group>
-
             <el-checkbox-group v-model="answers[question.id]" v-if="question.type==='checkbox'">
               <div v-for="option in question.options">
-
                 <el-checkbox :label=option.label>
                   {{ option.label }} {{ option.value }}
-
                 </el-checkbox>
-                <div style="width: 94%;margin: auto">
+                <div class="extMsg">
                   <el-input v-model="option['extMsg']" size="small" type="textarea" autosize
                             v-if="answers[question.id] && answers[question.id].toString().indexOf(option.label)>-1 && option.has_ext_msg==='Y'"
                             placeholder="请在此处填写补充信息！"/>
@@ -50,7 +45,6 @@
           </el-col>
         </el-row>
       </div>
-
       <el-button class="submit-button" @click="submitAnswer">提交</el-button>
     </el-col>
     <el-col :span="6" :xs="0"/>
@@ -184,6 +178,11 @@ initSurvey()
 
 :deep(.el-checkbox-group) {
   display: grid;
+}
+
+.extMsg {
+  width: 65%;
+  padding-left: 25px;
 }
 
 .survey-container {

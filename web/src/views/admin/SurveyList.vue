@@ -43,13 +43,19 @@
         </el-table>
         <el-pagination
             small
-            layout="prev, pager, next"
-            v-show="total > 0"
+            :style="{'justify-content':'center'}"
+            :background="true"
+            :hide-on-single-page="false"
+            :current-page="queryParams.pageNum"
+            :page-size="queryParams.pageSize"
+            :page-sizes="[2,5, 10, 30, 50]"
             :total="total"
-            v-model:page="queryParams.pageNum"
-            v-model:limit="queryParams.pageSize"
-            @pagination="getList"
+            layout=" sizes, prev, pager, next"
+            @current-change="handleCurrentChange"
+            @size-change="handleSizeChange"
         />
+
+
         <el-dialog :title="title" v-model="open" :width="dialogWidth" append-to-body>
           <el-form ref="surveyRef" :model="form" label-width="100px">
             <el-row>
@@ -130,6 +136,18 @@ function getList() {
     surveyList.value = res.data.list
     total.value = res.data.total
   })
+}
+
+function handleSizeChange(val) {
+
+  queryParams.value.pageSize = val
+  getList()
+}
+
+function handleCurrentChange(val) {
+
+  queryParams.value.pageNum = val
+  getList()
 }
 
 function handleAdd() {
