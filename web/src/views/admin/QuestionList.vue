@@ -57,7 +57,7 @@
     />
 
     <el-dialog :title="title" v-model="open" :width="dialogWidth" append-to-body>
-      <el-form ref="questionRef" :model="form" :rules="rules" label-width="25%">
+      <el-form ref="questionRef" :model="form" :rules="rules" label-width="20%">
         <el-row :gutter="10">
           <el-col :span="24">
             <el-form-item label="问卷ID" prop="surveyId">
@@ -87,15 +87,15 @@
                           :key="option.key"
                           :prop="'options.' + index + '.value'">
               <el-row :gutter="2">
-                <el-col :span="20">
-                  <el-input v-model="form.options[index].value">
-                    <template #append>
-                      <el-checkbox v-model="form.options[index].has_ext_msg" true-label="Y" false-label="N"
-                                   label="备注"/>
-                    </template>
-                  </el-input>
+                <el-col :span="16">
+                  <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 5 }" v-model="form.options[index].value"></el-input>
                 </el-col>
-                <el-col :span="4">
+                <el-col :span="3">
+                  <el-checkbox border  v-model="form.options[index].has_ext_msg" true-label="Y" false-label="N"
+                               label="填写备注"/>
+                </el-col>
+
+                <el-col :span="3">
                   <el-button type="danger" @click.prevent="removeOption(option)">删除</el-button>
                 </el-col>
               </el-row>

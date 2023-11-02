@@ -5,12 +5,8 @@
       <h2 class="survey-title">{{ survey.title }}</h2>
       <h4 class="survey-description">{{ survey.description }}</h4>
       <el-form ref="answersRef" :inline-message="true" :model="form" :rules="rules" label-width="0">
-        <el-form-item label="" prop="contact">
-          <el-input v-model="form.contact" placeholder="请输入联系方式"></el-input>
-        </el-form-item>
         <el-form-item :inline="false" v-for="(question , index) in survey.questions" :prop="'answers.' + question.id ">
           <div class="question-container">
-
             <!--题目-->
             <el-tag v-if="question.type === 'radio'">{{ index + 1 }} [单选]</el-tag>
             <el-tag type="warning" v-if="question.type === 'checkbox'">{{ index + 1 }} [多选]</el-tag>
@@ -50,8 +46,10 @@
                 </div>
               </div>
             </el-checkbox-group>
-
           </div>
+        </el-form-item>
+        <el-form-item label="联系方式:" label-width="25%" prop="contact">
+          <el-input v-model="form.contact" placeholder="请填写联系方式"></el-input>
         </el-form-item>
       </el-form>
 
@@ -208,10 +206,12 @@ initSurvey()
 
 :deep(.el-radio__label) {
   white-space: pre-line;
+  line-height:normal;
 }
 
 :deep(.el-checkbox__label) {
   white-space: pre-line;
+  line-height:normal;
 }
 
 :deep(.el-radio-group) {
