@@ -57,7 +57,7 @@
     />
 
     <el-dialog :title="title" v-model="open" :width="dialogWidth" append-to-body>
-      <el-form ref="surveyRef" :model="form" label-width="25%">
+      <el-form ref="questionRef" :model="form" :rules="rules" label-width="25%">
         <el-row :gutter="10">
           <el-col :span="24">
             <el-form-item label="问卷ID" prop="surveyId">
@@ -88,9 +88,10 @@
                           :prop="'option.' + index + '.value'">
               <el-row :gutter="2">
                 <el-col :span="20">
-                  <el-input v-model="option.value">
+                  <el-input v-model="form.options[index].value">
                     <template #append>
-                      <el-checkbox  v-model="option.has_ext_msg" true-label="Y" false-label="N" label="备注"/>
+                      <el-checkbox v-model="form.options[index].has_ext_msg" true-label="Y" false-label="N"
+                                   label="备注"/>
                     </template>
                   </el-input>
                 </el-col>
@@ -111,7 +112,7 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button type="primary" @click="submitForm(questionRef)">确 定</el-button>
           <el-button @click="open = false">取 消</el-button>
         </div>
       </template>
@@ -131,8 +132,7 @@ import {Delete, Edit, Plus} from "@element-plus/icons";
 const props = defineProps({
   surveyId: Number,
 })
-
-const alphabet =ref(['A','B','C','D','E','F','G','H'])
+const questionRef = ref()
 const open = ref(false)
 const title = ref('')
 const questionList = ref([])
@@ -153,10 +153,16 @@ const data = reactive({
 
 const {queryParams, form} = toRefs(data);
 
-// 监控props.surveyId的变化
+const rules = reactive({
+  text: [{required: true, message: '请输入题目内容', trigger: 'blur'}],
+  type: [{required: true, message: '请选择题目类型', trigger: 'blur'}],
+  order: [{required: true, message: '请输入排序', trigger: 'blur'}],
+
+})
+
+
 watch(() => props.surveyId, (newValue, oldValue) => {
   getList()
-  // 在这里可以执行你的逻辑
 });
 
 function addOption() {
@@ -168,10 +174,6 @@ function addOption() {
   )
 }
 
-/**
- * 删除选项
- * @param op
- */
 function removeOption(op) {
   const index = form.value.options.indexOf(op);
   if (index !== -1) {
@@ -184,9 +186,6 @@ function removeOption(op) {
   }
 }
 
-/**
- * 获取题目列表
- */
 function getList() {
   list(queryParams.value, props.surveyId).then(res => {
     questionList.value = res.data.list
@@ -208,7 +207,6 @@ function reset() {
     options: [],
     order: total.value + 1, // 默认排序为当前题目数量+1
   }
-
 }
 
 function handleEdit(row) {
@@ -222,23 +220,45 @@ function handleEdit(row) {
 
 function handleDelete(row) {
   del(row.id).then(res => {
-    getList()
+    if (res.success) {
+      this.$message.success(res.message)
+      getList()
+    } else {
+      this.$message.error(res.message)
+    }
   })
 }
 
-function submitForm() {
+function submitForm(elForm) {
+  elForm.validate((valid, fields) => {
+    if (valid) {
+      if (form.value.id) {
+        update(form.value).then(res => {
+          if (res.success) {
+            open.value = false
+            getList()
+            this.$message.success(res.message)
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+      } else {
+        add(form.value).then(res => {
+          if (res.success) {
+            open.value = false
+            getList()
+            this.$message.success(res.message)
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+      }
+    } else {
+      console.log('没有通过校验:', fields)
+    }
+  })
 
-  if (form.value.id) {
-    update(form.value).then(res => {
-      open.value = false
-      getList()
-    })
-  } else {
-    add(form.value).then(res => {
-      open.value = false
-      getList()
-    })
-  }
+
 }
 
 function handleSizeChange(val) {
@@ -258,10 +278,11 @@ getList()
 
 <style scoped>
 
-:deep(.el-form-item__content .el-input-group){
+:deep(.el-form-item__content .el-input-group) {
   vertical-align: middle;
 }
-:deep(.el-form-item__content){
+
+:deep(.el-form-item__content) {
   display: inline;
 }
 </style>

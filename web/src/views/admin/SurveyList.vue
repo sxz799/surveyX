@@ -58,7 +58,7 @@
 
 
         <el-dialog :title="title" v-model="open" :width="dialogWidth" append-to-body>
-          <el-form ref="surveyRef" :model="form" label-width="100px">
+          <el-form ref="surveyRef" :model="form" :rules="rules" label-width="25%">
             <el-row>
               <el-col :span="24">
                 <el-form-item label="标题" prop="title">
@@ -82,7 +82,7 @@
           </el-form>
           <template #footer>
             <div class="dialog-footer">
-              <el-button type="primary" @click="submitForm">确 定</el-button>
+              <el-button type="primary" @click="submitForm(surveyRef)">确 定</el-button>
               <el-button @click="open = false">取 消</el-button>
             </div>
           </template>
@@ -108,7 +108,13 @@ import {list, add, del, update, get} from "../../api/survey.js";
 import QuestionList from "./QuestionList.vue";
 import {Delete, Edit, Plus, Tools} from "@element-plus/icons";
 
+const rules = reactive({
+  title: [{required: true, message: '请输入题目内容', trigger: 'blur'}],
+  description: [{required: true, message: '请选择题目类型', trigger: 'blur'}],
+  status: [{required: true, message: '请输入排序', trigger: 'blur'}],
+})
 
+const surveyRef = ref()
 const surveyId = ref(0)
 const open = ref(false)
 const openDetails = ref(false)
@@ -186,18 +192,22 @@ function handleDelete(row) {
   })
 }
 
-function submitForm() {
-  if (form.value.id) {
-    update(form.value).then(res => {
-      open.value = false
-      getList()
-    })
-  } else {
-    add(form.value).then(res => {
-      open.value = false
-      getList()
-    })
-  }
+function submitForm(elForm) {
+  elForm.validate((valid, fields) => {
+    if (valid) {
+      if (form.value.id) {
+        update(form.value).then(res => {
+          open.value = false
+          getList()
+        })
+      } else {
+        add(form.value).then(res => {
+          open.value = false
+          getList()
+        })
+      }
+    }
+  })
 }
 
 
