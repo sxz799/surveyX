@@ -91,7 +91,7 @@
                   <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 5 }" v-model="form.options[index].value"></el-input>
                 </el-col>
                 <el-col :span="3">
-                  <el-checkbox border  v-model="form.options[index].has_ext_msg" true-label="Y" false-label="N"
+                  <el-checkbox border  v-model="form.options[index].has_ext_msg" true-label="yes" false-label="no"
                                label="填写备注"/>
                 </el-col>
 

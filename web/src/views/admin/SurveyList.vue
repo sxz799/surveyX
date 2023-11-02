@@ -73,8 +73,8 @@
               <el-col :span="24">
                 <el-form-item label="状态" prop="status">
                   <el-select v-model="form.status" placeholder="请选择状态">
-                    <el-option label="启用" value="Y"></el-option>
-                    <el-option label="禁用" value="N"></el-option>
+                    <el-option label="启用" value="yes"></el-option>
+                    <el-option label="禁用" value="no"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -167,7 +167,7 @@ function reset() {
     id: undefined,
     title: "",
     description: "",
-    status: "Y",
+    status: "yes",
   };
 
 }
