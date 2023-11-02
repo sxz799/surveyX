@@ -33,4 +33,7 @@ type Answer struct {
 	Content    string `json:"content"`
 	Label      string `json:"label"`
 	ExtMsg     string `json:"ext_msg"`
+	Contact    string `json:"contact"`
+	IP         string `json:"ip"`
+	Finger     string `json:"finger"`
 }
