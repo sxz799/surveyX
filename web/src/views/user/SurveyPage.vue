@@ -51,7 +51,8 @@
             </el-checkbox-group>
           </div>
         </el-form-item>
-        <el-form-item style="width: 80%;" v-if="survey.need_contact==='yes'" label="联系方式:" label-width="30%" prop="contact">
+        <el-form-item style="width: 80%;" v-if="survey.need_contact==='yes'" label="联系方式:" label-width="30%"
+                      prop="contact">
           <el-input v-model="form.contact" placeholder="请填写联系方式"></el-input>
         </el-form-item>
       </el-form>
@@ -69,15 +70,18 @@ import {list} from "../../api/question.js";
 import {add} from "../../api/answer.js";
 import {useRoute} from "vue-router";
 import {ElMessage} from 'element-plus'
+import Fingerprint2 from 'fingerprintjs2';
 
 const route = useRoute()
-
 const surveyId = Number(route.params.id)
-
+const finger = ref('')
 const survey = ref({
-  title: "",
-  description: "",
+  title: '',
+  description: '',
   questions: [],
+  need_contact: '',
+  repeat: '',
+  repeat_check: '',
 })
 const answersRef = ref()
 const rules = ({
@@ -93,7 +97,7 @@ function initSurvey() {
   get(surveyId).then(res => {
     survey.value = res.data
   })
-  list({pageNum: 1, pageSize: 999}, surveyId).then(res => {
+  list({pageNum: 1, pageSize: 99999}, surveyId).then(res => {
     survey.value.questions = res.data.list
     survey.value.questions.forEach(q => {
       rules['answers.' + q.id] = [{required: true, message: '请填写', trigger: 'blur'}]
@@ -103,79 +107,77 @@ function initSurvey() {
 }
 
 function submitAnswer(elForm) {
-  elForm.validate((valid, fields) => {
+  elForm.validate((valid) => {
     if (!valid) {
-      ElMessage.error('请填写完整信息');
-      return;
+      ElMessage.error('请填写完整')
+      return
     }
-    const answerResult = [];
-    const showErrorMsg = (questionIndex, label) => {
-      ElMessage.error(`请填写完整[第${questionIndex + 1}题,选项${label}]的补充信息`);
-    };
-    for (let questionIndex = 0; questionIndex < survey.value.questions.length; questionIndex++) {
-      const question = survey.value.questions[questionIndex];
-      const options = question.options;
-      const questionType = question.type;
-      const answers = form.answers[question.id];
-      if (questionType === 'text') {
-        answerResult.push({
-          id: 0,
-          question_id: question.id,
-          content: answers,
-        });
-      } else if (questionType === 'radio') {
-        let extMsg = '';
-        for (let option of options) {
-          if (option.has_ext_msg === 'yes' && (!option.extMsg || option.extMsg === '')) {
-            showErrorMsg(questionIndex, option.label);
-            return;
-          }
-          if (option.label === answers[0]) {
-            extMsg = option.extMsg;
-          }
-        }
-        answerResult.push({
-          question_id: question.id,
-          label: answers.toString(),
-          ext_msg: extMsg,
-        });
-      } else if (questionType === 'checkbox') {
-        for (let selectedLabel of answers) {
-          let extMsg = '';
-          for (let option of options) {
-            if (option.has_ext_msg === 'yes' && option.label === selectedLabel && (!option.extMsg || option.extMsg === '')) {
-              showErrorMsg(questionIndex, selectedLabel);
-              return;
+    let answerResult = []
+    for (const index in survey.value.questions) {
+      const question = survey.value.questions[index]
+      let options = question.options
+      switch (question.type) {
+        case 'text':
+          answerResult.push({question_id: question.id, content: form.answers[question.id]});
+          break;
+        case 'radio':
+          let extMsg = ''
+          for (let o of options) {
+            if (o.has_ext_msg === 'yes' && o.label === form.answers[question.id] && (o.extMsg === undefined || o.extMsg === '')) {
+              ElMessage.error('请填写完整[第' + (Number(index) + 1) + '题]的补充信息')
+              return
             }
-            if (option.label === selectedLabel) {
-              extMsg = option.extMsg;
+            if (o.label === form.answers[question.id][0]) {
+              extMsg = o.extMsg
             }
           }
-          answerResult.push({
-            question_id: question.id,
-            label: selectedLabel,
-            ext_msg: extMsg,
-          });
-        }
+          answerResult.push({question_id: question.id, label: form.answers[question.id].toString(), ext_msg: extMsg,});
+          break;
+        case 'checkbox':
+          const arr = form.answers[question.id]
+          for (let str of arr) {
+            let extMsg = ''
+            for (let o of options) {
+              if (o.has_ext_msg === 'yes' && o.label === str && (o.extMsg === undefined || o.extMsg === '')) {
+                ElMessage.error('请填写完整[第' + (Number(index) + 1) + '题,选项' + o.label + ']的补充信息')
+                return
+              }
+              if (o.label === str) {
+                extMsg = o.extMsg
+              }
+            }
+            answerResult.push({question_id: question.id, label: str, ext_msg: extMsg,});
+          }
       }
     }
-    answerResult.forEach(answer => {
-      answer.contact = form.contact;
-      answer.survey_id = surveyId;
-    });
+    answerResult.forEach(a => {
+      a.finger = finger.value
+      a.survey_id = surveyId
+      a.contact = form.contact
+    })
     add(answerResult).then(res => {
       if (res.success) {
-        ElMessage.success(res.message);
-        elForm.resetFields();
+        ElMessage.success(res.message)
+        if(survey.value.repeat==='yes'){
+          elForm.resetFields()
+        }
       } else {
-        ElMessage.error(res.message);
+        ElMessage.error(res.message)
       }
-    });
+    })
+  })
+}
+
+function getFinger() {
+  Fingerprint2.get((components) => {
+    // components数组包含了浏览器指纹的各个组成部分
+    const values = components.map((component) => component.value);
+    finger.value = Fingerprint2.x64hash128(values.join(''), 31);
   });
 }
 
-
 initSurvey()
+getFinger()
 </script>
 
 <style scoped>
