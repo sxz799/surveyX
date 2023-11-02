@@ -14,7 +14,8 @@
             <el-text>{{ question.text }}[{{ question.id }}]</el-text>
             <br>
             <!--简答题-->
-            <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 5 }" v-model="form.answers[question.id]" v-if="question.type==='text'"
+            <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 5 }" v-model="form.answers[question.id]"
+                      v-if="question.type==='text'"
                       placeholder=""/>
             <!--单选题-->
             <el-radio-group v-model="form.answers[question.id]" v-if="question.type==='radio'">
@@ -25,8 +26,9 @@
                   </el-radio>
                 </div>
                 <div>
-                  <el-input v-model="option['extMsg']" size="small" type="textarea" :autosize="{ minRows: 1, maxRows: 3 }"
-                            v-if="form.answers[question.id] && form.answers[question.id][0] === option.label &&  option.has_ext_msg === 'Y'"
+                  <el-input v-model="option['extMsg']" size="small" type="textarea"
+                            :autosize="{ minRows: 1, maxRows: 3 }"
+                            v-if="form.answers[question.id] && form.answers[question.id][0] === option.label &&  option.has_ext_msg === 'yes'"
                             placeholder="请在此处填写补充信息！"/>
                 </div>
               </div>
@@ -40,15 +42,16 @@
                   </el-checkbox>
                 </div>
                 <div>
-                  <el-input v-model="option['extMsg']" size="small" type="textarea" :autosize="{ minRows: 1, maxRows: 3 }"
-                            v-if="form.answers[question.id] && form.answers[question.id].toString().indexOf(option.label)>-1 && option.has_ext_msg==='Y'"
+                  <el-input v-model="option['extMsg']" size="small" type="textarea"
+                            :autosize="{ minRows: 1, maxRows: 3 }"
+                            v-if="form.answers[question.id] && form.answers[question.id].toString().indexOf(option.label)>-1 && option.has_ext_msg==='yes'"
                             placeholder="请在此处填写补充信息！"/>
                 </div>
               </div>
             </el-checkbox-group>
           </div>
         </el-form-item>
-        <el-form-item label="联系方式:" label-width="25%" prop="contact">
+        <el-form-item v-if="survey.need_contact==='yes'" label="联系方式:" label-width="25%" prop="contact">
           <el-input v-model="form.contact" placeholder="请填写联系方式"></el-input>
         </el-form-item>
       </el-form>
@@ -78,12 +81,11 @@ const survey = ref({
 })
 const answersRef = ref()
 const rules = ({
-  contact: [{required: true, message: '请输入联系方式', trigger: 'blur'}],
-
+  contact : [{required: true, message: '请输入联系方式', trigger: 'blur'}],
 })
 
 const form = reactive({
-  contact: '',
+  contact: undefined,
   answers: {},
 })
 
@@ -124,7 +126,7 @@ function submitAnswer(elForm) {
           case 'radio':
             let extMsg = ''
             for (let o of options) {
-              if (o.has_ext_msg === 'Y' && (o.extMsg === undefined || o.extMsg === '')) {
+              if (o.has_ext_msg === 'yes' && (o.extMsg === undefined || o.extMsg === '')) {
                 ElMessage.error('请填写完整[第' + (Number(index) + 1) + '题]的补充信息')
                 return
               }
@@ -148,7 +150,7 @@ function submitAnswer(elForm) {
             for (let str of arr) {
               let extMsg = ''
               for (let o of options) {
-                if (o.has_ext_msg === 'Y' && o.label === str && (o.extMsg === undefined || o.extMsg === '')) {
+                if (o.has_ext_msg === 'yes' && o.label === str && (o.extMsg === undefined || o.extMsg === '')) {
                   ElMessage.error('请填写完整[第' + (Number(index) + 1) + '题,选项' + o.label + ']的补充信息')
                   return
                 }
@@ -206,12 +208,12 @@ initSurvey()
 
 :deep(.el-radio__label) {
   white-space: pre-line;
-  line-height:normal;
+  line-height: normal;
 }
 
 :deep(.el-checkbox__label) {
   white-space: pre-line;
-  line-height:normal;
+  line-height: normal;
 }
 
 :deep(.el-radio-group) {

@@ -6,6 +6,9 @@ type Survey struct {
 	Description string `json:"description"`
 	Status      string `json:"status"`
 	Questions   []int  `gorm:"-" json:"questions"`
+	NeedContact string `json:"need_contact"`
+	Repeat      string `json:"repeat"`       // 是否允许重复提交 no yes yes_but_update
+	RepeatCheck string `json:"repeat_check"` // 重复提交检查方式 finger contact
 }
 
 type Question struct {

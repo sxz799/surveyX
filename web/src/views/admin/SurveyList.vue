@@ -29,8 +29,27 @@
           <el-table-column width="100" label="状态" align="center" key="status" prop="status"
                            :show-overflow-tooltip="true">
             <template #default="scope">
-              <span v-if="scope.row.status === 'Y'">启用</span>
-              <span v-if="scope.row.status === 'N'">禁用</span>
+              <span v-if="scope.row.status === 'yes'">启用</span>
+              <span v-if="scope.row.status === 'no'">禁用</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="填写联系方式" align="center" key="need_contact" prop="need_contact">
+            <template #default="scope">
+              <span v-if="scope.row.need_contact === 'yes'">是</span>
+              <span v-if="scope.row.need_contact === 'no'">否</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="重复提交" align="center" key="repeat" prop="repeat" >
+            <template #default="scope">
+              <span v-if="scope.row.repeat === 'yes'">是</span>
+              <span v-if="scope.row.repeat === 'no'">否</span>
+              <span v-if="scope.row.repeat === 'yes_but_update'">是(更新)</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="重复提交检查方式" align="center" key="repeat_check" prop="repeat_check">
+            <template #default="scope">
+              <span v-if="scope.row.repeat_check === 'contact'">联系方式</span>
+              <span v-if="scope.row.repeat_check === 'finger'">浏览器指纹</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" width="150">
@@ -58,16 +77,16 @@
 
 
         <el-dialog :title="title" v-model="open" :width="dialogWidth" append-to-body>
-          <el-form ref="surveyRef" :model="form" :rules="rules" label-width="25%">
+          <el-form ref="surveyRef" :model="form" :rules="rules" label-width="20%">
             <el-row>
               <el-col :span="24">
                 <el-form-item label="标题" prop="title">
-                  <el-input v-model="form.title" placeholder="请输入标题"></el-input>
+                  <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" v-model="form.title" placeholder="请输入标题"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="24">
                 <el-form-item label="描述" prop="description">
-                  <el-input v-model="form.description" placeholder="请输入描述"></el-input>
+                  <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" v-model="form.description" placeholder="请输入描述"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="24">
@@ -78,6 +97,32 @@
                   </el-select>
                 </el-form-item>
               </el-col>
+              <el-col :span="24">
+                <el-form-item label="填写联系方式" prop="need_contact">
+                  <el-select v-model="form.need_contact" placeholder="请选择是否需要填写联系方式">
+                    <el-option label="是" value="yes"></el-option>
+                    <el-option label="否" value="no"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="可重复提交" prop="repeat">
+                  <el-select v-model="form.repeat" placeholder="请选择是否可重复提交">
+                    <el-option label="是" value="yes"></el-option>
+                    <el-option label="否" value="no"></el-option>
+                    <el-option label="是(更新)" value="yes_but_update"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item v-if="form.repeat!=='yes'" label="重复提交检查方式" prop="repeat_check">
+                  <el-select v-model="form.repeat_check" placeholder="请选择重复提交检查方式">
+                    <el-option v-if="form.need_contact==='yes'" label="联系方式" value="contact"></el-option>
+                    <el-option label="浏览器指纹" value="finger"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+
             </el-row>
           </el-form>
           <template #footer>
@@ -108,11 +153,7 @@ import {list, add, del, update, get} from "../../api/survey.js";
 import QuestionList from "./QuestionList.vue";
 import {Delete, Edit, Plus, Tools} from "@element-plus/icons";
 
-const rules = reactive({
-  title: [{required: true, message: '请输入题目内容', trigger: 'blur'}],
-  description: [{required: true, message: '请选择题目类型', trigger: 'blur'}],
-  status: [{required: true, message: '请输入排序', trigger: 'blur'}],
-})
+
 
 const surveyRef = ref()
 const surveyId = ref(0)
@@ -136,6 +177,14 @@ const data = reactive({
 });
 
 const {queryParams, form} = toRefs(data);
+
+const rules = reactive({
+  title: [{required: true, message: '请填写', trigger: 'blur'}],
+  description: [{required: true, message: '请填写', trigger: 'blur'}],
+  need_contact: [{required: true, message: '请填写', trigger: 'blur'}],
+  repeat: [{required: true, message: '请填写', trigger: 'blur'}],
+  repeat_check: [{required: true, message: '请填写', trigger: 'blur'}],
+})
 
 
 function getList() {
@@ -169,7 +218,6 @@ function reset() {
     description: "",
     status: "yes",
   };
-
 }
 
 function handleEdit(row) {
