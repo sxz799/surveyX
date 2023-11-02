@@ -20,7 +20,7 @@
           <el-table-column label="ID" width="50" align="center" key="id" prop="id"/>
           <el-table-column label="标题" align="center" key="title" prop="title" :show-overflow-tooltip="true">
             <template #default="scope">
-              <el-link :icon="Edit" type="warning" @click="handleQuestion(scope.row.id)">{{ scope.row.title }}
+              <el-link :icon="Edit" type="primary" @click="handleQuestion(scope.row.id)">{{ scope.row.title }}
               </el-link>
             </template>
           </el-table-column>

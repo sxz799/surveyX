@@ -85,7 +85,7 @@
                           v-for="(option, index) in form.options"
                           :label="'选项 ' + String.fromCharCode(65 + index)"
                           :key="option.key"
-                          :prop="'option.' + index + '.value'">
+                          :prop="'options.' + index + '.value'">
               <el-row :gutter="2">
                 <el-col :span="20">
                   <el-input v-model="form.options[index].value">
@@ -157,7 +157,6 @@ const rules = reactive({
   text: [{required: true, message: '请输入题目内容', trigger: 'blur'}],
   type: [{required: true, message: '请选择题目类型', trigger: 'blur'}],
   order: [{required: true, message: '请输入排序', trigger: 'blur'}],
-
 })
 
 
@@ -165,26 +164,6 @@ watch(() => props.surveyId, (newValue, oldValue) => {
   getList()
 });
 
-function addOption() {
-  form.value.options.push({
-        label: String.fromCharCode(65 + form.value.options.length), // A B C D
-        value: '', // 选项的值
-        key: Date.now() // 选项的唯一标识
-      }
-  )
-}
-
-function removeOption(op) {
-  const index = form.value.options.indexOf(op);
-  if (index !== -1) {
-    // 删除选项
-    form.value.options.splice(index, 1)
-    // 重新设置label A B C D
-    form.value.options.forEach((item, index) => {
-      item.label = String.fromCharCode(65 + index)
-    })
-  }
-}
 
 function getList() {
   list(queryParams.value, props.surveyId).then(res => {
@@ -199,22 +178,16 @@ function handleAdd() {
   title.value = '新增'
 }
 
-function reset() {
-  form.value = {
-    survey_id: props.surveyId,
-    text: '',
-    type: 'radio',
-    options: [],
-    order: total.value + 1, // 默认排序为当前题目数量+1
-  }
-}
-
 function handleEdit(row) {
   reset();
   get(row.id).then(res => {
     form.value = res.data
     open.value = true
     title.value = '修改'
+    //添加校验项
+    for (let i = 0; i < form.value.options.length; i++) {
+      rules['options.' + i + '.value'] = [{required: true, message: '不能为空', trigger: 'blur'}]
+    }
   })
 }
 
@@ -259,6 +232,40 @@ function submitForm(elForm) {
   })
 
 
+}
+
+function reset() {
+  form.value = {
+    survey_id: props.surveyId,
+    text: '',
+    type: 'radio',
+    options: [],
+    order: total.value + 1, // 默认排序为当前题目数量+1
+  }
+}
+
+function addOption() {
+  form.value.options.push({
+        label: String.fromCharCode(65 + form.value.options.length), // A B C D
+        value: '', // 选项的值
+        key: Date.now() // 选项的唯一标识
+      }
+  )
+  //添加校验项
+  const index = form.value.options.length - 1
+  rules['options.' + index + '.value'] = [{required: true, message: '不能为空', trigger: 'blur'}]
+}
+
+function removeOption(op) {
+  const index = form.value.options.indexOf(op);
+  if (index !== -1) {
+    // 删除选项
+    form.value.options.splice(index, 1)
+    // 重新设置label A B C D
+    form.value.options.forEach((item, index) => {
+      item.label = String.fromCharCode(65 + index)
+    })
+  }
 }
 
 function handleSizeChange(val) {
