@@ -17,7 +17,7 @@ func Add(c *gin.Context) {
 		return
 	}
 	if err = as.Add(a); err == nil {
-		response.OkWithMessage("添加成功", c)
+		response.OkWithMessage("提交成功", c)
 	} else {
 		response.FailWithMessage(err.Error(), c)
 	}

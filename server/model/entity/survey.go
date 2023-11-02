@@ -1,5 +1,7 @@
 package entity
 
+import "time"
+
 type Survey struct {
 	Id          int    `gorm:"primary_key" json:"id"`
 	Title       string `json:"title"`
@@ -30,13 +32,14 @@ type Option struct {
 }
 
 type Answer struct {
-	Id         int    `gorm:"primary_key" json:"id"`
-	SurveyId   int    `json:"survey_id"`
-	QuestionId int    `json:"question_id"`
-	Content    string `json:"content"`
-	Label      string `json:"label"`
-	ExtMsg     string `json:"ext_msg"`
-	Contact    string `json:"contact"`
-	IP         string `json:"ip"`
-	Finger     string `json:"finger"`
+	Id         int       `gorm:"primary_key" json:"id"`
+	SurveyId   int       `json:"survey_id"`
+	QuestionId int       `json:"question_id"`
+	Content    string    `json:"content"`
+	Label      string    `json:"label"`
+	ExtMsg     string    `json:"ext_msg"`
+	Contact    string    `json:"contact"`
+	IP         string    `json:"ip"`
+	Finger     string    `json:"finger"`
+	CreateAt   time.Time `json:"create_at"`
 }

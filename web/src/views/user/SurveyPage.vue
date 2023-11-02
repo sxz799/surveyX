@@ -113,52 +113,63 @@ function submitAnswer(elForm) {
       return
     }
     let answerResult = []
+    // 遍历问题
     for (const index in survey.value.questions) {
-      const question = survey.value.questions[index]
-      let options = question.options
-      switch (question.type) {
+      const question = survey.value.questions[index] // 问题
+      let options = question.options// 选项
+      const answer = form.answers[question.id].toString()// 答案
+      switch (question.type) {// 答案类型
         case 'text':
-          answerResult.push({question_id: question.id, content: form.answers[question.id]});
+          answerResult.push({question_id: question.id, content: answer});// 答案
           break;
         case 'radio':
           let extMsg = ''
-          for (let o of options) {
-            if (o.has_ext_msg === 'yes' && o.label === form.answers[question.id] && (o.extMsg === undefined || o.extMsg === '')) {
+          for (let option of options) {// 遍历选项
+            // 如果有补充信息，但是没有填写
+            if (option.has_ext_msg === 'yes' && option.label === answer && (option.extMsg === undefined || option.extMsg === '')) {
               ElMessage.error('请填写完整[第' + (Number(index) + 1) + '题]的补充信息')
               return
             }
-            if (o.label === form.answers[question.id][0]) {
-              extMsg = o.extMsg
+            // 如果选项等于答案，就把补充信息赋值给extMsg
+            if (option.label === answer) {
+              extMsg = option.extMsg
             }
           }
-          answerResult.push({question_id: question.id, label: form.answers[question.id].toString(), ext_msg: extMsg,});
+          // 把答案添加到答案数组中
+          answerResult.push({question_id: question.id, label: answer, ext_msg: extMsg,});
           break;
         case 'checkbox':
-          const arr = form.answers[question.id]
-          for (let str of arr) {
+          // 选项是一个数组，遍历选项
+          const labels = answer.split(',')
+          for (let label of labels) {
             let extMsg = ''
-            for (let o of options) {
-              if (o.has_ext_msg === 'yes' && o.label === str && (o.extMsg === undefined || o.extMsg === '')) {
-                ElMessage.error('请填写完整[第' + (Number(index) + 1) + '题,选项' + o.label + ']的补充信息')
+            // 如果有补充信息，但是没有填写
+            for (let option of options) {
+              if (option.has_ext_msg === 'yes' && option.label === label && (option.extMsg === undefined || option.extMsg === '')) {
+                ElMessage.error('请填写完整[第' + (Number(index) + 1) + '题,选项' + option.label + ']的补充信息')
                 return
               }
-              if (o.label === str) {
-                extMsg = o.extMsg
+              // 如果选项等于答案，就把补充信息赋值给extMsg
+              if (option.label === label) {
+                extMsg = option.extMsg
               }
             }
-            answerResult.push({question_id: question.id, label: str, ext_msg: extMsg,});
+            // 把答案添加到答案数组中
+            answerResult.push({question_id: question.id, label: label, ext_msg: extMsg,});
           }
       }
     }
+    // 遍历答案数组，添加指纹、问卷id、联系方式
     answerResult.forEach(a => {
       a.finger = finger.value
       a.survey_id = surveyId
       a.contact = form.contact
     })
+    // 提交答案
     add(answerResult).then(res => {
       if (res.success) {
         ElMessage.success(res.message)
-        if(survey.value.repeat==='yes'){
+        if (survey.value.repeat === 'yes') {
           elForm.resetFields()
         }
       } else {
@@ -168,6 +179,7 @@ function submitAnswer(elForm) {
   })
 }
 
+// 获取浏览器指纹
 function getFinger() {
   Fingerprint2.get((components) => {
     // components数组包含了浏览器指纹的各个组成部分
