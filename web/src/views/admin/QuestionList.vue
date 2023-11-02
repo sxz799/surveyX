@@ -66,7 +66,7 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="题目内容" prop="text">
-              <el-input type="textarea" autosize v-model="form.text" placeholder="请输入题目内容"></el-input>
+              <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 5 }" v-model="form.text" placeholder="请输入题目内容"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
