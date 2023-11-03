@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/sxz799/surveyX/model/entity"
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
@@ -15,6 +16,16 @@ func InitDB() {
 	sqlType := viper.GetString("db.sqlType")
 	database := viper.GetString("db.database")
 	switch sqlType {
+	case "postgres":
+		username := viper.GetString("db.username")
+		password := viper.GetString("db.password")
+		host := viper.GetString("db.host")
+		dsn := "postgres://" + username + ":" + password + "@" + host + "/" + database
+		var err error
+		DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		if err != nil {
+			log.Panicln("postgres数据库连接失败。", err)
+		}
 	case "mysql":
 		username := viper.GetString("db.username")
 		password := viper.GetString("db.password")
