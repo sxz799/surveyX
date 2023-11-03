@@ -39,7 +39,7 @@ RUN apk update && apk add tzdata
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime 
 RUN echo "Asia/Shanghai" > /etc/timezone
 
-RUN --mount=type=secret,id=conf.yaml,dst=/etc/secrets/conf.yaml cat conf.yaml ./
+RUN --mount=type=secret,id=conf.yaml,dst=/etc/secrets/conf.yaml
 COPY --from=0 /go/src/github.com/sxz799/surveyX/server/app ./
 COPY /etc/secrets/conf.yaml ./
 COPY --from=1 /go/src/github.com/sxz799/surveyX/web/dist/ ./dist
