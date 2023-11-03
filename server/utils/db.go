@@ -15,11 +15,12 @@ var DB *gorm.DB
 func InitDB() {
 	sqlType := viper.GetString("db.sqlType")
 	database := viper.GetString("db.database")
+	username := viper.GetString("db.username")
+	password := viper.GetString("db.password")
+	host := viper.GetString("db.host")
+	port := viper.GetString("db.port")
 	switch sqlType {
 	case "postgres":
-		username := viper.GetString("db.username")
-		password := viper.GetString("db.password")
-		host := viper.GetString("db.host")
 		dsn := "postgres://" + username + ":" + password + "@" + host + "/" + database
 		var err error
 		DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
@@ -27,10 +28,6 @@ func InitDB() {
 			log.Panicln("postgres数据库连接失败。", err)
 		}
 	case "mysql":
-		username := viper.GetString("db.username")
-		password := viper.GetString("db.password")
-		host := viper.GetString("db.host")
-		port := viper.GetString("db.port")
 		dsn := username + ":" + password + "@tcp(" + host + ":" + port + ")/" + database + "?charset=utf8mb4&parseTime=True&loc=Local"
 		var err error
 		DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
