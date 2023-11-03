@@ -1,3 +1,4 @@
+# syntax = docker/dockerfile:1.2
 # 使用官方 Golang 镜像作为基础镜像
 FROM golang:1.21-alpine as builder
 
@@ -38,9 +39,9 @@ RUN apk update && apk add tzdata
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime 
 RUN echo "Asia/Shanghai" > /etc/timezone
 
-
+RUN --mount=type=secret,id=conf.yaml,dst=/etc/secrets/conf.yaml cat /etc/secrets/conf.yaml
 COPY --from=0 /go/src/github.com/sxz799/surveyX/server/app ./
-COPY --from=0 /go/src/github.com/sxz799/surveyX/server/conf.yaml ./
+COPY conf.yaml ./
 COPY --from=1 /go/src/github.com/sxz799/surveyX/web/dist/ ./dist
 
 EXPOSE 3000
