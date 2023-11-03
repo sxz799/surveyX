@@ -1,5 +1,5 @@
 # 使用官方 Golang 镜像作为基础镜像
-FROM golang:1.20-alpine as builder
+FROM golang:1.21-alpine as builder
 
 # 设置工作目录
 WORKDIR /go/src/github.com/sxz799/surveyX/server
