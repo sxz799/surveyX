@@ -162,7 +162,7 @@
 </template>
 
 <script setup>
-import {computed, reactive, ref, toRefs} from 'vue'
+import {computed, onMounted, reactive, ref, toRefs} from 'vue'
 import {list, add, del, update, get} from "../../api/survey.js";
 import QuestionList from "./QuestionList.vue";
 import {Delete, Edit, Plus, Tools} from "@element-plus/icons";
@@ -193,7 +193,7 @@ const data = reactive({
 const {queryParams, form} = toRefs(data);
 
 
-const rules = reactive({
+const rules = ({
   title: [{required: true, message: '请填写', trigger: 'blur'}],
   description: [{required: true, message: '请填写', trigger: 'blur'}],
   status: [{required: true, message: '请填写', trigger: 'change'}],
@@ -202,6 +202,10 @@ const rules = reactive({
   repeat_check: [{required: true, message: '请填写', trigger: 'change'}],
   start_time: [{required: true, message: '请填写', trigger: 'blur'}],
   end_time: [{required: true, message: '请填写', trigger: 'blur'}],
+})
+
+onMounted(() => {
+  getList()
 })
 
 
@@ -278,7 +282,7 @@ function dateTimeFormat(row, column, cellValue, index) {
   return new Date(cellValue).toLocaleString()
 }
 
-getList()
+
 
 </script>
 

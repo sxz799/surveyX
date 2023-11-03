@@ -38,7 +38,7 @@
 </template>
 
 <script setup>
-import {reactive, ref, toRefs} from 'vue'
+import {onMounted, reactive, ref} from 'vue'
 import {list} from "../../api/survey.js";
 
 const surveyList = ref([])
@@ -51,6 +51,9 @@ const queryParams = reactive({
   end_time: new Date(),
 })
 
+onMounted(() => {
+  getList()
+})
 
 function getList() {
   list(queryParams).then(res => {
@@ -60,17 +63,15 @@ function getList() {
 }
 
 function handleSizeChange(val) {
-  queryParams.pageSize = val
   getList()
 }
 
 function handleCurrentChange(val) {
-  queryParams.pageNum = val
   getList()
 }
 
 
-getList()
+
 
 </script>
 

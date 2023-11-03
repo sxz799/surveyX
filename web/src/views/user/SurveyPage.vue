@@ -65,7 +65,7 @@
           <el-input v-model="form.contact" placeholder="请填写联系方式"></el-input>
         </el-form-item>
       </el-form>
-      <el-button class="submit-button" v-if="allowSubmit"  @click="submitAnswer(answersRef)">提交</el-button>
+      <el-button class="submit-button" v-if="allowSubmit" @click="submitAnswer(answersRef)">提交</el-button>
     </el-col>
     <el-col :span="6" :xs="0"/>
   </el-row>
@@ -73,7 +73,7 @@
 </template>
 <script setup>
 import {Check} from "@element-plus/icons";
-import {reactive, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import {get} from "../../api/survey.js";
 import {list} from "../../api/question.js";
 import {add} from "../../api/answer.js";
@@ -85,13 +85,11 @@ const allowSubmit = ref(true)
 const route = useRoute()
 const surveyId = Number(route.params.id)
 const finger = ref('')
-const survey = ref({
+const survey = reactive({
   title: '',
   description: '',
   questions: [],
   need_contact: '',
-  repeat: '',
-  repeat_check: '',
 })
 const answersRef = ref()
 const rules = ({
@@ -103,21 +101,20 @@ const form = reactive({
   answers: {},
 })
 
-function initSurvey() {
-  get(surveyId).then(res => {
-    survey.value = res.data
-  })
-  list({
-    pageNum: 1,
-    pageSize: 99999,
-    survey_id: surveyId,
-  }).then(res => {
-    survey.value.questions = res.data.list
-    survey.value.questions.forEach(q => {
-      rules['answers.' + q.id] = [{required: true, message: '请填写', trigger: 'blur'}]
-    })
-  })
+onMounted(() => {
+  initSurvey();
+  getFinger();
+});
 
+async function initSurvey() {
+  const surveyData = await get(surveyId);
+  survey.title = surveyData.data.title;
+  survey.description = surveyData.data.description;
+  survey.need_contact = surveyData.data.need_contact;
+  survey.questions = (await list({pageNum: 1, pageSize: 99999, survey_id: surveyId})).data.list;
+  survey.questions.forEach((q) => {
+    rules[`answers.${q.id}`] = [{required: true, message: "请填写", trigger: "blur"}];
+  });
 }
 
 function submitAnswer(elForm) {
@@ -128,8 +125,8 @@ function submitAnswer(elForm) {
     }
     let answerResult = []
     // 遍历问题
-    for (const index in survey.value.questions) {
-      const question = survey.value.questions[index] // 问题
+    for (const index in survey.questions) {
+      const question = survey.questions[index] // 问题
       let options = question.options// 选项
       const answer = form.answers[question.id].toString()// 答案
       switch (question.type) {// 答案类型
@@ -200,8 +197,8 @@ function getFinger() {
   });
 }
 
-initSurvey()
-getFinger()
+
+
 </script>
 
 <style scoped>

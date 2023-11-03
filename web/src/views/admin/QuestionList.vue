@@ -100,21 +100,6 @@
                   <el-button type="danger" @click.prevent="removeOption(option)">删除</el-button>
                 </div>
               </div>
-
-
-
-              <!--              <el-row :gutter="2">-->
-              <!--                <el-col :span="16">-->
-
-              <!--                </el-col>-->
-              <!--                <el-col :span="3">-->
-
-              <!--                </el-col>-->
-
-              <!--                <el-col :span="3">-->
-
-              <!--                </el-col>-->
-              <!--              </el-row>-->
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -140,7 +125,7 @@
 </template>
 
 <script setup>
-import {computed, reactive, ref, toRefs, watch} from 'vue'
+import {computed, onMounted, reactive, ref, toRefs, watch} from 'vue'
 import {list, add, del, update, get} from "../../api/question.js";
 
 import {Delete, Edit, Plus} from "@element-plus/icons";
@@ -170,7 +155,7 @@ const data = reactive({
 
 const {queryParams, form} = toRefs(data);
 
-const rules = reactive({
+const rules = ({
   text: [{required: true, message: '请输入题目内容', trigger: 'blur'}],
   type: [{required: true, message: '请选择题目类型', trigger: 'change'}],
   order: [{required: true, message: '请输入排序', trigger: 'blur'}],
@@ -178,11 +163,16 @@ const rules = reactive({
 
 
 watch(() => props.surveyId, (newValue, oldValue) => {
+  queryParams.value.survey_id= newValue
   getList()
 });
 
+onMounted(() => {
+  getList()
+});
 
 function getList() {
+  console.log(queryParams.value)
   list(queryParams.value).then(res => {
     questionList.value = res.data.list
     total.value = res.data.total
@@ -286,17 +276,13 @@ function removeOption(op) {
 }
 
 function handleSizeChange(val) {
-  queryParams.value.pageSize = val
   getList()
 }
 
 function handleCurrentChange(val) {
-  queryParams.value.pageNum = val
   getList()
 }
 
-
-getList()
 
 </script>
 
