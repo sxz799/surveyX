@@ -5,13 +5,13 @@
       <h2 class="survey-title">{{ survey.title }}</h2>
       <h4 class="survey-description">{{ survey.description }}</h4>
       <el-form ref="answersRef" :model="form" :rules="rules" label-width="0">
-        <el-form-item v-for="(question , index) in survey.questions" :prop="'answers.' + question.id ">
-          <div class="question-container">
+        <div class="question-container" v-for="(question , index) in survey.questions">
+          <el-form-item :prop="'answers.' + question.id ">
             <!--题目-->
             <el-tag v-if="question.type === 'radio'">{{ index + 1 }} [单选]</el-tag>
             <el-tag type="warning" v-if="question.type === 'checkbox'">{{ index + 1 }} [多选]</el-tag>
             <el-tag type="success" v-if="question.type === 'text'">{{ index + 1 }} [简答题]</el-tag>
-            <el-text>{{ question.text }}[{{ question.id }}]</el-text>
+            <el-text>{{ question.text }}</el-text>
             <br>
             <!--简答题-->
             <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 5 }" v-model="form.answers[question.id]"
@@ -57,21 +57,22 @@
                 </el-row>
               </div>
             </el-checkbox-group>
-          </div>
-        </el-form-item>
+
+          </el-form-item>
+        </div>
         <el-form-item style="width: 80%;" v-if="survey.need_contact==='yes'" label="联系方式:" label-width="35%"
                       prop="contact">
           <el-input v-model="form.contact" placeholder="请填写联系方式"></el-input>
         </el-form-item>
       </el-form>
-
-      <el-button class="submit-button" v-if="allowSubmit" @click="submitAnswer(answersRef)">提交</el-button>
+      <el-button class="submit-button" v-if="allowSubmit"  @click="submitAnswer(answersRef)">提交</el-button>
     </el-col>
     <el-col :span="6" :xs="0"/>
   </el-row>
 
 </template>
 <script setup>
+import {Check} from "@element-plus/icons";
 import {reactive, ref} from "vue";
 import {get} from "../../api/survey.js";
 import {list} from "../../api/question.js";
@@ -106,7 +107,11 @@ function initSurvey() {
   get(surveyId).then(res => {
     survey.value = res.data
   })
-  list({pageNum: 1, pageSize: 99999, survey_id: surveyId}).then(res => {
+  list({
+    pageNum: 1,
+    pageSize: 99999,
+    survey_id: surveyId,
+  }).then(res => {
     survey.value.questions = res.data.list
     survey.value.questions.forEach(q => {
       rules['answers.' + q.id] = [{required: true, message: '请填写', trigger: 'blur'}]
@@ -259,9 +264,10 @@ getFinger()
 .question-container {
   background-color: #fff;
   padding: 20px;
-  margin-bottom: 1px;
   border: 1px solid #e0e0e0;
   border-radius: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .submit-button {

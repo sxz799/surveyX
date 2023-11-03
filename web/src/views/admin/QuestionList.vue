@@ -78,7 +78,7 @@
                 <el-option label="简答题" value="text"></el-option>
               </el-select>
               <el-divider v-if="form.type !== 'text'" direction="vertical"/>
-              <el-button v-if="form.type !== 'text'" type="primary" @click="addOption">新增选项</el-button>
+              <el-button v-if="form.type !== 'text'" type="success" @click="addOption">新增选项</el-button>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -87,20 +87,34 @@
                           :label="'选项 ' + String.fromCharCode(65 + index)"
                           :key="option.key"
                           :prop="'options.' + index + '.value'">
-              <el-row :gutter="2">
-                <el-col :span="16">
+              <div style="display: contents;vertical-align: middle;">
+                <div style="padding: 3px;width: 60%">
                   <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 5 }"
                             v-model="form.options[index].value"></el-input>
-                </el-col>
-                <el-col :span="3">
-                  <el-checkbox border v-model="form.options[index].has_ext_msg" true-label="yes" false-label="no"
+                </div>
+                <div style="padding: 3px">
+                  <el-checkbox-button  v-model="form.options[index].has_ext_msg" true-label="yes" false-label="no"
                                label="填写备注"/>
-                </el-col>
-
-                <el-col :span="3">
+                </div>
+                <div style="padding: 3px">
                   <el-button type="danger" @click.prevent="removeOption(option)">删除</el-button>
-                </el-col>
-              </el-row>
+                </div>
+              </div>
+
+
+
+              <!--              <el-row :gutter="2">-->
+              <!--                <el-col :span="16">-->
+
+              <!--                </el-col>-->
+              <!--                <el-col :span="3">-->
+
+              <!--                </el-col>-->
+
+              <!--                <el-col :span="3">-->
+
+              <!--                </el-col>-->
+              <!--              </el-row>-->
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -158,7 +172,7 @@ const {queryParams, form} = toRefs(data);
 
 const rules = reactive({
   text: [{required: true, message: '请输入题目内容', trigger: 'blur'}],
-  type: [{required: true, message: '请选择题目类型', trigger: 'blur'}],
+  type: [{required: true, message: '请选择题目类型', trigger: 'change'}],
   order: [{required: true, message: '请输入排序', trigger: 'blur'}],
 })
 
@@ -288,11 +302,5 @@ getList()
 
 <style scoped>
 
-:deep(.el-form-item__content .el-input-group) {
-  vertical-align: middle;
-}
 
-:deep(.el-form-item__content) {
-  display: inline;
-}
 </style>

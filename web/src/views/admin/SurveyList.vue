@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <el-row>
-      <el-col :span="6" :xs="0"/>
-      <el-col :span="12" :xs="24">
+      <el-col :span="3" :xs="0"/>
+      <el-col :span="18" :xs="24">
 
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
@@ -15,8 +15,8 @@
             </el-button>
           </el-col>
         </el-row>
-        <el-table border :data="surveyList">
-          <el-table-column type="selection" width="50" align="center"/>
+        <el-table border fit :data="surveyList">
+          <el-table-column type="selection" align="center"/>
           <el-table-column label="ID" width="50" align="center" key="id" prop="id"/>
           <el-table-column label="标题" align="center" key="title" prop="title" :show-overflow-tooltip="true">
             <template #default="scope">
@@ -26,13 +26,16 @@
           </el-table-column>
           <el-table-column label="描述" align="center" key="description" prop="description"
                            :show-overflow-tooltip="true"/>
-          <el-table-column width="100" label="状态" align="center" key="status" prop="status"
+          <el-table-column label="状态" align="center" key="status" prop="status"
                            :show-overflow-tooltip="true">
             <template #default="scope">
               <span v-if="scope.row.status === 'yes'">启用</span>
               <span v-if="scope.row.status === 'no'">禁用</span>
             </template>
           </el-table-column>
+          <el-table-column label="开始时间" align="center" :formatter="dateTimeFormat" key="start_time"
+                           prop="start_time"/>
+          <el-table-column label="结束时间" align="center" :formatter="dateTimeFormat" key="end_time" prop="end_time"/>
           <el-table-column label="填写联系方式" align="center" key="need_contact" prop="need_contact">
             <template #default="scope">
               <span v-if="scope.row.need_contact === 'yes'">是</span>
@@ -77,8 +80,8 @@
 
 
         <el-dialog :title="title" v-model="open" :width="dialogWidth" append-to-body>
-          <el-form ref="surveyRef" :model="form" :rules="rules" label-width="20%">
-            <el-row>
+          <el-form ref="surveyRef" :model="form" :rules="rules" label-width="25%">
+            <el-row :gutter="10">
               <el-col :span="24">
                 <el-form-item label="标题" prop="title">
                   <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" v-model="form.title"
@@ -117,14 +120,23 @@
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item v-if="form.repeat!=='yes'" label="重复提交检查方式" prop="repeat_check">
-                  <el-select v-model="form.repeat_check" placeholder="请选择重复提交检查方式">
-                    <el-option v-if="form.need_contact==='yes'" label="联系方式" value="contact"></el-option>
-                    <el-option label="浏览器指纹" value="finger"></el-option>
-                  </el-select>
+                <el-form-item label="开始时间" prop="start_time">
+                  <el-date-picker
+                      v-model="form.start_time"
+                      type="datetime"
+                      placeholder="选择开始日期时间"
+                  />
                 </el-form-item>
               </el-col>
-
+              <el-col :span="24">
+                <el-form-item label="结束时间" prop="end_time">
+                  <el-date-picker
+                      v-model="form.end_time"
+                      type="datetime"
+                      placeholder="选择结束日期时间"
+                  />
+                </el-form-item>
+              </el-col>
             </el-row>
           </el-form>
           <template #footer>
@@ -144,7 +156,7 @@
         </el-dialog>
 
       </el-col>
-      <el-col :span="6" :xs="0"/>
+      <el-col :span="3" :xs="0"/>
     </el-row>
   </div>
 </template>
@@ -184,9 +196,12 @@ const {queryParams, form} = toRefs(data);
 const rules = reactive({
   title: [{required: true, message: '请填写', trigger: 'blur'}],
   description: [{required: true, message: '请填写', trigger: 'blur'}],
-  need_contact: [{required: true, message: '请填写', trigger: 'blur'}],
-  repeat: [{required: true, message: '请填写', trigger: 'blur'}],
-  repeat_check: [{required: true, message: '请填写', trigger: 'blur'}],
+  status: [{required: true, message: '请填写', trigger: 'change'}],
+  need_contact: [{required: true, message: '请填写', trigger: 'change'}],
+  repeat: [{required: true, message: '请填写', trigger: 'change'}],
+  repeat_check: [{required: true, message: '请填写', trigger: 'change'}],
+  start_time: [{required: true, message: '请填写', trigger: 'blur'}],
+  end_time: [{required: true, message: '请填写', trigger: 'blur'}],
 })
 
 
@@ -215,12 +230,7 @@ function handleAdd() {
 }
 
 function reset() {
-  form.value = {
-    id: undefined,
-    title: "",
-    description: "",
-    status: "yes",
-  };
+  form.value = {};
 }
 
 function handleEdit(row) {
@@ -261,6 +271,12 @@ function submitForm(elForm) {
   })
 }
 
+function dateTimeFormat(row, column, cellValue, index) {
+  if (cellValue === undefined || cellValue === null || cellValue === '') {
+    return ''
+  }
+  return new Date(cellValue).toLocaleString()
+}
 
 getList()
 

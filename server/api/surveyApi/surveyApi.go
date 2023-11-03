@@ -2,7 +2,6 @@ package surveyApi
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sxz799/surveyX/model/common/request"
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
 	"github.com/sxz799/surveyX/service"
@@ -13,19 +12,19 @@ var ss service.SurveyService
 
 // List godoc
 // @Summary 问卷列表
-// @Description 获取题目列表列表
+// @Description 获取问卷列表
 // @Tags 问卷
 // @Produce  json
 // @Param page query request.PageInfo false "分页信息"
 // @Router /survey/list [get]
 func List(c *gin.Context) {
-	var pi request.PageInfo
-	err := c.ShouldBindQuery(&pi)
+	var s entity.SurveySearch
+	err := c.ShouldBindQuery(&s)
 	if err != nil {
 		response.FailWithMessage("参数有误", c)
 		return
 	}
-	if list, err := ss.List(pi); err == nil {
+	if list, err := ss.List(s); err == nil {
 		response.OkWithData(list, c)
 	} else {
 		response.Fail(c)
