@@ -1,6 +1,6 @@
 db :
   sqlType : sqlite  # mysql || sqlite || postgres
-  database: render_3kh7
+  database: survey
   username : render_3kh7_user
   password : Ul5g400SAQZriDl16TzLc6tXAsS1ccUI
   port : 5432
