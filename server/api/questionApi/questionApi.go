@@ -2,7 +2,6 @@ package questionApi
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sxz799/surveyX/model/common/request"
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
 	"github.com/sxz799/surveyX/service"
@@ -18,16 +17,15 @@ var qs service.QuestionService
 // @Produce  json
 // @Param page query request.PageInfo false "分页信息"
 // @Param id path int true "题目id"
-// @Router /question/list/{id} [get]
+// @Router /question/list [get]
 func List(c *gin.Context) {
-	var pi request.PageInfo
-	err := c.ShouldBindQuery(&pi)
+	var q entity.QuestionSearch
+	err := c.ShouldBindQuery(&q)
 	if err != nil {
 		response.FailWithMessage("参数有误", c)
 		return
 	}
-	id, _ := strconv.Atoi(c.Param("id"))
-	if list, err := qs.List(pi, id); err == nil {
+	if list, err := qs.List(q); err == nil {
 		response.OkWithData(list, c)
 	} else {
 		response.Fail(c)

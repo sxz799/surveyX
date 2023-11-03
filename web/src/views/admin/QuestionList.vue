@@ -146,6 +146,7 @@ const dialogWidth = computed(() => {
 const queryParams = reactive({
   pageNum: 1,
   pageSize: 10,
+  survey_id: props.surveyId
 })
 const form = reactive({
   options: []
@@ -164,7 +165,7 @@ watch(() => props.surveyId, (newValue, oldValue) => {
 
 
 function getList() {
-  list(queryParams, props.surveyId).then(res => {
+  list(queryParams).then(res => {
     questionList.value = res.data.list
     total.value = res.data.total
   })

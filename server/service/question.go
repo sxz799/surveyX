@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/sxz799/surveyX/model/common/request"
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
 	"github.com/sxz799/surveyX/utils"
@@ -12,9 +11,11 @@ type QuestionService struct {
 
 var optionService OptionService
 
-func (ts *QuestionService) List(pi request.PageInfo, sId int) (response.PageResult, error) {
+func (ts *QuestionService) List(q entity.QuestionSearch) (response.PageResult, error) {
 	var qs []entity.Question
 	var total int64
+	pi := q.PageInfo
+	sId := q.Question.SurveyId
 	limit := pi.PageSize
 	offset := pi.PageSize * (pi.PageNum - 1)
 	db := utils.DB.Model(&entity.Question{})

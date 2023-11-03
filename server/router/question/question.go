@@ -8,7 +8,7 @@ import (
 func Question(e *gin.Engine) {
 	g := e.Group("/api/question")
 	{
-		g.GET("/list/:id", questionApi.List)
+		g.GET("/list", questionApi.List)
 		g.POST("/", questionApi.Add)
 		g.PUT("/", questionApi.Update)
 		g.GET("/:id", questionApi.Get)

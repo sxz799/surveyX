@@ -1,45 +1,19 @@
 package entity
 
-import "time"
+import "github.com/sxz799/surveyX/model/common/request"
 
 type Survey struct {
 	Id          int    `gorm:"primary_key" json:"id"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Status      string `json:"status"`
-	Questions   []int  `gorm:"-" json:"questions"`
-	NeedContact string `json:"need_contact"`
-	Repeat      string `json:"repeat"`       // 是否允许重复提交 no yes yes_but_update
-	RepeatCheck string `json:"repeat_check"` // 重复提交检查方式 finger contact
+	Title       string `json:"title" form:"title"`
+	Description string `json:"description" form:"description"`
+	Status      string `json:"status" form:"status"`
+	Questions   []int  `gorm:"-" json:"questions" form:"questions"`
+	NeedContact string `json:"need_contact" form:"need_contact"`
+	Repeat      string `json:"repeat" form:"repeat"`             // 是否允许重复提交 no yes yes_but_update
+	RepeatCheck string `json:"repeat_check" form:"repeat_check"` // 重复提交检查方式 finger contact
 }
 
-type Question struct {
-	Id       int      `gorm:"primary_key" json:"id"`
-	SurveyId int      `json:"survey_id"`
-	Text     string   `json:"text"`
-	Type     string   `json:"type"`
-	Options  []Option `gorm:"-" json:"options"`
-	Order    int      `json:"order"`
-}
-
-type Option struct {
-	Id         int    `gorm:"primary_key" json:"id"`
-	QuestionId int    `json:"question_id"`
-	SurveyId   int    `json:"survey_id"`
-	Label      string `json:"label"`
-	Value      string `json:"value"`
-	HasExtMsg  string `json:"has_ext_msg"`
-}
-
-type Answer struct {
-	Id         int       `gorm:"primary_key" json:"id"`
-	SurveyId   int       `json:"survey_id"`
-	QuestionId int       `json:"question_id"`
-	Content    string    `json:"content"`
-	Label      string    `json:"label"`
-	ExtMsg     string    `json:"ext_msg"`
-	Contact    string    `json:"contact"`
-	IP         string    `json:"ip"`
-	Finger     string    `json:"finger"`
-	CreateAt   time.Time `json:"create_at"`
+type SurveySearch struct {
+	PageInfo request.PageInfo `json:"pageInfo"`
+	Survey   Survey           `json:"survey"`
 }

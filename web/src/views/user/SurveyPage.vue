@@ -19,45 +19,53 @@
                       placeholder=""/>
             <!--单选题-->
             <el-radio-group v-model="form.answers[question.id]" v-if="question.type==='radio'">
-              <div style="display: flex;align-items: center" v-for="option in question.options">
-                <div style="max-width: 100%;min-width: 65%;">
-                  <el-radio :label=option.label>
-                    {{ option.label }} {{ option.value }}
-                  </el-radio>
-                </div>
-                <div style="width: 35%;display: contents">
-                  <el-input v-model="option['extMsg']" size="small" type="textarea"
-                            :autosize="{ minRows: 1, maxRows: 3 }"
-                            v-if="form.answers[question.id] && form.answers[question.id][0] === option.label &&  option.has_ext_msg === 'yes'"
-                            placeholder="请在此处填写补充信息！"/>
-                </div>
+              <div v-for="option in question.options">
+                <el-row>
+                  <el-col :span="16" :xs="24">
+                    <el-radio :label=option.label>
+                      {{ option.label }} {{ option.value }}
+                    </el-radio>
+                  </el-col>
+                  <el-col :span="8" :xs="24">
+                    <div style="margin: auto;padding-left: 5%">
+                      <el-input v-model="option['extMsg']" size="small" type="textarea"
+                                :autosize="{ minRows: 1, maxRows: 3 }"
+                                v-if="form.answers[question.id] && form.answers[question.id][0] === option.label &&  option.has_ext_msg === 'yes'"
+                                placeholder="请在此处填写补充信息！"/>
+                    </div>
+                  </el-col>
+                </el-row>
               </div>
             </el-radio-group>
             <!--多选题-->
             <el-checkbox-group v-model="form.answers[question.id]" v-if="question.type==='checkbox'">
-              <div style="display: flex;align-items: center" v-for="option in question.options">
-                <div style="max-width: 100%;min-width: 65%;">
-                  <el-checkbox :label=option.label>
-                    {{ option.label }} {{ option.value }}
-                  </el-checkbox>
-                </div>
-                <div style="width: 35%;display: contents">
-                  <el-input v-model="option['extMsg']" size="small" type="textarea"
-                            :autosize="{ minRows: 1, maxRows: 3 }"
-                            v-if="form.answers[question.id] && form.answers[question.id].toString().indexOf(option.label)>-1 && option.has_ext_msg==='yes'"
-                            placeholder="请在此处填写补充信息！"/>
-                </div>
+              <div v-for="option in question.options">
+                <el-row>
+                  <el-col :span="16" :xs="24">
+                    <el-checkbox :label=option.label>
+                      {{ option.label }} {{ option.value }}
+                    </el-checkbox>
+                  </el-col>
+                  <el-col :span="8" :xs="24">
+                    <div style="margin: auto;padding-left: 5%">
+                      <el-input v-model="option['extMsg']" size="small" type="textarea"
+                                :autosize="{ minRows: 1, maxRows: 3 }"
+                                v-if="form.answers[question.id] && form.answers[question.id].toString().indexOf(option.label)>-1 && option.has_ext_msg==='yes'"
+                                placeholder="请在此处填写补充信息！"/>
+                    </div>
+                  </el-col>
+                </el-row>
               </div>
             </el-checkbox-group>
           </div>
         </el-form-item>
-        <el-form-item style="width: 80%;" v-if="survey.need_contact==='yes'" label="联系方式:" label-width="30%"
+        <el-form-item style="width: 80%;" v-if="survey.need_contact==='yes'" label="联系方式:" label-width="35%"
                       prop="contact">
           <el-input v-model="form.contact" placeholder="请填写联系方式"></el-input>
         </el-form-item>
       </el-form>
 
-      <el-button class="submit-button" @click="submitAnswer(answersRef)">提交</el-button>
+      <el-button class="submit-button" v-if="allowSubmit" @click="submitAnswer(answersRef)">提交</el-button>
     </el-col>
     <el-col :span="6" :xs="0"/>
   </el-row>
@@ -72,6 +80,7 @@ import {useRoute} from "vue-router";
 import {ElMessage} from 'element-plus'
 import Fingerprint2 from 'fingerprintjs2';
 
+const allowSubmit = ref(true)
 const route = useRoute()
 const surveyId = Number(route.params.id)
 const finger = ref('')
@@ -97,7 +106,7 @@ function initSurvey() {
   get(surveyId).then(res => {
     survey.value = res.data
   })
-  list({pageNum: 1, pageSize: 99999}, surveyId).then(res => {
+  list({pageNum: 1, pageSize: 99999, survey_id: surveyId}).then(res => {
     survey.value.questions = res.data.list
     survey.value.questions.forEach(q => {
       rules['answers.' + q.id] = [{required: true, message: '请填写', trigger: 'blur'}]
@@ -169,9 +178,7 @@ function submitAnswer(elForm) {
     add(answerResult).then(res => {
       if (res.success) {
         ElMessage.success(res.message)
-        if (survey.value.repeat === 'yes') {
-          elForm.resetFields()
-        }
+        allowSubmit.value = false
       } else {
         ElMessage.error(res.message)
       }

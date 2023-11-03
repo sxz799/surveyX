@@ -1,9 +1,9 @@
 
 import request from '../utils/request'
 
-export function list(data,id) {
+export function list(data) {
   return request({
-    url: '/question/list/'+id,
+    url: '/question/list',
     method: 'get',
     params: data
   })
