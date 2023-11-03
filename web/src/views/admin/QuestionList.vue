@@ -66,7 +66,8 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="题目内容" prop="text">
-              <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 5 }" v-model="form.text" placeholder="请输入题目内容"></el-input>
+              <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 5 }" v-model="form.text"
+                        placeholder="请输入题目内容"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -88,10 +89,11 @@
                           :prop="'options.' + index + '.value'">
               <el-row :gutter="2">
                 <el-col :span="16">
-                  <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 5 }" v-model="form.options[index].value"></el-input>
+                  <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 5 }"
+                            v-model="form.options[index].value"></el-input>
                 </el-col>
                 <el-col :span="3">
-                  <el-checkbox border  v-model="form.options[index].has_ext_msg" true-label="yes" false-label="no"
+                  <el-checkbox border v-model="form.options[index].has_ext_msg" true-label="yes" false-label="no"
                                label="填写备注"/>
                 </el-col>
 
@@ -141,17 +143,13 @@ const dialogWidth = computed(() => {
   return window.innerWidth > 768 ? '60%' : '90%'
 })
 
-const data = reactive({
-  form: {
-    options: []
-  },
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-  },
-});
-
-const {queryParams, form} = toRefs(data);
+const queryParams = reactive({
+  pageNum: 1,
+  pageSize: 10,
+})
+const form = reactive({
+  options: []
+})
 
 const rules = reactive({
   text: [{required: true, message: '请输入题目内容', trigger: 'blur'}],
@@ -166,7 +164,7 @@ watch(() => props.surveyId, (newValue, oldValue) => {
 
 
 function getList() {
-  list(queryParams.value, props.surveyId).then(res => {
+  list(queryParams, props.surveyId).then(res => {
     questionList.value = res.data.list
     total.value = res.data.total
   })
@@ -269,12 +267,12 @@ function removeOption(op) {
 }
 
 function handleSizeChange(val) {
-  queryParams.value.pageSize = val
+  queryParams.pageSize = val
   getList()
 }
 
 function handleCurrentChange(val) {
-  queryParams.value.pageNum = val
+  queryParams.pageNum = val
   getList()
 }
 

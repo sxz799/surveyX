@@ -168,15 +168,13 @@ const dialogWidth = computed(() => {
 })
 
 
-const data = reactive({
-  form: {},
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-  },
-});
-
-const {queryParams, form} = toRefs(data);
+const queryParams = reactive({
+  pageNum: 1,
+  pageSize: 10,
+})
+const form = reactive({
+  options: []
+})
 
 const rules = reactive({
   title: [{required: true, message: '请填写', trigger: 'blur'}],
@@ -188,19 +186,19 @@ const rules = reactive({
 
 
 function getList() {
-  list(queryParams.value).then(res => {
+  list(queryParams).then(res => {
     surveyList.value = res.data.list
     total.value = res.data.total
   })
 }
 
 function handleSizeChange(val) {
-  queryParams.value.pageSize = val
+  queryParams.pageSize = val
   getList()
 }
 
 function handleCurrentChange(val) {
-  queryParams.value.pageNum = val
+  queryParams.pageNum = val
   getList()
 }
 

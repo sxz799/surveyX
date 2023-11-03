@@ -8,7 +8,8 @@
           <el-table-column type="selection" width="50" align="center"/>
           <el-table-column label="ID" align="center" key="id" prop="id"/>
           <el-table-column label="标题" align="center" key="title" prop="title" :show-overflow-tooltip="true"/>
-          <el-table-column label="描述" align="center" key="description" prop="description" :show-overflow-tooltip="true"/>
+          <el-table-column label="描述" align="center" key="description" prop="description"
+                           :show-overflow-tooltip="true"/>
           <el-table-column label="操作" align="center" width="150">
             <template #default="scope">
               <router-link :to="`/survey/${scope.row.id}`">答题</router-link>
@@ -42,28 +43,26 @@ import {list} from "../../api/survey.js";
 
 const surveyList = ref([])
 const total = ref(0)
-const data = reactive({
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-  },
-});
-const {queryParams} = toRefs(data);
+const queryParams = reactive({
+  pageNum: 1,
+  pageSize: 10,
+})
+
 
 function getList() {
-  list(queryParams.value).then(res => {
+  list(queryParams).then(res => {
     surveyList.value = res.data.list
     total.value = res.data.total
   })
 }
 
 function handleSizeChange(val) {
-  queryParams.value.pageSize = val
+  queryParams.pageSize = val
   getList()
 }
 
 function handleCurrentChange(val) {
-  queryParams.value.pageNum = val
+  queryParams.pageNum = val
   getList()
 }
 
