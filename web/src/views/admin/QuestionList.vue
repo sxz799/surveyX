@@ -143,14 +143,18 @@ const dialogWidth = computed(() => {
   return window.innerWidth > 768 ? '60%' : '90%'
 })
 
-const queryParams = reactive({
-  pageNum: 1,
-  pageSize: 10,
-  survey_id: props.surveyId
-})
-const form = reactive({
-  options: []
-})
+const data = reactive({
+  form: {
+    options: []
+  },
+  queryParams: {
+    pageNum: 1,
+    pageSize: 10,
+    survey_id: props.surveyId
+  },
+});
+
+const {queryParams, form} = toRefs(data);
 
 const rules = reactive({
   text: [{required: true, message: '请输入题目内容', trigger: 'blur'}],
@@ -165,7 +169,7 @@ watch(() => props.surveyId, (newValue, oldValue) => {
 
 
 function getList() {
-  list(queryParams).then(res => {
+  list(queryParams.value).then(res => {
     questionList.value = res.data.list
     total.value = res.data.total
   })
@@ -268,12 +272,12 @@ function removeOption(op) {
 }
 
 function handleSizeChange(val) {
-  queryParams.pageSize = val
+  queryParams.value.pageSize = val
   getList()
 }
 
 function handleCurrentChange(val) {
-  queryParams.pageNum = val
+  queryParams.value.pageNum = val
   getList()
 }
 

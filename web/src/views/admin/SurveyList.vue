@@ -39,7 +39,7 @@
               <span v-if="scope.row.need_contact === 'no'">否</span>
             </template>
           </el-table-column>
-          <el-table-column label="重复提交" align="center" key="repeat" prop="repeat" >
+          <el-table-column label="重复提交" align="center" key="repeat" prop="repeat">
             <template #default="scope">
               <span v-if="scope.row.repeat === 'yes'">是</span>
               <span v-if="scope.row.repeat === 'no'">否</span>
@@ -81,12 +81,14 @@
             <el-row>
               <el-col :span="24">
                 <el-form-item label="标题" prop="title">
-                  <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" v-model="form.title" placeholder="请输入标题"></el-input>
+                  <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" v-model="form.title"
+                            placeholder="请输入标题"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="24">
                 <el-form-item label="描述" prop="description">
-                  <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" v-model="form.description" placeholder="请输入描述"></el-input>
+                  <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" v-model="form.description"
+                            placeholder="请输入描述"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="24">
@@ -154,7 +156,6 @@ import QuestionList from "./QuestionList.vue";
 import {Delete, Edit, Plus, Tools} from "@element-plus/icons";
 
 
-
 const surveyRef = ref()
 const surveyId = ref(0)
 const open = ref(false)
@@ -167,14 +168,18 @@ const dialogWidth = computed(() => {
   return window.innerWidth > 768 ? '60%' : '90%'
 })
 
+const data = reactive({
+  form: {
+    options: []
+  },
+  queryParams: {
+    pageNum: 1,
+    pageSize: 10,
+  },
+});
 
-const queryParams = reactive({
-  pageNum: 1,
-  pageSize: 10,
-})
-const form = reactive({
-  options: []
-})
+const {queryParams, form} = toRefs(data);
+
 
 const rules = reactive({
   title: [{required: true, message: '请填写', trigger: 'blur'}],
@@ -186,19 +191,19 @@ const rules = reactive({
 
 
 function getList() {
-  list(queryParams).then(res => {
+  list(queryParams.value).then(res => {
     surveyList.value = res.data.list
     total.value = res.data.total
   })
 }
 
 function handleSizeChange(val) {
-  queryParams.pageSize = val
+  queryParams.value.pageSize = val
   getList()
 }
 
 function handleCurrentChange(val) {
-  queryParams.pageNum = val
+  queryParams.value.pageNum = val
   getList()
 }
 
