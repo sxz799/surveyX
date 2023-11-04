@@ -139,7 +139,7 @@ const title = ref('')
 const questionList = ref([])
 const total = ref(0)
 const dialogWidth = computed(() => {
-  return window.innerWidth > 768 ? '60%' : '90%'
+  return window.innerWidth > 768 ? '60%' : '95%'
 })
 
 const data = reactive({
@@ -162,7 +162,7 @@ const rules = ({
 })
 
 
-watch(() => props.surveyId, (newValue, oldValue) => {
+watch(() => props.surveyId, (newValue) => {
   queryParams.value.survey_id= newValue
   getList()
 });
@@ -275,11 +275,11 @@ function removeOption(op) {
   }
 }
 
-function handleSizeChange(val) {
+function handleSizeChange() {
   getList()
 }
 
-function handleCurrentChange(val) {
+function handleCurrentChange() {
   getList()
 }
 

@@ -64,7 +64,7 @@
               <el-tag type="success" v-if="scope.row.repeat === 'yes_but_update'">更新</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="重复提交检查方式" align="center" key="repeat_check" prop="repeat_check">
+          <el-table-column label="重复提交检查方式" width="105" align="center" key="repeat_check" prop="repeat_check">
             <template #default="scope">
               <el-tag type="warning" v-if="scope.row.repeat_check === 'contact'">联系方式</el-tag>
               <el-tag type="info" v-if="scope.row.repeat_check === 'finger'">浏览器指纹</el-tag>
@@ -303,7 +303,13 @@ function handleQuestion(id) {
 
 function handleDelete(row) {
   del(row.id).then(res => {
-    getList()
+    if (res.success){
+      ElMessage.success('删除成功！');
+      getList()
+    }else {
+      ElMessage.error('删除失败！');
+    }
+
   })
 }
 
@@ -320,24 +326,35 @@ function copySurveyLink(row) {
 }
 
 function submitForm(elForm) {
-  elForm.validate((valid, fields) => {
+  elForm.validate((valid) => {
     if (valid) {
       if (form.value.id) {
         update(form.value).then(res => {
-          open.value = false
-          getList()
+          if (res.success) {
+            ElMessage.success('修改成功！');
+            open.value = false
+            getList()
+          } else {
+            ElMessage.error('修改失败！');
+          }
+
         })
       } else {
         add(form.value).then(res => {
-          open.value = false
-          getList()
+          if (res.success) {
+            ElMessage.success('新增成功！');
+            open.value = false
+            getList()
+          } else {
+            ElMessage.error('新增失败！');
+          }
         })
       }
     }
   })
 }
 
-function dateTimeFormat(row, column, cellValue, index) {
+function dateTimeFormat(row, column, cellValue) {
   if (cellValue === undefined || cellValue === null || cellValue === '') {
     return ''
   }
