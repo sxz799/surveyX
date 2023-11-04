@@ -6,6 +6,7 @@ import path from 'path'
 export default defineConfig(({mode, command}) => {
     return {
         plugins: [vue()],
+
         server: {
             proxy: {
                 '/api': {
