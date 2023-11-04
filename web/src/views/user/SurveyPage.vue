@@ -1,82 +1,84 @@
 <template>
-  <el-row class="survey-container">
-    <el-col :span="6" :xs="0"/>
-    <el-col :span="12" :xs="24">
-      <h2 class="survey-title">{{ survey.title }}</h2>
-      <h4 class="survey-description">{{ survey.description }}</h4>
-      <el-form ref="answersRef" :model="form" :rules="rules" label-width="0">
-        <div class="question-container" v-for="(question , index) in survey.questions">
-          <el-form-item :prop="'answers.' + question.id ">
-            <!--题目-->
-            <el-tag v-if="question.type === 'radio'">{{ index + 1 }} [单选]</el-tag>
-            <el-tag type="warning" v-if="question.type === 'checkbox'">{{ index + 1 }} [多选]</el-tag>
-            <el-tag type="success" v-if="question.type === 'text'">{{ index + 1 }} [简答题]</el-tag>
-            <el-text>{{ question.text }}</el-text>
-            <br>
-            <!--简答题-->
-            <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 5 }" v-model="form.answers[question.id]"
-                      v-if="question.type==='text'"
-                      placeholder=""/>
-            <!--单选题-->
-            <el-radio-group v-model="form.answers[question.id]" v-if="question.type==='radio'">
-              <div v-for="option in question.options">
-                <el-row>
-                  <el-col :span="16" :xs="24">
-                    <el-radio :label=option.label>
-                      {{ option.label }} {{ option.value }}
-                    </el-radio>
-                  </el-col>
-                  <el-col :span="8" :xs="24">
-                    <div style="margin: auto;padding-left: 5%">
-                      <el-input v-model="option['extMsg']" size="small" type="textarea"
-                                :autosize="{ minRows: 1, maxRows: 3 }"
-                                v-if="form.answers[question.id] && form.answers[question.id][0] === option.label &&  option.has_ext_msg === 'yes'"
-                                placeholder="请在此处填写补充信息！"/>
-                    </div>
-                  </el-col>
-                </el-row>
-              </div>
-            </el-radio-group>
-            <!--多选题-->
-            <el-checkbox-group v-model="form.answers[question.id]" v-if="question.type==='checkbox'">
-              <div v-for="option in question.options">
-                <el-row>
-                  <el-col :span="16" :xs="24">
-                    <el-checkbox :label=option.label>
-                      {{ option.label }} {{ option.value }}
-                    </el-checkbox>
-                  </el-col>
-                  <el-col :span="8" :xs="24">
-                    <div style="margin: auto;padding-left: 5%">
-                      <el-input v-model="option['extMsg']" size="small" type="textarea"
-                                :autosize="{ minRows: 1, maxRows: 3 }"
-                                v-if="form.answers[question.id] && form.answers[question.id].toString().indexOf(option.label)>-1 && option.has_ext_msg==='yes'"
-                                placeholder="请在此处填写补充信息！"/>
-                    </div>
-                  </el-col>
-                </el-row>
-              </div>
-            </el-checkbox-group>
+  <el-watermark :gap="[120,120]" :content="survey.water_mark">
+    <el-row class="survey-container">
 
+      <el-col :span="6" :xs="0"/>
+      <el-col :span="12" :xs="24">
+        <h2 class="survey-title">{{ survey.title }}</h2>
+        <h4 class="survey-description">{{ survey.description }}</h4>
+        <el-form ref="answersRef" :model="form" :rules="rules" label-width="0">
+          <div class="question-container" v-for="(question , index) in survey.questions">
+            <el-form-item :prop="'answers.' + question.id ">
+              <!--题目-->
+              <el-tag v-if="question.type === 'radio'">{{ index + 1 }} [单选]</el-tag>
+              <el-tag type="warning" v-if="question.type === 'checkbox'">{{ index + 1 }} [多选]</el-tag>
+              <el-tag type="success" v-if="question.type === 'text'">{{ index + 1 }} [简答题]</el-tag>
+              <el-text>{{ question.text }}</el-text>
+              <br>
+              <!--简答题-->
+              <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 5 }" v-model="form.answers[question.id]"
+                        v-if="question.type==='text'"
+                        placeholder=""/>
+              <!--单选题-->
+              <el-radio-group v-model="form.answers[question.id]" v-if="question.type==='radio'">
+                <div v-for="option in question.options">
+                  <el-row>
+                    <el-col :span="16" :xs="24">
+                      <el-radio :label=option.label>
+                        {{ option.label }} {{ option.value }}
+                      </el-radio>
+                    </el-col>
+                    <el-col :span="8" :xs="24">
+                      <div style="margin: auto;padding-left: 5%">
+                        <el-input v-model="option['extMsg']" size="small" type="textarea"
+                                  :autosize="{ minRows: 1, maxRows: 3 }"
+                                  v-if="form.answers[question.id] && form.answers[question.id][0] === option.label &&  option.has_ext_msg === 'yes'"
+                                  placeholder="请在此处填写补充信息！"/>
+                      </div>
+                    </el-col>
+                  </el-row>
+                </div>
+              </el-radio-group>
+              <!--多选题-->
+              <el-checkbox-group v-model="form.answers[question.id]" v-if="question.type==='checkbox'">
+                <div v-for="option in question.options">
+                  <el-row>
+                    <el-col :span="16" :xs="24">
+                      <el-checkbox :label=option.label>
+                        {{ option.label }} {{ option.value }}
+                      </el-checkbox>
+                    </el-col>
+                    <el-col :span="8" :xs="24">
+                      <div style="margin: auto;padding-left: 5%">
+                        <el-input v-model="option['extMsg']" size="small" type="textarea"
+                                  :autosize="{ minRows: 1, maxRows: 3 }"
+                                  v-if="form.answers[question.id] && form.answers[question.id].toString().indexOf(option.label)>-1 && option.has_ext_msg==='yes'"
+                                  placeholder="请在此处填写补充信息！"/>
+                      </div>
+                    </el-col>
+                  </el-row>
+                </div>
+              </el-checkbox-group>
+
+            </el-form-item>
+          </div>
+          <el-form-item style="width: 80%;" v-if="survey.need_contact==='yes'" label="联系方式:" label-width="35%"
+                        prop="contact">
+            <el-input v-model="form.contact" placeholder="请填写联系方式"></el-input>
           </el-form-item>
-        </div>
-        <el-form-item style="width: 80%;" v-if="survey.need_contact==='yes'" label="联系方式:" label-width="35%"
-                      prop="contact">
-          <el-input v-model="form.contact" placeholder="请填写联系方式"></el-input>
-        </el-form-item>
-      </el-form>
-      <el-button class="submit-button" v-if="allowSubmit" @click="submitAnswer(answersRef)">提交</el-button>
-    </el-col>
-    <el-col :span="6" :xs="0"/>
-  </el-row>
-
+        </el-form>
+        <el-button class="submit-button" v-if="allowSubmit" @click="submitAnswer(answersRef)">提交</el-button>
+      </el-col>
+      <el-col :span="6" :xs="0"/>
+    </el-row>
+  </el-watermark>
 </template>
 <script setup>
-import {Check} from "@element-plus/icons";
+
 import {onMounted, reactive, ref} from "vue";
-import {get} from "../../api/survey.js";
-import {list} from "../../api/question.js";
-import {add} from "../../api/answer.js";
+import {get} from "@/api/survey.js";
+import {list} from "@/api/question.js";
+import {add} from "@/api/answer.js";
 import {useRoute} from "vue-router";
 import {ElMessage} from 'element-plus'
 import Fingerprint2 from 'fingerprintjs2';
@@ -88,8 +90,9 @@ const finger = ref('')
 const survey = reactive({
   title: '',
   description: '',
-  questions: [],
   need_contact: '',
+  water_mark: [],
+  questions: [],
 })
 const answersRef = ref()
 const rules = ({
@@ -108,9 +111,16 @@ onMounted(() => {
 
 async function initSurvey() {
   const surveyData = await get(surveyId);
+  const datetime = new Date();
+  if (datetime < new Date(surveyData.data.start_time) || datetime > new Date(surveyData.data.end_time)) {
+    ElMessage.error('不在答题时间内!')
+    allowSubmit.value = false
+    return
+  }
   survey.title = surveyData.data.title;
   survey.description = surveyData.data.description;
   survey.need_contact = surveyData.data.need_contact;
+  survey.water_mark = surveyData.data.water_mark.split('\n');
   survey.questions = (await list({pageNum: 1, pageSize: 99999, survey_id: surveyId})).data.list;
   survey.questions.forEach((q) => {
     rules[`answers.${q.id}`] = [{required: true, message: "请填写", trigger: "blur"}];
@@ -196,7 +206,6 @@ function getFinger() {
     finger.value = Fingerprint2.x64hash128(values.join(''), 31);
   });
 }
-
 
 
 </script>

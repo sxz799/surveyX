@@ -16,6 +16,7 @@ type Survey struct {
 	NeedContact string    `json:"need_contact" form:"need_contact"`
 	Repeat      string    `json:"repeat" form:"repeat"`             // 是否允许重复提交 no yes yes_but_update
 	RepeatCheck string    `json:"repeat_check" form:"repeat_check"` // 重复提交检查方式 finger contact
+	WaterMark   string    `json:"water_mark" form:"water_mark"`     // 水印
 }
 
 type SurveySearch struct {

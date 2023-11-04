@@ -120,6 +120,14 @@
                 </el-form-item>
               </el-col>
               <el-col :span="24">
+                <el-form-item v-if="form.repeat!=='yes'" label="重复提交检查方式" prop="repeat_check">
+                  <el-select v-model="form.repeat_check" placeholder="请选择重复提交检查方式">
+                    <el-option v-if="form.need_contact==='yes'" label="联系方式" value="contact"></el-option>
+                    <el-option label="浏览器指纹" value="finger"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
                 <el-form-item label="开始时间" prop="start_time">
                   <el-date-picker
                       v-model="form.start_time"
@@ -135,6 +143,12 @@
                       type="datetime"
                       placeholder="选择结束日期时间"
                   />
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="水印" prop="water_mark">
+                  <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" v-model="form.water_mark"
+                            placeholder="请输入水印"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -163,7 +177,7 @@
 
 <script setup>
 import {computed, onMounted, reactive, ref, toRefs} from 'vue'
-import {list, add, del, update, get} from "../../api/survey.js";
+import {list, add, del, update, get} from "@/api/survey.js";
 import QuestionList from "./QuestionList.vue";
 import {Delete, Edit, Plus, Tools} from "@element-plus/icons";
 

@@ -126,7 +126,7 @@
 
 <script setup>
 import {computed, onMounted, reactive, ref, toRefs, watch} from 'vue'
-import {list, add, del, update, get} from "../../api/question.js";
+import {list, add, del, update, get} from "@/api/question.js";
 
 import {Delete, Edit, Plus} from "@element-plus/icons";
 
