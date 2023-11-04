@@ -3,7 +3,21 @@
     <el-row>
       <el-col :span="3" :xs="0"/>
       <el-col :span="18" :xs="24">
-
+        <el-form :model="queryParams" size="small" :inline="true" label-width="68px">
+          <el-form-item label="标题" prop="roleName">
+            <el-input
+                v-model="queryParams.title"
+                placeholder="请输入标题"
+                clearable
+                style="width: 240px"
+                @keyup.enter="handleQuery"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" :icon="Search" @click="handleQuery">搜索</el-button>
+            <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
+          </el-form-item>
+        </el-form>
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
             <el-button
@@ -16,7 +30,7 @@
           </el-col>
         </el-row>
         <el-table border fit :data="surveyList">
-          <el-table-column type="selection" align="center"/>
+          <!--          <el-table-column type="selection" align="center"/>-->
           <el-table-column label="ID" width="50" align="center" key="id" prop="id"/>
           <el-table-column label="标题" align="center" key="title" prop="title" :show-overflow-tooltip="true">
             <template #default="scope">
@@ -29,30 +43,32 @@
           <el-table-column label="状态" align="center" key="status" prop="status"
                            :show-overflow-tooltip="true">
             <template #default="scope">
-              <span v-if="scope.row.status === 'yes'">启用</span>
-              <span v-if="scope.row.status === 'no'">禁用</span>
+              <el-tag type="success" v-if="scope.row.status === 'yes'">启用</el-tag>
+              <el-tag type="danger" v-if="scope.row.status === 'no'">禁用</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="开始时间" align="center" :formatter="dateTimeFormat" key="start_time"
+          <el-table-column label="开始时间" width="100" align="center" :formatter="dateTimeFormat" key="start_time"
                            prop="start_time"/>
-          <el-table-column label="结束时间" align="center" :formatter="dateTimeFormat" key="end_time" prop="end_time"/>
+          <el-table-column label="结束时间" width="100" align="center" :formatter="dateTimeFormat" key="end_time"
+                           prop="end_time"/>
           <el-table-column label="填写联系方式" align="center" key="need_contact" prop="need_contact">
             <template #default="scope">
-              <span v-if="scope.row.need_contact === 'yes'">是</span>
-              <span v-if="scope.row.need_contact === 'no'">否</span>
+              <el-tag v-if="scope.row.need_contact === 'yes'">是</el-tag>
+              <el-tag type="danger" v-if="scope.row.need_contact === 'no'">否</el-tag>
             </template>
           </el-table-column>
           <el-table-column label="重复提交" align="center" key="repeat" prop="repeat">
             <template #default="scope">
-              <span v-if="scope.row.repeat === 'yes'">是</span>
-              <span v-if="scope.row.repeat === 'no'">否</span>
-              <span v-if="scope.row.repeat === 'yes_but_update'">是(更新)</span>
+              <el-tag v-if="scope.row.repeat === 'yes'">是</el-tag>
+              <el-tag type="danger" v-if="scope.row.repeat === 'no'">否</el-tag>
+              <el-tag type="success" v-if="scope.row.repeat === 'yes_but_update'">更新</el-tag>
             </template>
           </el-table-column>
           <el-table-column label="重复提交检查方式" align="center" key="repeat_check" prop="repeat_check">
             <template #default="scope">
-              <span v-if="scope.row.repeat_check === 'contact'">联系方式</span>
-              <span v-if="scope.row.repeat_check === 'finger'">浏览器指纹</span>
+              <el-tag type="warning" v-if="scope.row.repeat_check === 'contact'">联系方式</el-tag>
+              <el-tag type="info" v-if="scope.row.repeat_check === 'finger'">浏览器指纹</el-tag>
+              <el-tag type="info" v-if="scope.row.repeat_check === ''">无</el-tag>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" width="150">
@@ -60,6 +76,11 @@
               <el-button link type="primary" @click="handleEdit(scope.row)" :icon="Edit">修改</el-button>
               <el-button link type="success" @click="handleQuestion(scope.row.id)" :icon="Tools">配置题目</el-button>
               <el-button link type="danger" @click="handleDelete(scope.row)" :icon="Delete">删除</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column label="更多操作" align="center" width="150">
+            <template #default="scope">
+              <el-button link type="primary" @click="copySurveyLink(scope.row)" :icon="Edit">问卷地址</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -179,9 +200,12 @@
 import {computed, onMounted, reactive, ref, toRefs} from 'vue'
 import {list, add, del, update, get} from "@/api/survey.js";
 import QuestionList from "./QuestionList.vue";
-import {Delete, Edit, Plus, Tools} from "@element-plus/icons";
+import {Delete, Edit, Plus, Tools, Search, Refresh} from "@element-plus/icons";
+import useClipboard from 'vue-clipboard3';
+import {ElMessage} from "element-plus";
 
-
+const {queryRef} = ref();
+const {toClipboard} = useClipboard();
 const surveyRef = ref()
 const surveyId = ref(0)
 const open = ref(false)
@@ -201,6 +225,7 @@ const data = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
+    title: '',
   },
 });
 
@@ -222,6 +247,17 @@ onMounted(() => {
   getList()
 })
 
+function handleQuery() {
+  queryParams.value.pageNum = 1;
+  getList();
+}
+
+function resetQuery() {
+  queryParams.value.title= '';
+  queryParams.value.pageNum = 1;
+  queryParams.value.pageSize = 10;
+  getList();
+}
 
 function getList() {
   list(queryParams.value).then(res => {
@@ -271,6 +307,18 @@ function handleDelete(row) {
   })
 }
 
+function copySurveyLink(row) {
+  try {
+    //获取url
+    let url = 'http://' + window.location.host + '/#/survey/' + row.id
+    toClipboard(url)
+    ElMessage.success('复制成功！');
+  } catch (e) {
+    ElMessage.error('复制失败！');
+  }
+
+}
+
 function submitForm(elForm) {
   elForm.validate((valid, fields) => {
     if (valid) {
@@ -295,7 +343,6 @@ function dateTimeFormat(row, column, cellValue, index) {
   }
   return new Date(cellValue).toLocaleString()
 }
-
 
 
 </script>

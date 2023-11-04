@@ -96,7 +96,7 @@ const survey = reactive({
 })
 const answersRef = ref()
 const rules = ({
-  contact: [{required: true, message: '请输入联系方式', trigger: 'blur'}],
+  contact: [{required: true, message: '请填写联系方式', trigger: 'blur'}],
 })
 
 const form = reactive({
@@ -123,14 +123,13 @@ async function initSurvey() {
   survey.water_mark = surveyData.data.water_mark.split('\n');
   survey.questions = (await list({pageNum: 1, pageSize: 99999, survey_id: surveyId})).data.list;
   survey.questions.forEach((q) => {
-    rules[`answers.${q.id}`] = [{required: true, message: "请填写", trigger: "blur"}];
+    rules[`answers.${q.id}`] = [{required: true, message: "请答题", trigger: q.type==='text'?  "blur" : "change"}];
   });
 }
 
 function submitAnswer(elForm) {
   elForm.validate((valid) => {
     if (!valid) {
-      ElMessage.error('请填写完整')
       return
     }
     let answerResult = []
@@ -148,7 +147,7 @@ function submitAnswer(elForm) {
           for (let option of options) {// 遍历选项
             // 如果有补充信息，但是没有填写
             if (option.has_ext_msg === 'yes' && option.label === answer && (option.extMsg === undefined || option.extMsg === '')) {
-              ElMessage.error('请填写完整[第' + (Number(index) + 1) + '题]的补充信息')
+              ElMessage.error('请填写[第' + (Number(index) + 1) + '题]的补充信息')
               return
             }
             // 如果选项等于答案，就把补充信息赋值给extMsg
@@ -167,7 +166,7 @@ function submitAnswer(elForm) {
             // 如果有补充信息，但是没有填写
             for (let option of options) {
               if (option.has_ext_msg === 'yes' && option.label === label && (option.extMsg === undefined || option.extMsg === '')) {
-                ElMessage.error('请填写完整[第' + (Number(index) + 1) + '题,选项' + option.label + ']的补充信息')
+                ElMessage.error('请填写[第' + (Number(index) + 1) + '题,选项' + option.label + ']的补充信息')
                 return
               }
               // 如果选项等于答案，就把补充信息赋值给extMsg
