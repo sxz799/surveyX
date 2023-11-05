@@ -23,7 +23,11 @@ func RegRouter(e *gin.Engine) {
 		e.GET("/", func(context *gin.Context) {
 			context.HTML(200, "index.html", "")
 		})
+		//解决前端路由
 		e.GET("/admin", func(context *gin.Context) {
+			context.HTML(200, "index.html", "")
+		})
+		e.GET("/survey/:id", func(context *gin.Context) {
 			context.HTML(200, "index.html", "")
 		})
 		log.Println("已开启前后端整合模式！")
