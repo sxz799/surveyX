@@ -6,7 +6,7 @@
       <el-col :span="12" :xs="24">
         <h2 class="survey-title">{{ survey.title }}</h2>
         <h4 class="survey-description">{{ survey.description }}</h4>
-        <el-form ref="answersRef" :model="form" :rules="rules" label-width="0">
+        <el-form :disabled="disabled" ref="answersRef" :model="form" :rules="rules" label-width="0">
           <div class="question-container" v-for="(question , index) in survey.questions">
             <el-form-item :prop="'answers.' + question.id ">
               <!--题目-->
@@ -83,6 +83,7 @@ import {useRoute} from "vue-router";
 import {ElNotification} from 'element-plus'
 import Fingerprint2 from 'fingerprintjs2';
 
+const disabled = ref(false)
 const allowSubmit = ref(true)
 const route = useRoute()
 const surveyId = Number(route.params.id)
@@ -127,7 +128,7 @@ async function initSurvey() {
   survey.water_mark = surveyData.data.water_mark.split('\n');
   survey.questions = (await list({pageNum: 1, pageSize: 99999, survey_id: surveyId})).data.list;
   survey.questions.forEach((q) => {
-    rules[`answers.${q.id}`] = [{required: true, message: "请答题", trigger: q.type==='text'?  "blur" : "change"}];
+    rules[`answers.${q.id}`] = [{required: true, message: "请答题", trigger: q.type === 'text' ? "blur" : "change"}];
   });
 }
 
@@ -206,6 +207,7 @@ function submitAnswer(elForm) {
           type: 'success',
         })
         allowSubmit.value = false
+        disabled.value = true
       } else {
         ElNotification({
           title: '提交失败',
