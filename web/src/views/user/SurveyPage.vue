@@ -80,7 +80,7 @@ import {get} from "@/api/survey.js";
 import {list} from "@/api/question.js";
 import {add} from "@/api/answer.js";
 import {useRoute} from "vue-router";
-import {ElMessage} from 'element-plus'
+import {ElNotification} from 'element-plus'
 import Fingerprint2 from 'fingerprintjs2';
 
 const allowSubmit = ref(true)
@@ -113,7 +113,11 @@ async function initSurvey() {
   const surveyData = await get(surveyId);
   const datetime = new Date();
   if (datetime < new Date(surveyData.data.start_time) || datetime > new Date(surveyData.data.end_time)) {
-    ElMessage.error('不在答题时间内!')
+    ElNotification({
+      title: '信息不全',
+      message: '不在答题时间内!',
+      type: 'warning',
+    })
     allowSubmit.value = false
     return
   }
@@ -147,7 +151,11 @@ function submitAnswer(elForm) {
           for (let option of options) {// 遍历选项
             // 如果有补充信息，但是没有填写
             if (option.has_ext_msg === 'yes' && option.label === answer && (option.extMsg === undefined || option.extMsg === '')) {
-              ElMessage.error('请填写[第' + (Number(index) + 1) + '题]的补充信息')
+              ElNotification({
+                title: '信息不全',
+                message: '请填写[第' + (Number(index) + 1) + '题]的补充信息',
+                type: 'warning',
+              })
               return
             }
             // 如果选项等于答案，就把补充信息赋值给extMsg
@@ -166,7 +174,11 @@ function submitAnswer(elForm) {
             // 如果有补充信息，但是没有填写
             for (let option of options) {
               if (option.has_ext_msg === 'yes' && option.label === label && (option.extMsg === undefined || option.extMsg === '')) {
-                ElMessage.error('请填写[第' + (Number(index) + 1) + '题,选项' + option.label + ']的补充信息')
+                ElNotification({
+                  title: '信息不全',
+                  message: '请填写[第' + (Number(index) + 1) + '题,选项' + option.label + ']的补充信息',
+                  type: 'warning',
+                })
                 return
               }
               // 如果选项等于答案，就把补充信息赋值给extMsg
@@ -188,10 +200,18 @@ function submitAnswer(elForm) {
     // 提交答案
     add(answerResult).then(res => {
       if (res.success) {
-        ElMessage.success(res.message)
+        ElNotification({
+          title: '提交成功',
+          message: res.message,
+          type: 'success',
+        })
         allowSubmit.value = false
       } else {
-        ElMessage.error(res.message)
+        ElNotification({
+          title: '提交失败',
+          message: res.message,
+          type: 'error',
+        })
       }
     })
   })

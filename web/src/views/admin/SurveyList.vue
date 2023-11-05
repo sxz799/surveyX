@@ -32,14 +32,10 @@
         <el-table border fit :data="surveyList">
           <!--          <el-table-column type="selection" align="center"/>-->
           <el-table-column label="ID" width="50" align="center" key="id" prop="id"/>
-          <el-table-column label="标题" align="center" key="title" prop="title" :show-overflow-tooltip="true">
-            <template #default="scope">
-              <el-link :icon="Edit" type="primary" @click="handleQuestion(scope.row.id)">{{ scope.row.title }}
-              </el-link>
-            </template>
+          <el-table-column label="标题" align="center" key="title" prop="title" :show-overflow-tooltip="false">
+
           </el-table-column>
-          <el-table-column label="描述" align="center" key="description" prop="description"
-                           :show-overflow-tooltip="true"/>
+
           <el-table-column label="状态" align="center" key="status" prop="status"
                            :show-overflow-tooltip="true">
             <template #default="scope">
@@ -47,17 +43,17 @@
               <el-tag type="danger" v-if="scope.row.status === 'no'">禁用</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="开始时间" width="100" align="center" :formatter="dateTimeFormat" key="start_time"
+          <el-table-column label="开始时间" width="110" align="center" :formatter="dateTimeFormat" key="start_time"
                            prop="start_time"/>
-          <el-table-column label="结束时间" width="100" align="center" :formatter="dateTimeFormat" key="end_time"
+          <el-table-column label="结束时间" width="110" align="center" :formatter="dateTimeFormat" key="end_time"
                            prop="end_time"/>
-          <el-table-column label="填写联系方式" align="center" key="need_contact" prop="need_contact">
+          <el-table-column label="填写联系方式" width="90" align="center" key="need_contact" prop="need_contact">
             <template #default="scope">
               <el-tag v-if="scope.row.need_contact === 'yes'">是</el-tag>
               <el-tag type="danger" v-if="scope.row.need_contact === 'no'">否</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="重复提交" align="center" key="repeat" prop="repeat">
+          <el-table-column label="重复提交" width="90" align="center" key="repeat" prop="repeat">
             <template #default="scope">
               <el-tag v-if="scope.row.repeat === 'yes'">是</el-tag>
               <el-tag type="danger" v-if="scope.row.repeat === 'no'">否</el-tag>
@@ -75,12 +71,20 @@
             <template #default="scope">
               <el-button link type="primary" @click="handleEdit(scope.row)" :icon="Edit">修改</el-button>
               <el-button link type="success" @click="handleQuestion(scope.row.id)" :icon="Tools">配置题目</el-button>
-              <el-button link type="danger" @click="handleDelete(scope.row)" :icon="Delete">删除</el-button>
+              <el-popconfirm
+                  confirm-button-text="确定"
+                  cancel-button-text="取消"
+                  @confirm="handleDelete(scope.row)"
+                  title="确定要删除吗?">
+                <template #reference>
+                  <el-button link type="danger" :icon="Delete">删除</el-button>
+                </template>
+              </el-popconfirm>
             </template>
           </el-table-column>
           <el-table-column label="更多操作" align="center" width="150">
             <template #default="scope">
-              <el-button link type="primary" @click="copySurveyLink(scope.row)" :icon="Edit">问卷地址</el-button>
+              <el-button link type="warning" @click="copySurveyLink(scope.row)" :icon="Link">问卷地址</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -200,11 +204,10 @@
 import {computed, onMounted, reactive, ref, toRefs} from 'vue'
 import {list, add, del, update, get} from "@/api/survey.js";
 import QuestionList from "./QuestionList.vue";
-import {Delete, Edit, Plus, Tools, Search, Refresh} from "@element-plus/icons";
+import {Delete, Edit, Plus, Tools, Search, Refresh,Link} from "@element-plus/icons";
 import useClipboard from 'vue-clipboard3';
 import {ElMessage} from "element-plus";
 
-const {queryRef} = ref();
 const {toClipboard} = useClipboard();
 const surveyRef = ref()
 const surveyId = ref(0)
@@ -358,7 +361,14 @@ function dateTimeFormat(row, column, cellValue) {
   if (cellValue === undefined || cellValue === null || cellValue === '') {
     return ''
   }
-  return new Date(cellValue).toLocaleString()
+  const date=new Date(cellValue)
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
 
