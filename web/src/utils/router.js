@@ -1,5 +1,5 @@
 // router.js
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 
 import SurveyListAdmin from '../views/admin/SurveyList.vue';
 import SurveyListUser from '../views/user/SurveyList.vue';
@@ -13,7 +13,7 @@ const routes = [
 ];
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes,
 });
 

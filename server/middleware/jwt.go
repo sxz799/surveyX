@@ -20,7 +20,7 @@ func GenToken(key string) (tokenStr string, err error) {
 	claims := &Claims{
 		Key: key,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(25 * time.Second)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(10 * time.Minute)),
 		},
 	}
 

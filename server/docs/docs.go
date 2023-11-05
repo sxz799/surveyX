@@ -15,6 +15,63 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/answer/": {
+            "post": {
+                "description": "添加答案",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "答案"
+                ],
+                "summary": "添加",
+                "parameters": [
+                    {
+                        "description": "答案",
+                        "name": "answer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Answer"
+                            }
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/login": {
+            "post": {
+                "description": "登录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "公共"
+                ],
+                "summary": "登录",
+                "parameters": [
+                    {
+                        "description": "key",
+                        "name": "key",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/question/": {
             "put": {
                 "description": "更新题目",
@@ -67,7 +124,7 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/question/list/{id}": {
+        "/question/list": {
             "get": {
                 "description": "获取题目列表列表",
                 "produces": [
@@ -87,7 +144,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "页码",
-                        "name": "page",
+                        "name": "pageNum",
                         "in": "query"
                     },
                     {
@@ -185,7 +242,7 @@ const docTemplate = `{
         },
         "/survey/list": {
             "get": {
-                "description": "获取题目列表列表",
+                "description": "获取问卷列表",
                 "produces": [
                     "application/json"
                 ],
@@ -203,7 +260,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "页码",
-                        "name": "page",
+                        "name": "pageNum",
                         "in": "query"
                     },
                     {
@@ -260,9 +317,47 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "entity.Answer": {
+            "type": "object",
+            "properties": {
+                "contact": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "ext_msg": {
+                    "type": "string"
+                },
+                "finger": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
+                },
+                "question_id": {
+                    "type": "integer"
+                },
+                "survey_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "entity.Option": {
             "type": "object",
             "properties": {
+                "has_ext_msg": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -270,6 +365,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "question_id": {
+                    "type": "integer"
+                },
+                "survey_id": {
                     "type": "integer"
                 },
                 "value": {
@@ -299,7 +397,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "type": {
-                    "type": "integer"
+                    "type": "string"
                 }
             }
         },
@@ -309,8 +407,14 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
+                "end_time": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
+                },
+                "need_contact": {
+                    "type": "string"
                 },
                 "questions": {
                     "type": "array",
@@ -318,10 +422,25 @@ const docTemplate = `{
                         "type": "integer"
                     }
                 },
+                "repeat": {
+                    "description": "是否允许重复提交 no yes yes_but_update",
+                    "type": "string"
+                },
+                "repeat_check": {
+                    "description": "重复提交检查方式 finger contact",
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                },
                 "status": {
                     "type": "string"
                 },
                 "title": {
+                    "type": "string"
+                },
+                "water_mark": {
+                    "description": "水印",
                     "type": "string"
                 }
             }

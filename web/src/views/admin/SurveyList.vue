@@ -328,7 +328,7 @@ function handleDelete(row) {
 function copySurveyLink(row) {
   try {
     //获取url
-    let url = 'http://' + window.location.host + '/#/survey/' + row.id
+    let url = 'http://' + window.location.host + '/survey/' + row.id
     toClipboard(url)
     ElMessage.success('复制成功！');
   } catch (e) {

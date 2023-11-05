@@ -41,7 +41,7 @@ func (ts *SurveyService) List(s entity.SurveySearch) (response.PageResult, error
 	return response.PageResult{
 		List:     surveys,
 		Total:    total,
-		Page:     pi.PageNum,
+		PageNum:  pi.PageNum,
 		PageSize: pi.PageSize}, err
 }
 

@@ -1,11 +1,38 @@
 definitions:
+  entity.Answer:
+    properties:
+      contact:
+        type: string
+      content:
+        type: string
+      create_at:
+        type: string
+      ext_msg:
+        type: string
+      finger:
+        type: string
+      id:
+        type: integer
+      ip:
+        type: string
+      label:
+        type: string
+      question_id:
+        type: integer
+      survey_id:
+        type: integer
+    type: object
   entity.Option:
     properties:
+      has_ext_msg:
+        type: string
       id:
         type: integer
       label:
         type: string
       question_id:
+        type: integer
+      survey_id:
         type: integer
       value:
         type: string
@@ -25,21 +52,36 @@ definitions:
       text:
         type: string
       type:
-        type: integer
+        type: string
     type: object
   entity.Survey:
     properties:
       description:
         type: string
+      end_time:
+        type: string
       id:
         type: integer
+      need_contact:
+        type: string
       questions:
         items:
           type: integer
         type: array
+      repeat:
+        description: 是否允许重复提交 no yes yes_but_update
+        type: string
+      repeat_check:
+        description: 重复提交检查方式 finger contact
+        type: string
+      start_time:
+        type: string
       status:
         type: string
       title:
+        type: string
+      water_mark:
+        description: 水印
         type: string
     type: object
 info:
@@ -47,6 +89,44 @@ info:
   title: 问卷调查SurveyX API
   version: "1.0"
 paths:
+  /answer/:
+    post:
+      consumes:
+      - application/json
+      description: 添加答案
+      parameters:
+      - description: 答案
+        in: body
+        name: answer
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/entity.Answer'
+          type: array
+      produces:
+      - application/json
+      responses: {}
+      summary: 添加
+      tags:
+      - 答案
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: 登录
+      parameters:
+      - description: key
+        in: body
+        name: key
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: 登录
+      tags:
+      - 公共
   /question/:
     post:
       consumes:
@@ -99,7 +179,7 @@ paths:
       summary: 获取
       tags:
       - 题目
-  /question/list/{id}:
+  /question/list:
     get:
       description: 获取题目列表列表
       parameters:
@@ -109,7 +189,7 @@ paths:
         type: string
       - description: 页码
         in: query
-        name: page
+        name: pageNum
         type: integer
       - description: 每页大小
         in: query
@@ -192,7 +272,7 @@ paths:
       - 问卷
   /survey/list:
     get:
-      description: 获取题目列表列表
+      description: 获取问卷列表
       parameters:
       - description: 关键字
         in: query
@@ -200,7 +280,7 @@ paths:
         type: string
       - description: 页码
         in: query
-        name: page
+        name: pageNum
         type: integer
       - description: 每页大小
         in: query

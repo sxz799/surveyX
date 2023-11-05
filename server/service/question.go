@@ -30,7 +30,7 @@ func (ts *QuestionService) List(q entity.QuestionSearch) (response.PageResult, e
 	return response.PageResult{
 		List:     qs,
 		Total:    total,
-		Page:     pi.PageNum,
+		PageNum:  pi.PageNum,
 		PageSize: pi.PageSize}, err
 }
 
