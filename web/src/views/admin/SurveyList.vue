@@ -202,11 +202,14 @@
 
 <script setup>
 import {computed, onMounted, reactive, ref, toRefs} from 'vue'
-import {list, add, del, update, get} from "@/api/survey.js";
+import {list, add, del, update, get} from "@/api/admin/survey.js";
 import QuestionList from "./QuestionList.vue";
 import {Delete, Edit, Plus, Tools, Search, Refresh,Link} from "@element-plus/icons";
 import useClipboard from 'vue-clipboard3';
 import {ElMessage} from "element-plus";
+import {useRouter} from "vue-router";
+
+const router = useRouter()
 
 const {toClipboard} = useClipboard();
 const surveyRef = ref()
@@ -264,8 +267,14 @@ function resetQuery() {
 
 function getList() {
   list(queryParams.value).then(res => {
-    surveyList.value = res.data.list
-    total.value = res.data.total
+    if (res.success) {
+      surveyList.value = res.data.list
+      total.value = res.data.total
+    } else {
+      //路由到登录页面
+      router.push({path: '/login'})
+    }
+
   })
 }
 

@@ -1,9 +1,9 @@
 
-import request from '../utils/request'
+import request from '../../utils/request.js'
 
 export function list(data) {
   return request({
-    url: '/survey/list',
+    url: '/admin/survey/list',
     method: 'get',
     params: data
   })
@@ -11,14 +11,14 @@ export function list(data) {
 
 export function get(id) {
     return request({
-        url: '/survey/'+id,
+        url: '/admin/survey/'+id,
         method: 'get',
     })
 }
 
 export function add(data) {
     return request({
-        url: '/survey',
+        url: '/admin/survey',
         method: 'post',
         data
     })
@@ -26,7 +26,7 @@ export function add(data) {
 
 export function update(data) {
     return request({
-        url: '/survey',
+        url: '/admin/survey',
         method: 'put',
         data
     })
@@ -34,7 +34,7 @@ export function update(data) {
 
 export function del(id) {
     return request({
-        url: '/survey/'+id,
+        url: '/admin/survey/'+id,
         method: 'delete',
     })
 }

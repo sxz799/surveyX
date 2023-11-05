@@ -1,10 +1,10 @@
 
-import request from '../utils/request'
+import request from '../../utils/request.js'
 
 
 export function add(data) {
     return request({
-        url: '/answer',
+        url: '/user/answer',
         method: 'post',
         data
     })

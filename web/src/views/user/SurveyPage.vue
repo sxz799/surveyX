@@ -76,9 +76,9 @@
 <script setup>
 
 import {onMounted, reactive, ref} from "vue";
-import {get} from "@/api/survey.js";
-import {list} from "@/api/question.js";
-import {add} from "@/api/answer.js";
+import {get} from "@/api/user/survey.js";
+import {list} from "@/api/user/question.js";
+import {add} from "@/api/user/answer.js";
 import {useRoute} from "vue-router";
 import {ElNotification} from 'element-plus'
 import Fingerprint2 from 'fingerprintjs2';
@@ -114,8 +114,8 @@ async function initSurvey() {
   const datetime = new Date();
   if (datetime < new Date(surveyData.data.start_time) || datetime > new Date(surveyData.data.end_time)) {
     ElNotification({
-      title: '信息不全',
-      message: '不在答题时间内!',
+      title: '抱歉',
+      message: '当前问卷不在答题时间内!',
       type: 'warning',
     })
     allowSubmit.value = false

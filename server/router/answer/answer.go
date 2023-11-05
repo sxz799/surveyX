@@ -6,7 +6,7 @@ import (
 )
 
 func Answer(e *gin.Engine) {
-	g := e.Group("/api/answer")
+	g := e.Group("/api/user/answer")
 	{
 		g.POST("/", answerApi.Add)
 	}

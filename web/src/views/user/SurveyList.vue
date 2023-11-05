@@ -39,7 +39,7 @@
 
 <script setup>
 import {onMounted, reactive, ref} from 'vue'
-import {list} from "@/api/survey.js";
+import {list} from "@/api/user/survey.js";
 
 const surveyList = ref([])
 const total = ref(0)

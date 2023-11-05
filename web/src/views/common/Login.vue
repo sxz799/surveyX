@@ -1,0 +1,53 @@
+<template>
+  <div class="login-container">
+    <h2 class="login-title">欢迎登录</h2>
+    <el-input v-model="key" placeholder="请输入您的密钥" class="login-input"></el-input>
+    <el-button type="primary" @click="Login" class="login-button">登录</el-button>
+  </div>
+</template>
+
+<script setup>
+
+import {login} from '@/api/common/login.js'
+import {ref} from "vue";
+import {useRouter} from "vue-router";
+import {ElMessage} from "element-plus";
+
+const router = useRouter()
+const key = ref('')
+
+function Login() {
+  login({key: key.value}).then(res => {
+    if (res.success) {
+      ElMessage.success(res.message)
+      router.push({path: '/admin'})
+    } else {
+      ElMessage.error(res.message)
+    }
+  })
+}
+
+</script>
+
+<style scoped>
+.login-container {
+  width: 300px;
+  margin: 0 auto;
+  padding: 50px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.login-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.login-input {
+  margin-bottom: 20px;
+}
+
+.login-button {
+  width: 100%;
+}
+</style>
