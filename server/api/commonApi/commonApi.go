@@ -38,3 +38,8 @@ func Login(c *gin.Context) {
 	response.OkWithDetailed(token, "登录成功", c)
 
 }
+
+func Logout(c *gin.Context) {
+	c.SetCookie("token", "", 0, "", "", false, true)
+	response.OkWithMessage("退出成功", c)
+}
