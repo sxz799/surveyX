@@ -14,6 +14,7 @@ func Survey(e *gin.Engine) {
 		g1.PUT("/", surveyApi.Update)
 		g1.GET("/:id", surveyApi.Get)
 		g1.DELETE("/:id", surveyApi.Del)
+		g1.POST("/import", surveyApi.Import)
 	}
 	g2 := e.Group("/api/user/survey")
 	{

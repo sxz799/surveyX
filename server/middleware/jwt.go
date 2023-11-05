@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/sxz799/surveyX/model/common/response"
-	"log"
 	"time"
 )
 
@@ -52,7 +51,6 @@ func JWTAuth() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		log.Println("当前Token过期时间：", claims.ExpiresAt)
 		if token.Valid {
 			if claims.ExpiresAt.Unix()-time.Now().Unix() < 15 {
 				str, _ := GenToken(claims.Key)

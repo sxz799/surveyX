@@ -28,7 +28,26 @@
             >新增
             </el-button>
           </el-col>
+          <el-col :span="1.5">
+            <el-upload
+                :on-success="function (response) {
+                  if (response.success) {
+                    ElMessage.success('上传成功！');
+                    getList()
+                  } else {
+                    ElMessage.error('上传失败！');
+                  }
+                }"
+                :on-error="function (response) {
+                  ElMessage.error('上传失败！');
+                }"
+                :show-file-list="false"
+                action="/api/admin/survey/import">
+              <el-button :icon="UploadFilled" type="primary">上传问卷</el-button>
+            </el-upload>
+          </el-col>
         </el-row>
+
         <el-table border fit :data="surveyList">
           <!--          <el-table-column type="selection" align="center"/>-->
           <el-table-column label="ID" width="50" align="center" key="id" prop="id"/>
@@ -204,7 +223,7 @@
 import {computed, onMounted, reactive, ref, toRefs} from 'vue'
 import {list, add, del, update, get} from "@/api/admin/survey.js";
 import QuestionList from "./QuestionList.vue";
-import {Delete, Edit, Plus, Tools, Search, Refresh,Link} from "@element-plus/icons";
+import {Delete, Edit, Plus, Tools, Search, Refresh, Link, UploadFilled} from "@element-plus/icons";
 import useClipboard from 'vue-clipboard3';
 import {ElMessage} from "element-plus";
 import {useRouter} from "vue-router";
@@ -259,7 +278,7 @@ function handleQuery() {
 }
 
 function resetQuery() {
-  queryParams.value.title= '';
+  queryParams.value.title = '';
   queryParams.value.pageNum = 1;
   queryParams.value.pageSize = 10;
   getList();
@@ -315,14 +334,18 @@ function handleQuestion(id) {
 
 function handleDelete(row) {
   del(row.id).then(res => {
-    if (res.success){
+    if (res.success) {
       ElMessage.success('删除成功！');
       getList()
-    }else {
+    } else {
       ElMessage.error('删除失败！');
     }
 
   })
+}
+
+function handleImport() {
+
 }
 
 function copySurveyLink(row) {
@@ -370,7 +393,7 @@ function dateTimeFormat(row, column, cellValue) {
   if (cellValue === undefined || cellValue === null || cellValue === '') {
     return ''
   }
-  const date=new Date(cellValue)
+  const date = new Date(cellValue)
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');

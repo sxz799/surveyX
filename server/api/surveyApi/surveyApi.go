@@ -115,5 +115,20 @@ func Del(c *gin.Context) {
 	} else {
 		response.FailWithMessage(err.Error(), c)
 	}
+}
 
+func Import(c *gin.Context) {
+	file, err := c.FormFile("file")
+	if err != nil {
+		response.FailWithMessage("没有获取到文件!", c)
+		return
+	}
+
+	err = ss.Import(file)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	} else {
+		response.OkWithMessage("导入成功", c)
+	}
 }
