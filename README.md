@@ -1,8 +1,17 @@
 # surveyX
-使用golang+gin+vue3+element-plus实现的简易问卷调查系统
 
-部署十分简单 支持sqlite mysql postgres 三种数据库
+一个**部署简单**的问卷调查系统
 
+部署有多简单呢?
+解压后直接运行即可,无需 数据库 nginx等环境
+
+## 技术框架
+
+### 后端
+go gin gorm jwt sqlite mysql postgres
+ 
+### 前端
+Vue3 vite element-plus
 
 
 ## 功能列表
@@ -24,6 +33,7 @@
 | 配置重复提交 | ✅ |
 | 问卷状态 | ✅ |
 | 问卷开始结束日期[时间] | ✅ |
+| 后台秘钥登录 | ✅ |
 | 问卷结果分析 | X |
 
 

@@ -1,11 +1,13 @@
 db :
   sqlType : sqlite  # mysql || sqlite || postgres
   database: survey
-  username : render_3kh7_user
-  password : Ul5g400SAQZriDl16TzLc6tXAsS1ccUI
-  port : 5432
   host : dpg-cl29gtgp2gis7385crbg-a.oregon-postgres.render.com
+  port : 5432
+  username: render_3kh7_user
+  password: Ul5g400SAQZriDl16TzLc6tXAsS1ccUI
 server :
   port : 3000
   ginMode : debug # debug || release || test
+admin :
+  key : 123456
 

@@ -2,6 +2,7 @@ package commonApi
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/sxz799/surveyX/config"
 	"github.com/sxz799/surveyX/middleware"
 	"github.com/sxz799/surveyX/model/common/response"
 )
@@ -16,7 +17,7 @@ func Login(c *gin.Context) {
 		response.FailWithMessage("参数错误!", c)
 		return
 	}
-	if k.Key != "123456" {
+	if k.Key != config.Key {
 		response.FailWithMessage("Key错误!", c)
 		return
 	}
