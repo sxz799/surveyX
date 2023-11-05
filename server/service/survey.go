@@ -133,9 +133,9 @@ func (ts *SurveyService) Import(file *multipart.FileHeader) (err error) {
 			if row[i] == "" {
 				break
 			}
-			var value string
+			value := row[i]
 			var hasExtMsg string
-			if strings.Contains(row[i], "[填写备注]") {
+			if strings.Contains(value, "[填写备注]") {
 				value = strings.ReplaceAll(row[i], "[填写备注]", "")
 				hasExtMsg = "yes"
 			} else {
