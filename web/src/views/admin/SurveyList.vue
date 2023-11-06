@@ -63,9 +63,9 @@
               <el-tag type="danger" v-if="scope.row.status === 'no'">禁用</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="开始时间" width="110" align="center" :formatter="dateTimeFormat" key="start_time"
+          <el-table-column label="开始时间" width="110" :editable="false" align="center" :formatter="dateTimeFormat" key="start_time"
                            prop="start_time"/>
-          <el-table-column label="结束时间" width="110" align="center" :formatter="dateTimeFormat" key="end_time"
+          <el-table-column label="结束时间" width="110" :editable="false" align="center" :formatter="dateTimeFormat" key="end_time"
                            prop="end_time"/>
           <el-table-column label="填写联系方式" width="90" align="center" key="need_contact" prop="need_contact">
             <template #default="scope">
