@@ -68,7 +68,7 @@ func (ts *QuestionService) Del(id int) (err error) {
 	return
 }
 
-func (ts *QuestionService) DelBySurveyId(surveyId int) (err error) {
+func (ts *QuestionService) DelBySurveyId(surveyId string) (err error) {
 	err = utils.DB.Debug().Where("survey_id=?", surveyId).Delete(&entity.Question{}).Error
 	optionService.DelBySurveyId(surveyId)
 	return

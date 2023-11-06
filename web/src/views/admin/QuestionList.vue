@@ -131,7 +131,7 @@ import {list, add, del, update, get} from "@/api/admin/question.js";
 import {Delete, Edit, Plus} from "@element-plus/icons";
 
 const props = defineProps({
-  surveyId: Number,
+  surveyId: String,
 })
 const questionRef = ref()
 const open = ref(false)

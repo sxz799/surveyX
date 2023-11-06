@@ -5,8 +5,8 @@
     <el-col :span="12" :xs="24">
       <div class="app-container">
         <el-table :data="surveyList">
-          <el-table-column type="selection" width="50" align="center"/>
-          <el-table-column label="ID" align="center" key="id" prop="id"/>
+<!--          <el-table-column type="selection" width="50" align="center"/>-->
+          <el-table-column label="序号" width="70" align="center" type="index"/>
           <el-table-column label="标题" align="center" key="title" prop="title" :show-overflow-tooltip="true"/>
           <el-table-column label="描述" align="center" key="description" prop="description"
                            :show-overflow-tooltip="true"/>

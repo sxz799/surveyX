@@ -7,7 +7,7 @@ import (
 
 type Answer struct {
 	Id         int       `gorm:"primary_key" json:"id"`
-	SurveyId   int       `json:"survey_id" form:"survey_id"`
+	SurveyId   string    `json:"survey_id" form:"survey_id"`
 	QuestionId int       `json:"question_id" form:"question_id"`
 	Content    string    `json:"content" form:"content"`
 	Label      string    `json:"label" form:"label"`

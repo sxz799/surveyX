@@ -6,7 +6,7 @@ import (
 )
 
 type Survey struct {
-	Id          int       `gorm:"primary_key" json:"id"`
+	Id          string    `gorm:"primary_key" json:"id"`
 	Title       string    `json:"title" form:"title"`
 	Description string    `json:"description" form:"description"`
 	Status      string    `json:"status" form:"status"`

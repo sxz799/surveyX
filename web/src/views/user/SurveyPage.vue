@@ -86,7 +86,7 @@ import Fingerprint2 from 'fingerprintjs2';
 const disabled = ref(false)
 const allowSubmit = ref(true)
 const route = useRoute()
-const surveyId = Number(route.params.id)
+const surveyId = route.params.id
 const finger = ref('')
 const survey = reactive({
   title: '',

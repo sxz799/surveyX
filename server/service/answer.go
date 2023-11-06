@@ -19,7 +19,7 @@ func (as *AnswerService) List(a entity.AnswerSearch) (response.PageResult, error
 	offset := pi.PageSize * (pi.PageNum - 1)
 	db := utils.DB.Model(&entity.Answer{})
 	answer := a.Answer
-	if answer.SurveyId != 0 {
+	if answer.SurveyId != "" {
 		db = db.Where("survey_id = ?", answer.SurveyId)
 	}
 	if answer.QuestionId != 0 {
@@ -51,7 +51,7 @@ func (as *AnswerService) List(a entity.AnswerSearch) (response.PageResult, error
 
 func (as *AnswerService) Add(a []entity.Answer) (err error) {
 	var survey entity.Survey
-	var surveyId int
+	var surveyId string
 	var contact, finger string
 	if len(a) > 0 {
 		surveyId = a[0].SurveyId

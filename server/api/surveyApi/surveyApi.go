@@ -5,7 +5,6 @@ import (
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
 	"github.com/sxz799/surveyX/service"
-	"strconv"
 )
 
 var ss service.SurveyService
@@ -85,8 +84,8 @@ func Update(c *gin.Context) {
 // @Param id path int true "题目id"
 // @Router /survey/{id} [get]
 func Get(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
+	id := c.Param("id")
+	if id == "" {
 		response.FailWithMessage("参数有误", c)
 		return
 	}
@@ -105,12 +104,12 @@ func Get(c *gin.Context) {
 // @Param id path int true "问卷id"
 // @Router /survey/{id} [delete]
 func Del(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
+	id := c.Param("id")
+	if id == "" {
 		response.FailWithMessage("参数有误", c)
 		return
 	}
-	if err = ss.Del(id); err == nil {
+	if err := ss.Del(id); err == nil {
 		response.OkWithMessage("删除成功", c)
 	} else {
 		response.FailWithMessage(err.Error(), c)

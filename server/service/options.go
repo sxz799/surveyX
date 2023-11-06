@@ -26,7 +26,7 @@ func (ts *OptionService) Del(questionId int) {
 
 }
 
-func (ts *OptionService) DelBySurveyId(sId int) {
+func (ts *OptionService) DelBySurveyId(sId string) {
 
 	utils.DB.Where("survey_id=?", sId).Delete(&entity.Option{})
 

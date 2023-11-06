@@ -50,7 +50,7 @@
 
         <el-table border fit :data="surveyList">
           <!--          <el-table-column type="selection" align="center"/>-->
-          <el-table-column label="ID" width="50" align="center" key="id" prop="id"/>
+          <el-table-column label="序号" width="70" align="center" type="index"/>
           <el-table-column label="标题" align="center" key="title" prop="title" :show-overflow-tooltip="false">
 
           </el-table-column>
@@ -232,7 +232,7 @@ const router = useRouter()
 
 const {toClipboard} = useClipboard();
 const surveyRef = ref()
-const surveyId = ref(0)
+const surveyId = ref('')
 const open = ref(false)
 const openDetails = ref(false)
 

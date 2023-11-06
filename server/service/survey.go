@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"github.com/google/uuid"
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
 	"github.com/sxz799/surveyX/utils"
@@ -51,6 +52,7 @@ func (ts *SurveyService) List(s entity.SurveySearch) (response.PageResult, error
 }
 
 func (ts *SurveyService) Add(s entity.Survey) (err error) {
+	s.Id = uuid.New().String()
 	err = utils.DB.Debug().Create(&s).Error
 	return
 }
@@ -60,7 +62,7 @@ func (ts *SurveyService) Update(s entity.Survey) error {
 	return err
 }
 
-func (ts *SurveyService) Del(id int) (err error) {
+func (ts *SurveyService) Del(id string) (err error) {
 	s := entity.Survey{
 		Id: id,
 	}
@@ -69,7 +71,7 @@ func (ts *SurveyService) Del(id int) (err error) {
 	return
 }
 
-func (ts *SurveyService) Get(id int) (s entity.Survey, err error) {
+func (ts *SurveyService) Get(id string) (s entity.Survey, err error) {
 	s.Id = id
 	err = utils.DB.First(&s).Error
 	return
@@ -115,6 +117,7 @@ func (ts *SurveyService) Import(file *multipart.FileHeader) (err error) {
 	startTime, _ := time.Parse("20060102150405", surveyRow[3])
 	endTime, _ := time.Parse("20060102150405", surveyRow[4])
 	survey := entity.Survey{
+		Id:          uuid.New().String(),
 		Title:       surveyRow[0],
 		Description: surveyRow[1],
 		Status:      dict[surveyRow[2]],
