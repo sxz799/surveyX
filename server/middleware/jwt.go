@@ -54,7 +54,7 @@ func JWTAuth() gin.HandlerFunc {
 		if token.Valid {
 			if claims.ExpiresAt.Unix()-time.Now().Unix() < 15 {
 				str, _ := GenToken(claims.Key)
-				c.SetCookie("token", str, 3600, "", "", false, true)
+				c.SetCookie("token", str, 60*30, "", "", false, true)
 			}
 			c.Set("claims", claims)
 			c.Next()

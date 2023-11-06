@@ -34,7 +34,7 @@ func Login(c *gin.Context) {
 		response.FailWithMessage("生成Token错误!", c)
 		return
 	}
-	c.SetCookie("token", token, 3600, "", "", false, true)
+	c.SetCookie("token", token, 60*30, "", "", false, true)
 	response.OkWithDetailed(token, "登录成功", c)
 
 }

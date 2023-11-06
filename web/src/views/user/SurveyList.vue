@@ -12,7 +12,7 @@
                            :show-overflow-tooltip="true"/>
           <el-table-column label="操作" align="center" width="150">
             <template #default="scope">
-              <router-link :to="`/survey/${scope.row.id}`">答题</router-link>
+              <el-button type="text" :icon="Edit" @click="router.push('/survey/'+scope.row.id)">答题</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -40,7 +40,10 @@
 <script setup>
 import {onMounted, reactive, ref} from 'vue'
 import {list} from "@/api/user/survey.js";
+import {useRouter} from "vue-router";
+import {Edit} from "@element-plus/icons";
 
+const router = useRouter()
 const surveyList = ref([])
 const total = ref(0)
 const queryParams = reactive({
@@ -54,6 +57,7 @@ const queryParams = reactive({
 onMounted(() => {
   getList()
 })
+
 
 function getList() {
   list(queryParams).then(res => {
