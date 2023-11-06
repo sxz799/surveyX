@@ -14,7 +14,7 @@
 
     <el-table :data="questionList">
       <el-table-column type="selection" width="50" align="center"/>
-      <el-table-column label="问卷ID" align="center" key="survey_id" width="80" prop="survey_id"/>
+      <el-table-column label="序号" type="index" align="center"  width="80"/>
       <el-table-column label="题目" align="center" key="text" prop="text" :show-overflow-tooltip="true"/>
       <el-table-column label="类型" align="center" key="type" prop="type" :show-overflow-tooltip="true">
         <template #default="scope">
