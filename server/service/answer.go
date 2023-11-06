@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
 	"github.com/sxz799/surveyX/utils"
 	"time"
@@ -10,18 +11,56 @@ import (
 type AnswerService struct {
 }
 
-func (ts *AnswerService) Add(as []entity.Answer) (err error) {
+func (as *AnswerService) List(a entity.AnswerSearch) (response.PageResult, error) {
+	var answers []entity.Answer
+	var total int64
+	pi := a.PageInfo
+	limit := pi.PageSize
+	offset := pi.PageSize * (pi.PageNum - 1)
+	db := utils.DB.Model(&entity.Answer{})
+	answer := a.Answer
+	if answer.SurveyId != 0 {
+		db = db.Where("survey_id = ?", answer.SurveyId)
+	}
+	if answer.QuestionId != 0 {
+		db = db.Where("question_id = ?", answer.QuestionId)
+	}
+	if answer.Contact != "" {
+		db = db.Where("contact = ?", answer.Contact)
+	}
+	if answer.Finger != "" {
+		db = db.Where("finger = ?", answer.Finger)
+	}
+	if !a.StartTime.IsZero() {
+		db = db.Where("create_at > ?", a.StartTime)
+	}
+	if !a.EndTime.IsZero() {
+		db = db.Where("create_at < ?", a.EndTime)
+	}
+	db.Debug().Count(&total)
+	db = db.Limit(limit).Offset(offset)
+	err := db.Debug().Order("id DESC").Find(&answers).Error
+	return response.PageResult{
+			List:     answers,
+			Total:    total,
+			PageNum:  pi.PageNum,
+			PageSize: pi.PageSize},
+		err
+
+}
+
+func (as *AnswerService) Add(a []entity.Answer) (err error) {
 	var survey entity.Survey
 	var surveyId int
 	var contact, finger string
-	if len(as) > 0 {
-		surveyId = as[0].SurveyId
+	if len(a) > 0 {
+		surveyId = a[0].SurveyId
 		err = utils.DB.Where("id = ?", surveyId).First(&survey).Error
 		if err != nil {
 			return
 		}
-		contact = as[0].Contact
-		finger = as[0].Finger
+		contact = a[0].Contact
+		finger = a[0].Finger
 	}
 	repeat := survey.Repeat
 	check := survey.RepeatCheck
@@ -49,7 +88,7 @@ func (ts *AnswerService) Add(as []entity.Answer) (err error) {
 			utils.DB.Model(&entity.Answer{}).Delete(&entity.Answer{}, "finger = ? and survey_id=?", finger, surveyId)
 		}
 	}
-	for _, a := range as {
+	for _, a := range a {
 		a.CreateAt = time.Now()
 		err = utils.DB.Create(&a).Error
 	}

@@ -13,12 +13,13 @@ type Answer struct {
 	Label      string    `json:"label" form:"label"`
 	ExtMsg     string    `json:"ext_msg" form:"ext_msg"`
 	Contact    string    `json:"contact" form:"contact"`
-	IP         string    `json:"ip" form:"ip"`
 	Finger     string    `json:"finger" form:"finger"`
 	CreateAt   time.Time `json:"create_at" form:"create_at"`
 }
 
 type AnswerSearch struct {
-	PageInfo request.PageInfo `json:"pageInfo"`
-	Answer   Answer           `json:"answer"`
+	PageInfo  request.PageInfo `json:"pageInfo"`
+	Answer    Answer           `json:"answer"`
+	StartTime time.Time        `json:"start_time" form:"start_time"`
+	EndTime   time.Time        `json:"end_time" form:"end_time"`
 }
