@@ -25,7 +25,7 @@
                 plain
                 :icon="Plus"
                 @click="handleAdd"
-            >新增
+            >新建问卷
             </el-button>
           </el-col>
           <el-col :span="1.5">
@@ -41,6 +41,7 @@
                 :on-error="function (response) {
                   ElMessage.error('上传失败！');
                 }"
+                accept=".xlsx"
                 :show-file-list="false"
                 action="/api/admin/survey/import">
               <el-button :icon="UploadFilled" type="primary">上传问卷</el-button>

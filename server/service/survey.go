@@ -7,6 +7,7 @@ import (
 	"github.com/sxz799/surveyX/model/entity"
 	"github.com/sxz799/surveyX/utils"
 	"github.com/xuri/excelize/v2"
+	"gorm.io/gorm"
 	"mime/multipart"
 	"strings"
 	"time"
@@ -83,9 +84,10 @@ func (ts *SurveyService) Import(file *multipart.FileHeader) (err error) {
 	if err != nil {
 		return
 	}
+	defer r.Close()
 	// 2. 解析文件
 	filename := file.Filename
-	if len(filename) < 4 || filename[len(filename)-4:] != "xlsx" {
+	if len(filename) < 5 || strings.Contains(filename, ".xlsx") == false {
 		err = errors.New("文件格式错误")
 		return
 	}
@@ -94,6 +96,7 @@ func (ts *SurveyService) Import(file *multipart.FileHeader) (err error) {
 		err = errors.New("文件读取失败")
 		return
 	}
+	defer excelFile.Close()
 	sheets := excelFile.GetSheetList()
 	rows, _ := excelFile.GetRows(sheets[0])
 	if len(rows) < 5 {
@@ -151,7 +154,6 @@ func (ts *SurveyService) Import(file *multipart.FileHeader) (err error) {
 			}
 			ops = append(ops, op)
 		}
-
 		question := entity.Question{
 			Text:    row[0],
 			Type:    dict[row[1]],
@@ -160,11 +162,27 @@ func (ts *SurveyService) Import(file *multipart.FileHeader) (err error) {
 		}
 		questions = append(questions, question)
 	}
-	err = utils.DB.Debug().Create(&survey).Error
-	for _, question := range questions {
-		question.SurveyId = survey.Id
-		_ = questionService.Add(question)
+
+	processQuestions := func(tx *gorm.DB, questionService *QuestionService, survey *entity.Survey, questions []entity.Question) error {
+		for _, question := range questions {
+			question.SurveyId = survey.Id
+			if err := questionService.Add(question); err != nil {
+				return err
+			}
+		}
+		return nil
 	}
+	db := utils.DB.Debug()
+	tx := db.Begin()
+	if err = tx.Create(&survey).Error; err != nil {
+		tx.Rollback()
+		return
+	}
+	if err = processQuestions(tx, &questionService, &survey, questions); err != nil {
+		tx.Rollback()
+		return
+	}
+	tx.Commit()
 
 	return
 }
