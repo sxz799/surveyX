@@ -24,6 +24,9 @@ func RegRouter(e *gin.Engine) {
 			context.HTML(200, "index.html", "")
 		})
 		//解决前端路由
+		e.GET("/login", func(context *gin.Context) {
+			context.HTML(200, "index.html", "")
+		})
 		e.GET("/admin", func(context *gin.Context) {
 			context.HTML(200, "index.html", "")
 		})
