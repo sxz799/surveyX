@@ -167,7 +167,7 @@
                             placeholder="请输入水印"></el-input>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" @click="submitForm(surveyRef)">确 定</el-button>
+                  <el-button type="primary" @click="submitForm(surveyRef)">{{buttonName}}</el-button>
                   <el-button @click="open = false">取 消</el-button>
                 </el-form-item>
 
@@ -221,6 +221,7 @@ const openDetails = ref(false)
 const surveyList = ref([])
 const total = ref(0)
 
+const buttonName=ref('新 增')
 
 const selectedRows = ref([])
 
@@ -289,6 +290,7 @@ function reset() {
 }
 
 function handleAdd() {
+  buttonName.value='新 增'
   reset();
   open.value = true
 }
@@ -343,6 +345,7 @@ function handleSelectionChange(val) {
 }
 
 function handleClickRow(row) {
+  buttonName.value='修 改'
   surveyId.value = row.id
   openDetails.value = true
   get(row.id).then(res => {
