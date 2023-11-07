@@ -12,10 +12,10 @@
               <!--题目-->
               <el-tag v-if="question.type === 'radio'">{{ index + 1 }} [单选]</el-tag>
               <el-tag type="warning" v-if="question.type === 'checkbox'">{{ index + 1 }} [多选]</el-tag>
-              <el-tag type="success" v-if="question.type === 'text'">{{ index + 1 }} [简答题]</el-tag>
+              <el-tag type="success" v-if="question.type === 'text'">{{ index + 1 }} [简答]</el-tag>
               <el-text>{{ question.text }}</el-text>
               <br>
-              <!--简答题-->
+              <!--简答-->
               <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 5 }" v-model="form.answers[question.id]"
                         v-if="question.type==='text'"
                         placeholder=""/>

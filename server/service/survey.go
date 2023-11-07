@@ -2,14 +2,15 @@ package service
 
 import (
 	"errors"
+	"mime/multipart"
+	"strings"
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
 	"github.com/sxz799/surveyX/utils"
 	"github.com/xuri/excelize/v2"
-	"mime/multipart"
-	"strings"
-	"time"
 )
 
 type SurveyService struct {
@@ -114,7 +115,7 @@ func (ts *SurveyService) Import(file *multipart.FileHeader) (err error) {
 		"无":     "",
 		"单选题":   "radio",
 		"多选题":   "checkbox",
-		"简答题":   "text",
+		"简答":    "text",
 	}
 	// 2.1 读取问卷信息
 	startTime, _ := time.Parse("20060102150405", surveyRow[2])
