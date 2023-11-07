@@ -37,7 +37,7 @@ func JWTAuth() gin.HandlerFunc {
 		tokenStr, err := c.Cookie("token")
 		if err != nil {
 			// 获取access-token失败
-			response.FailWithMessage("未获取到登录信息!", c)
+			response.FailWithMessage("Token Expired!", c)
 			c.Abort()
 			return
 		}
