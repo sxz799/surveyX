@@ -7,7 +7,6 @@ import (
 	"github.com/sxz799/surveyX/model/entity"
 	"github.com/sxz799/surveyX/utils"
 	"github.com/xuri/excelize/v2"
-	"gorm.io/gorm"
 	"mime/multipart"
 	"strings"
 	"time"
@@ -54,6 +53,7 @@ func (ts *SurveyService) List(s entity.SurveySearch) (response.PageResult, error
 
 func (ts *SurveyService) Add(s entity.Survey) (err error) {
 	s.Id = uuid.New().String()
+	s.Status = "new"
 	err = utils.DB.Debug().Create(&s).Error
 	return
 }
@@ -108,7 +108,7 @@ func (ts *SurveyService) Import(file *multipart.FileHeader) (err error) {
 	var dict = map[string]string{
 		"是":     "yes",
 		"否":     "no",
-		"更新":    "yes_but_update",
+		"更新":    "update",
 		"浏览器指纹": "finger",
 		"联系方式":  "contact",
 		"无":     "",
@@ -117,19 +117,19 @@ func (ts *SurveyService) Import(file *multipart.FileHeader) (err error) {
 		"简答题":   "text",
 	}
 	// 2.1 读取问卷信息
-	startTime, _ := time.Parse("20060102150405", surveyRow[3])
-	endTime, _ := time.Parse("20060102150405", surveyRow[4])
+	startTime, _ := time.Parse("20060102150405", surveyRow[2])
+	endTime, _ := time.Parse("20060102150405", surveyRow[3])
 	survey := entity.Survey{
 		Id:          uuid.New().String(),
 		Title:       surveyRow[0],
 		Description: surveyRow[1],
-		Status:      dict[surveyRow[2]],
+		Status:      "new",
 		StartTime:   startTime,
 		EndTime:     endTime,
-		NeedContact: dict[surveyRow[5]],
-		Repeat:      dict[surveyRow[6]],
-		RepeatCheck: dict[surveyRow[7]],
-		WaterMark:   surveyRow[8],
+		NeedContact: dict[surveyRow[4]],
+		Repeat:      dict[surveyRow[5]],
+		RepeatCheck: dict[surveyRow[6]],
+		WaterMark:   surveyRow[7],
 	}
 	var questions []entity.Question
 	questionRows := rows[3:]
@@ -163,26 +163,13 @@ func (ts *SurveyService) Import(file *multipart.FileHeader) (err error) {
 		questions = append(questions, question)
 	}
 
-	processQuestions := func(tx *gorm.DB, questionService *QuestionService, survey *entity.Survey, questions []entity.Question) error {
-		for _, question := range questions {
-			question.SurveyId = survey.Id
-			if err := questionService.Add(question); err != nil {
-				return err
-			}
+	utils.DB.Debug().Create(&survey)
+	for _, question := range questions {
+		question.SurveyId = survey.Id
+		if err := questionService.Add(question); err != nil {
+			return err
 		}
-		return nil
 	}
-	db := utils.DB.Debug()
-	tx := db.Begin()
-	if err = tx.Create(&survey).Error; err != nil {
-		tx.Rollback()
-		return
-	}
-	if err = processQuestions(tx, &questionService, &survey, questions); err != nil {
-		tx.Rollback()
-		return
-	}
-	tx.Commit()
 
 	return
 }

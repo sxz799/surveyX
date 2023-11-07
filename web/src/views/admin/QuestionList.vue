@@ -15,12 +15,13 @@
     <el-table :data="questionList">
       <el-table-column type="selection" width="50" align="center"/>
       <el-table-column label="序号" type="index" align="center"  width="80"/>
-      <el-table-column label="题目" align="center" key="text" prop="text" :show-overflow-tooltip="true"/>
-      <el-table-column label="类型" align="center" key="type" prop="type" :show-overflow-tooltip="true">
+      <el-table-column label="题目" align="center" key="text" prop="text" :show-overflow-tooltip="true">
         <template #default="scope">
-          <span v-if="scope.row.type === 'radio'">单选</span>
-          <span v-if="scope.row.type === 'checkbox'">多选</span>
-          <span v-if="scope.row.type === 'text'">简答题</span>
+
+          <el-tag v-if="scope.row.type === 'radio'">单选</el-tag>
+          <el-tag type="warning" v-if="scope.row.type === 'checkbox'">多选</el-tag>
+          <el-tag type="success" v-if="scope.row.type === 'text'">简答题</el-tag>
+          <span>{{ scope.row.text }}</span>
         </template>
       </el-table-column>
       <el-table-column label="选项" align="center" key="options" prop="options" :show-overflow-tooltip="true">

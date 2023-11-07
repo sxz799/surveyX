@@ -69,7 +69,7 @@ definitions:
           type: integer
         type: array
       repeat:
-        description: 是否允许重复提交 no yes yes_but_update
+        description: 是否允许重复提交 no yes update
         type: string
       repeat_check:
         description: 重复提交检查方式 finger contact

@@ -423,7 +423,7 @@ const docTemplate = `{
                     }
                 },
                 "repeat": {
-                    "description": "是否允许重复提交 no yes yes_but_update",
+                    "description": "是否允许重复提交 no yes update",
                     "type": "string"
                 },
                 "repeat_check": {

@@ -29,6 +29,26 @@
             </el-button>
           </el-col>
           <el-col :span="1.5">
+            <el-button
+                type="success"
+                plain
+                :icon="Plus"
+                v-if="selectedRows.length>0"
+                @click="handleStartCollect"
+            >开始收集
+            </el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button
+                type="danger"
+                plain
+                v-if="selectedRows.length>0"
+                :icon="Plus"
+                @click="handleStopCollect"
+            >停止收集
+            </el-button>
+          </el-col>
+          <el-col :span="1.5">
             <el-upload
                 :on-success="function (response) {
                   if (response.success) {
@@ -49,23 +69,22 @@
           </el-col>
         </el-row>
 
-        <el-table border fit :data="surveyList">
-          <!--          <el-table-column type="selection" align="center"/>-->
+        <el-table border fit :data="surveyList" @selection-change="handleSelectionChange">
+          <el-table-column type="selection" align="center"/>
           <el-table-column label="序号" width="70" align="center" type="index"/>
           <el-table-column label="标题" align="center" key="title" prop="title" :show-overflow-tooltip="false">
-
-          </el-table-column>
-
-          <el-table-column label="状态" align="center" key="status" prop="status"
-                           :show-overflow-tooltip="true">
             <template #default="scope">
-              <el-tag type="success" v-if="scope.row.status === 'yes'">启用</el-tag>
-              <el-tag type="danger" v-if="scope.row.status === 'no'">禁用</el-tag>
+              <el-tag v-if="scope.row.status === 'new'">初始</el-tag>
+              <el-tag type="success" v-if="scope.row.status === 'collecting'">收集中</el-tag>
+              <el-tag type="danger" v-if="scope.row.status === 'stop'">停止</el-tag>
+              {{ scope.row.title }}
             </template>
           </el-table-column>
-          <el-table-column label="开始时间" width="110" :editable="false" align="center" :formatter="dateTimeFormat" key="start_time"
+          <el-table-column label="开始时间" width="110" :editable="false" align="center" :formatter="dateTimeFormat"
+                           key="start_time"
                            prop="start_time"/>
-          <el-table-column label="结束时间" width="110" :editable="false" align="center" :formatter="dateTimeFormat" key="end_time"
+          <el-table-column label="结束时间" width="110" :editable="false" align="center" :formatter="dateTimeFormat"
+                           key="end_time"
                            prop="end_time"/>
           <el-table-column label="填写联系方式" width="90" align="center" key="need_contact" prop="need_contact">
             <template #default="scope">
@@ -77,7 +96,7 @@
             <template #default="scope">
               <el-tag v-if="scope.row.repeat === 'yes'">是</el-tag>
               <el-tag type="danger" v-if="scope.row.repeat === 'no'">否</el-tag>
-              <el-tag type="success" v-if="scope.row.repeat === 'yes_but_update'">更新</el-tag>
+              <el-tag type="success" v-if="scope.row.repeat === 'update'">更新</el-tag>
             </template>
           </el-table-column>
           <el-table-column label="重复提交检查方式" width="105" align="center" key="repeat_check" prop="repeat_check">
@@ -90,7 +109,7 @@
           <el-table-column label="操作" align="center" width="150">
             <template #default="scope">
               <el-button link type="primary" @click="handleEdit(scope.row)" :icon="Edit">修改</el-button>
-              <el-button link type="success" @click="handleQuestion(scope.row.id)" :icon="Tools">配置题目</el-button>
+              <el-button link type="success" @click="handleEditQuestion(scope.row.id)" :icon="Tools">配置题目</el-button>
               <el-popconfirm
                   confirm-button-text="确定"
                   cancel-button-text="取消"
@@ -140,14 +159,6 @@
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item label="状态" prop="status">
-                  <el-select v-model="form.status" placeholder="请选择状态">
-                    <el-option label="启用" value="yes"></el-option>
-                    <el-option label="禁用" value="no"></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="24">
                 <el-form-item label="填写联系方式" prop="need_contact">
                   <el-select v-model="form.need_contact" placeholder="请选择是否需要填写联系方式">
                     <el-option label="是" value="yes"></el-option>
@@ -160,7 +171,7 @@
                   <el-select v-model="form.repeat" placeholder="请选择是否可重复提交">
                     <el-option label="是" value="yes"></el-option>
                     <el-option label="否" value="no"></el-option>
-                    <el-option label="是(更新)" value="yes_but_update"></el-option>
+                    <el-option label="是(更新)" value="update"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -244,6 +255,8 @@ const dialogWidth = computed(() => {
   return window.innerWidth > 768 ? '60%' : '90%'
 })
 
+const selectedRows= ref([])
+
 const data = reactive({
   form: {
     options: []
@@ -254,14 +267,12 @@ const data = reactive({
     title: '',
   },
 });
-
 const {queryParams, form} = toRefs(data);
 
 
 const rules = ({
   title: [{required: true, message: '请填写', trigger: 'blur'}],
   description: [{required: true, message: '请填写', trigger: 'blur'}],
-  status: [{required: true, message: '请填写', trigger: 'change'}],
   need_contact: [{required: true, message: '请填写', trigger: 'change'}],
   repeat: [{required: true, message: '请填写', trigger: 'change'}],
   repeat_check: [{required: true, message: '请填写', trigger: 'change'}],
@@ -308,15 +319,15 @@ function handleCurrentChange(val) {
   getList()
 }
 
+function reset() {
+  form.value = {};
+}
+
 function handleAdd() {
   reset();
   open.value = true
   title.value = '新增'
 
-}
-
-function reset() {
-  form.value = {};
 }
 
 function handleEdit(row) {
@@ -328,7 +339,7 @@ function handleEdit(row) {
   })
 }
 
-function handleQuestion(id) {
+function handleEditQuestion(id) {
   surveyId.value = id
   openDetails.value = true
 }
@@ -345,8 +356,40 @@ function handleDelete(row) {
   })
 }
 
-function handleImport() {
 
+function handleStartCollect() {
+  selectedRows.value.forEach(row=>{
+    row.status='collecting'
+    update(row).then(res => {
+      if (res.success) {
+        ElMessage.success(row.title+'发布成功！');
+        getList()
+      } else {
+        ElMessage.error(row.title+'发布失败！');
+      }
+
+    })
+  })
+}
+
+function handleStopCollect() {
+  selectedRows.value.forEach(row=>{
+    row.status='stop'
+    update(row).then(res => {
+      if (res.success) {
+        ElMessage.success(row.title+'停止成功！');
+        getList()
+      } else {
+        ElMessage.error(row.title+'停止失败！');
+      }
+
+    })
+  })
+
+}
+
+function handleSelectionChange(val) {
+  selectedRows.value = val
 }
 
 function copySurveyLink(row) {

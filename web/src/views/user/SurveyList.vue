@@ -49,7 +49,7 @@ const total = ref(0)
 const queryParams = reactive({
   pageNum: 1,
   pageSize: 10,
-  status:'yes',
+  status:'collecting',
   start_time: new Date(),
   end_time: new Date(),
 })

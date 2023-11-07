@@ -80,7 +80,7 @@ func (as *AnswerService) Add(a []entity.Answer) (err error) {
 				return errors.New("该问卷不允许重复提交")
 			}
 		}
-	case "yes_but_update":
+	case "update":
 		switch check {
 		case "contact":
 			utils.DB.Model(&entity.Answer{}).Delete(&entity.Answer{}, "contact = ? and survey_id=?", contact, surveyId)
