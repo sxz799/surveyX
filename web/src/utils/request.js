@@ -26,6 +26,9 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
     (response) => {
+        if(response.data.message==="Token Expired"){
+            window.location.href="/login"
+        }
       // 在这里可以对响应数据进行处理
       return response.data;
     },

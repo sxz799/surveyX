@@ -47,7 +47,7 @@ func JWTAuth() gin.HandlerFunc {
 			return JwtKey, nil
 		})
 		if err != nil {
-			response.FailWithMessage("Token不正确!", c)
+			response.FailWithMessage("Token Expired!", c)
 			c.Abort()
 			return
 		}
@@ -59,7 +59,7 @@ func JWTAuth() gin.HandlerFunc {
 			c.Set("claims", claims)
 			c.Next()
 		} else {
-			response.FailWithMessage("Token已过期，请重新登录！", c)
+			response.FailWithMessage("Token Expired", c)
 			c.Abort()
 			return
 		}

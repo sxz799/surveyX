@@ -7,14 +7,14 @@
             plain
             :icon="Plus"
             @click="handleAdd"
-        >新增
+        >新增题目
         </el-button>
       </el-col>
     </el-row>
 
     <el-table :data="questionList">
       <el-table-column type="selection" width="50" align="center"/>
-      <el-table-column label="序号" type="index" align="center"  width="80"/>
+      <el-table-column label="序号" width="70" type="index" align="center" />
       <el-table-column label="题目" align="center" key="text" prop="text" :show-overflow-tooltip="true">
         <template #default="scope">
 
@@ -34,16 +34,24 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="排序" align="center" key="order" prop="order" :show-overflow-tooltip="true"/>
+      <el-table-column label="排序" width="70" align="center" key="order" prop="order" :show-overflow-tooltip="true"/>
       <el-table-column label="操作" align="center" width="150">
         <template #default="scope">
           <el-button link type="primary" @click="handleEdit(scope.row)" :icon="Edit">修改</el-button>
-          <el-button link type="primary" @click="handleDelete(scope.row)" :icon="Delete">删除</el-button>
+          <el-popconfirm
+              confirm-button-text="确定"
+              cancel-button-text="取消"
+              @confirm="handleDelete(scope.row)"
+              title="确定要删除吗?">
+            <template #reference>
+              <el-button link type="danger" :icon="Delete">删除</el-button>
+            </template>
+          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
-    <el-divider/>
     <el-pagination
+        style="padding-top: 20px"
         small
         :style="{'justify-content':'center'}"
         :background="true"
@@ -130,6 +138,7 @@ import {computed, onMounted, reactive, ref, toRefs, watch} from 'vue'
 import {list, add, del, update, get} from "@/api/admin/question.js";
 
 import {Delete, Edit, Plus} from "@element-plus/icons";
+import {ElMessage} from "element-plus";
 
 const props = defineProps({
   surveyId: String,
@@ -173,7 +182,6 @@ onMounted(() => {
 });
 
 function getList() {
-  console.log(queryParams.value)
   list(queryParams.value).then(res => {
     questionList.value = res.data.list
     total.value = res.data.total
@@ -202,10 +210,10 @@ function handleEdit(row) {
 function handleDelete(row) {
   del(row.id).then(res => {
     if (res.success) {
-      this.$message.success(res.message)
+      ElMessage.success(res.message)
       getList()
     } else {
-      this.$message.error(res.message)
+      ElMessage.error(res.message)
     }
   })
 }
@@ -218,9 +226,9 @@ function submitForm(elForm) {
           if (res.success) {
             open.value = false
             getList()
-            this.$message.success(res.message)
+            ElMessage.success(res.message)
           } else {
-            this.$message.error(res.message)
+            ElMessage.error(res.message)
           }
         })
       } else {
@@ -228,9 +236,9 @@ function submitForm(elForm) {
           if (res.success) {
             open.value = false
             getList()
-            this.$message.success(res.message)
+            ElMessage.success(res.message)
           } else {
-            this.$message.error(res.message)
+            ElMessage.error(res.message)
           }
         })
       }
@@ -289,5 +297,7 @@ function handleCurrentChange() {
 
 <style scoped>
 
-
+.mb8 {
+  margin-bottom: 8px;
+}
 </style>

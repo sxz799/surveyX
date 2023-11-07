@@ -68,8 +68,12 @@
           </el-form-item>
         </el-form>
         <el-button class="submit-button" v-if="allowSubmit" @click="submitAnswer(answersRef)">提交</el-button>
+        <div style="position: relative; bottom: 0; left: 0; right: 0; text-align: center; padding: 20px 0;">
+          <el-link type="info" href="https://github.com/sxz799/surveyX">SurveyX 提供技术支持</el-link>
+        </div>
       </el-col>
       <el-col :span="6" :xs="0"/>
+
     </el-row>
   </el-watermark>
 </template>
