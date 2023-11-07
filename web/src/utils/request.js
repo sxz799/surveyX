@@ -1,4 +1,5 @@
 import axios from 'axios'
+import router from "@/utils/router.js";
 
 
 
@@ -26,8 +27,8 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
     (response) => {
-        if(response.data.message==="Token Expired"){
-            window.location.href="/login"
+        if(response.data.message==="Token Expired!"){
+            router.push({path: '/login'})
         }
       // 在这里可以对响应数据进行处理
       return response.data;
