@@ -24,8 +24,7 @@ FROM node:16
 WORKDIR /go/src/github.com/sxz799/surveyX/web
 COPY ./web/ .
 
-RUN rm vite.config.js
-RUN mv vite.config-docker.js vite.config.js
+RUN sed -i '9s|//||' vite.config.js
 
 RUN yarn && yarn build
 
