@@ -285,11 +285,13 @@ function removeOption(op) {
   }
 }
 
-function handleSizeChange() {
+function handleSizeChange(val) {
+  queryParams.value.pageSize = val
   getList()
 }
 
-function handleCurrentChange() {
+function handleCurrentChange(val) {
+  queryParams.value.pageSize = val
   getList()
 }
 

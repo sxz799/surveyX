@@ -431,7 +431,7 @@ function submitForm(elForm) {
 .logo-img {
   height: 120px;
   width: auto;
-  margin-right: 0px;
+  margin-right: 0;
 }
 
 .main-title {
