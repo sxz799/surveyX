@@ -1,7 +1,7 @@
 db :
   sqlType : sqlite  # mysql || sqlite || postgres
   database: survey
-  host : dpg-cl29gtgp2gis7385crbg-a
+  host : dpg-cl29gtgp2gis7385crbg-a.oregon-postgres.render.com
   port : 5432
   username: render_3kh7_user
   password: Ul5g400SAQZriDl16TzLc6tXAsS1ccUI

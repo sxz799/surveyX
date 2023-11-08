@@ -38,8 +38,7 @@ jobs:
         
     - name: Build Web
       run: |
-        rm vite.config.js
-        mv vite.config-docker.js vite.config.js
+        sed -i '9s|//||' vite.config.js
         npm install && npm run build
       working-directory: ./web
 
