@@ -17,6 +17,8 @@ RUN go env -w GO111MODULE=on \
     && go mod tidy \
     && go build -o app .
 
+RUN sed -i '2s|sqlite|postgres|' conf.yaml 
+RUN sed -i '3s|survey|render_3kh7|' conf.yaml 
 
 FROM node:16
 
