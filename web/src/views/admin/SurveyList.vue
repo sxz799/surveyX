@@ -429,7 +429,7 @@ function submitForm(elForm) {
 }
 
 .logo-img {
-  height: 120px;
+  height: 80px;
   width: auto;
   margin-right: 0;
 }
