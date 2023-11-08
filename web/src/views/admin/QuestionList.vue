@@ -5,6 +5,7 @@
         <el-button
             type="primary"
             plain
+            size="small"
             :icon="Plus"
             @click="handleAdd"
         >新增题目

@@ -9,7 +9,7 @@
         </div>
       </el-header>
       <el-main>
-        <el-row :gutter="1">
+        <el-row :gutter="4">
 
           <el-col :span="8" :xs="24">
             <el-card>
@@ -30,20 +30,20 @@
             </el-form>
             <el-row :gutter="5" class="mb8">
               <el-col :span="1.5">
-                <el-button type="primary" plain :icon="Plus" @click="handleAdd">新建问卷</el-button>
+                <el-button type="primary" plain size="small" :icon="Plus" @click="handleAdd">新建问卷</el-button>
               </el-col>
               <el-col :span="1.5">
-                <el-button type="success" plain :icon="VideoPlay" :disabled="selectedRows.length===0"
+                <el-button type="success" plain size="small" :icon="VideoPlay" :disabled="selectedRows.length===0"
                            @click="handleStartCollect">开始收集
                 </el-button>
               </el-col>
               <el-col :span="1.5">
-                <el-button type="danger" plain :disabled="selectedRows.length===0" :icon="VideoPause"
+                <el-button type="danger" plain size="small" :disabled="selectedRows.length===0" :icon="VideoPause"
                            @click="handleStopCollect">停止收集
                 </el-button>
               </el-col>
               <el-col :span="1.5">
-                <el-button type="success" plain :disabled="selectedRows.length!==1" :icon="Link"
+                <el-button type="success" plain size="small" :disabled="selectedRows.length!==1" :icon="Link"
                            @click="copySurveyLink">复制链接
                 </el-button>
               </el-col>
@@ -63,7 +63,7 @@
                     accept=".xlsx"
                     :show-file-list="false"
                     action="/api/admin/survey/import">
-                  <el-button color="#555555" :icon="UploadFilled" plain>上传问卷</el-button>
+                  <el-button color="#555555" size="small" :icon="UploadFilled" plain>上传问卷</el-button>
                 </el-upload>
               </el-col>
             </el-row>
@@ -115,6 +115,7 @@
           </el-col>
 
           <el-col :span="16" :xs="24">
+            <div style="margin-bottom: 4px;">
             <el-card>
               <el-form ref="surveyRef" :model="form" :inline="true" size="small" :rules="rules">
                 <el-form-item label="标题" prop="title">
@@ -142,13 +143,13 @@
                 </el-form-item>
 
                 <el-form-item label="填写联系方式" prop="need_contact">
-                  <el-select v-model="form.need_contact" placeholder="请选择是否需要填写联系方式">
+                  <el-select v-model="form.need_contact" placeholder="请选择">
                     <el-option label="是" value="yes"></el-option>
                     <el-option label="否" value="no"></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item label="可重复提交" prop="repeat">
-                  <el-select v-model="form.repeat" placeholder="请选择是否可重复提交">
+                  <el-select v-model="form.repeat" placeholder="请选择">
                     <el-option label="是" value="yes"></el-option>
                     <el-option label="否" value="no"></el-option>
                     <el-option label="更新" value="update"></el-option>
@@ -156,7 +157,7 @@
                 </el-form-item>
 
                 <el-form-item  label="重复提交检查方式" prop="repeat_check">
-                  <el-select v-model="form.repeat_check" placeholder="请选择重复提交检查方式">
+                  <el-select v-model="form.repeat_check" placeholder="请选择">
                     <el-option v-if="form.need_contact==='yes'" label="联系方式" value="contact"></el-option>
                     <el-option label="浏览器指纹" value="finger"></el-option>
                   </el-select>
@@ -168,11 +169,12 @@
                 </el-form-item>
                 <el-form-item>
                   <el-button type="primary" @click="submitForm(surveyRef)">{{buttonName}}</el-button>
-                  <el-button @click="open = false">取 消</el-button>
                 </el-form-item>
 
               </el-form>
             </el-card>
+            </div>
+            <div style="margin-bottom: 4px;">
             <el-card>
             <el-tabs >
               <el-tab-pane label="题目管理">
@@ -183,6 +185,7 @@
               </el-tab-pane>
             </el-tabs>
             </el-card>
+            </div>
           </el-col>
         </el-row>
 
@@ -426,9 +429,9 @@ function submitForm(elForm) {
 }
 
 .logo-img {
-  height: 40px;
+  height: 120px;
   width: auto;
-  margin-right: 10px;
+  margin-right: 0px;
 }
 
 .main-title {
