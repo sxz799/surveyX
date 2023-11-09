@@ -15,7 +15,7 @@ COPY ./server/ .
 RUN go env -w GO111MODULE=on \
     && go env \
     && go mod tidy \
-    && go build -o app .
+    && go build -ldflags="-s -w" -o app .
 
 FROM node:16
 
