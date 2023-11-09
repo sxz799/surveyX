@@ -49,17 +49,8 @@
               </el-col>
               <el-col :span="1.5">
                 <el-upload
-                    :on-success="function (response) {
-                  if (response.success) {
-                    ElMessage.success('上传成功！');
-                    getList()
-                  } else {
-                    ElMessage.error('上传失败！');
-                  }
-                }"
-                    :on-error="function (response) {
-                  ElMessage.error('上传失败！');
-                }"
+                    :on-success="handleUploadSuccess"
+                    :on-error="handleUploadFail"
                     accept=".xlsx"
                     :show-file-list="false"
                     action="/api/admin/survey/import">
@@ -200,7 +191,7 @@ import {
   Link,
   UploadFilled,
   VideoPlay,
-  VideoPause, Edit
+  VideoPause
 } from "@element-plus/icons";
 import useClipboard from 'vue-clipboard3';
 import {ElMessage} from "element-plus";
@@ -275,7 +266,7 @@ function handleCurrentChange(val) {
 }
 
 function reset() {
-  form.value = {};
+  form.value = {options: []};
 }
 
 function handleAdd() {
@@ -339,6 +330,19 @@ function handleClickRow(row) {
     form.value = res.data
     open.value = true
   })
+}
+
+function handleUploadSuccess(response) {
+  if (response.success) {
+    ElMessage.success('上传成功！');
+    getList()
+  } else {
+    ElMessage.error('上传失败！');
+  }
+}
+
+function handleUploadFail() {
+  ElMessage.error('上传失败！')
 }
 
 function copySurveyLink() {
