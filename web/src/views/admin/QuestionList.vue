@@ -291,7 +291,7 @@ function handleSizeChange(val) {
 }
 
 function handleCurrentChange(val) {
-  queryParams.value.pageSize = val
+  queryParams.value.pageNum = val
   getList()
 }
 
