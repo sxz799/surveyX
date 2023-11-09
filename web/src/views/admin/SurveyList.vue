@@ -10,8 +10,8 @@
       </el-header>
       <el-main>
         <el-row :gutter="4">
-
           <el-col :span="8" :xs="24">
+            <div style="margin-bottom: 4px;">
             <el-card>
             <el-form :model="queryParams" size="small" :inline="true" >
               <el-form-item label="标题" prop="roleName">
@@ -67,14 +67,11 @@
                 </el-upload>
               </el-col>
             </el-row>
-
             <el-table border fit :highlight-current-row="true" :data="surveyList" @row-click="handleClickRow"
                       @selection-change="handleSelectionChange">
               <el-table-column type="selection" align="center"/>
               <el-table-column label="序号" width="70" align="center" type="index"/>
               <el-table-column label="标题" align="center" key="title" prop="title" :show-overflow-tooltip="false"/>
-
-
               <el-table-column label="状态" align="center"  width="100"  key="title" prop="status" :show-overflow-tooltip="false">
                 <template #default="scope">
                   <el-tag v-if="scope.row.status === 'new'">初始</el-tag>
@@ -96,7 +93,6 @@
                 </template>
               </el-table-column>
             </el-table>
-
             <el-pagination
                 style="padding-top: 20px"
                 small
@@ -112,12 +108,13 @@
                 @size-change="handleSizeChange"
             />
             </el-card>
-          </el-col>
-
-          <el-col :span="16" :xs="24">
+            </div>
             <div style="margin-bottom: 4px;">
-            <el-card>
-              <el-form ref="surveyRef" :model="form" :inline="true" size="small" :rules="rules">
+            <el-card v-if="open">
+              <template #header>
+                <span>{{title}}</span>
+              </template>
+              <el-form :disabled="title==='详 情'" @click="title='修 改'" ref="surveyRef" :model="form" :inline="true" size="small" :rules="rules">
                 <el-form-item label="标题" prop="title">
                   <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" v-model="form.title"
                             placeholder="请输入标题"></el-input>
@@ -133,7 +130,6 @@
                       placeholder="选择开始日期时间"
                   />
                 </el-form-item>
-
                 <el-form-item label="结束时间" prop="end_time">
                   <el-date-picker
                       v-model="form.end_time"
@@ -141,7 +137,6 @@
                       placeholder="选择结束日期时间"
                   />
                 </el-form-item>
-
                 <el-form-item label="填写联系方式" prop="need_contact">
                   <el-select v-model="form.need_contact" placeholder="请选择">
                     <el-option label="是" value="yes"></el-option>
@@ -155,26 +150,24 @@
                     <el-option label="更新" value="update"></el-option>
                   </el-select>
                 </el-form-item>
-
                 <el-form-item  label="重复提交检查方式" prop="repeat_check">
                   <el-select v-model="form.repeat_check" placeholder="请选择">
                     <el-option v-if="form.need_contact==='yes'" label="联系方式" value="contact"></el-option>
                     <el-option label="浏览器指纹" value="finger"></el-option>
                   </el-select>
                 </el-form-item>
-
                 <el-form-item label="水印" prop="water_mark">
                   <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" v-model="form.water_mark"
                             placeholder="请输入水印"></el-input>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" @click="submitForm(surveyRef)">{{buttonName}}</el-button>
+                  <el-button type="primary" @click="submitForm(surveyRef)">确定</el-button>
                 </el-form-item>
-
               </el-form>
             </el-card>
             </div>
-            <div style="margin-bottom: 4px;">
+          </el-col>
+          <el-col :span="16" :xs="24">
             <el-card>
             <el-tabs >
               <el-tab-pane label="题目管理">
@@ -185,10 +178,8 @@
               </el-tab-pane>
             </el-tabs>
             </el-card>
-            </div>
           </el-col>
         </el-row>
-
       </el-main>
     </el-container>
     <div style="position: static; bottom: 0; left: 0; right: 0; text-align: center; padding: 20px 0;">
@@ -209,25 +200,20 @@ import {
   Link,
   UploadFilled,
   VideoPlay,
-  VideoPause
+  VideoPause, Edit
 } from "@element-plus/icons";
 import useClipboard from 'vue-clipboard3';
 import {ElMessage} from "element-plus";
-
 
 const {toClipboard} = useClipboard();
 const surveyRef = ref()
 const surveyId = ref('')
 const open = ref(false)
 const openDetails = ref(false)
-
 const surveyList = ref([])
 const total = ref(0)
-
-const buttonName=ref('新 增')
-
+const title=ref('新 增')
 const selectedRows = ref([])
-
 const data = reactive({
   form: {
     options: []
@@ -293,11 +279,10 @@ function reset() {
 }
 
 function handleAdd() {
-  buttonName.value='新 增'
+  title.value='新 增'
   reset();
   open.value = true
 }
-
 
 function handleDelete(row) {
   del(row.id).then(res => {
@@ -310,7 +295,6 @@ function handleDelete(row) {
 
   })
 }
-
 
 function handleStartCollect() {
   selectedRows.value.forEach(row => {
@@ -348,7 +332,7 @@ function handleSelectionChange(val) {
 }
 
 function handleClickRow(row) {
-  buttonName.value='修 改'
+  title.value='详 情'
   surveyId.value = row.id
   openDetails.value = true
   get(row.id).then(res => {
@@ -357,9 +341,7 @@ function handleClickRow(row) {
   })
 }
 
-
-function copySurveyLink(row) {
-
+function copySurveyLink() {
   try {
     //获取url
     let url = 'http://' + window.location.host + '/survey/' + selectedRows.value[0].id
@@ -368,7 +350,6 @@ function copySurveyLink(row) {
   } catch (e) {
     ElMessage.error('复制失败！');
   }
-
 }
 
 function submitForm(elForm) {
@@ -394,10 +375,10 @@ function submitForm(elForm) {
           }
         })
       }
+      open.value=false
     }
   })
 }
-
 
 </script>
 
@@ -410,8 +391,6 @@ function submitForm(elForm) {
 .mb8 {
   margin-bottom: 8px;
 }
-
-
 
 .el-header {
   display: flex;
@@ -445,10 +424,5 @@ function submitForm(elForm) {
   margin-left: 5px;
   color: #606266;
 }
-
-
-
-
-
 
 </style>
