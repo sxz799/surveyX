@@ -10,13 +10,7 @@ import (
 var as service.AnswerService
 
 // Add godoc
-// @Summary 添加
-// @Description 添加答案
-// @Tags 答案
-// @Accept json
-// @Produce json
-// @Param answer body []entity.Answer true "答案"
-// @Router /answer/ [post]
+
 func Add(c *gin.Context) {
 	var a []entity.Answer
 	err := c.ShouldBind(&a)

@@ -35,4 +35,5 @@ func RegRouter(e *gin.Engine) {
 		})
 		log.Println("已开启前后端整合模式！")
 	}
+
 }

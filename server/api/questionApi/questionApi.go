@@ -11,13 +11,6 @@ import (
 var qs service.QuestionService
 
 // List godoc
-// @Summary 题目列表
-// @Description 获取题目列表列表
-// @Tags 题目
-// @Produce  json
-// @Param page query request.PageInfo false "分页信息"
-// @Param id path int true "题目id"
-// @Router /question/list [get]
 func List(c *gin.Context) {
 	var q entity.QuestionSearch
 	err := c.ShouldBindQuery(&q)
@@ -33,13 +26,6 @@ func List(c *gin.Context) {
 }
 
 // Add godoc
-// @Summary 添加
-// @Description 添加题目
-// @Tags 题目
-// @Accept json
-// @Produce json
-// @Param question body entity.Question true "题目"
-// @Router /question/ [post]
 func Add(c *gin.Context) {
 	var q entity.Question
 	err := c.ShouldBind(&q)
@@ -56,13 +42,6 @@ func Add(c *gin.Context) {
 }
 
 // Update godoc
-// @Summary 更新
-// @Description 更新题目
-// @Tags 题目
-// @Accept json
-// @Produce json
-// @Param question body entity.Question true "题目"
-// @Router /question/ [put]
 func Update(c *gin.Context) {
 	var q entity.Question
 	err := c.ShouldBind(&q)
@@ -78,11 +57,6 @@ func Update(c *gin.Context) {
 }
 
 // Get godoc
-// @Summary 获取
-// @Description 获取题目
-// @Tags 题目
-// @Produce  json
-// @Router /question/{id} [get]
 func Get(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -98,11 +72,6 @@ func Get(c *gin.Context) {
 }
 
 // Del godoc
-// @Summary 删除
-// @Description 删除题目
-// @Tags 题目
-// @Produce  json
-// @Router /question/{id} [delete]
 func Del(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

@@ -8,13 +8,7 @@ import (
 )
 
 // Login godoc
-// @Summary 登录
-// @Description 登录
-// @Tags 公共
-// @Accept json
-// @Produce json
-// @Param key body string true "key"
-// @Router /login [post]
+
 func Login(c *gin.Context) {
 	type Key struct {
 		Key string `json:"key" form:"key" binding:"required"`
