@@ -26,17 +26,6 @@ jobs:
         npm install && npm run build
       working-directory: ./web
 
-    - name: Copy  Files
-      run: |
-        mkdir suveryX_Web
-        cp -r web/dist suveryX_Web/
-
-    - name: Upload Artifact-Web
-      uses: actions/upload-artifact@v2
-      with:
-       name: suveryX-artifact-web
-       path: ${{ github.workspace }}/web
-
   build-linux:
     needs: build-web
     runs-on: ubuntu-latest
@@ -62,7 +51,7 @@ jobs:
         mkdir suveryX_Linux
         cp -r server/conf.yaml suveryX_Linux/
         cp -r server/bin/app_linux suveryX_Linux/
-        cp -r ${{ github.workspace }}/web suveryX_Linux/
+        cp -r web/dist suveryX_Linux/
         
     - name: Upload Artifact-Linux
       uses: actions/upload-artifact@v2
