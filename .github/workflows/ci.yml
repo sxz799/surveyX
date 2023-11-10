@@ -25,8 +25,16 @@ jobs:
       with:
         go-version: 1.21
 
-    - name: Build Server
-      run:  go build -ldflags="-s -w" -o bin/app .
+    - name: Build Server for Mac
+      run: GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o bin/app_darwin .
+      working-directory: ./server
+
+    - name: Build Server for Linux
+      run: GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/app_linux .
+      working-directory: ./server
+
+    - name: Build Server for Windows
+      run: GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o bin/app_windows.exe .
       working-directory: ./server
       
 
@@ -42,21 +50,55 @@ jobs:
         npm install && npm run build
       working-directory: ./web
 
-    - name: Move  Files
+    - name: Copy  Files
       run: |
-        mkdir suveryX
-        mv server/bin/app suveryX/
-        mv server/conf.yaml suveryX/
-        mv web/dist suveryX/dist/
+        mkdir suveryX_Mac
+        mkdir suveryX_Linux
+        mkdir suveryX_Windows
 
-    - name: Upload artifact
+        copy web/dist suveryX_Mac/dist/
+        copy web/dist suveryX_Linux/dist/
+        copy web/dist suveryX_Windows/dist/
+
+        copy server/conf.yaml suveryX_Mac/
+        copy server/conf.yaml suveryX_Linux/
+        copy server/conf.yaml suveryX_Windows/
+
+        copy server/bin/app_darwin suveryX_Mac/
+        copy server/bin/app_linux suveryX_Linux/
+        copy server/bin/app_windows suveryX_Windows/
+        
+
+    - name: Upload Artifact-Mac
       uses: actions/upload-artifact@v2
       with:
-       name: suveryX-artifact
-       path: ${{ github.workspace }}/suveryX
+       name: suveryX-artifact-mac
+       path: ${{ github.workspace }}/suveryX_Mac
 
-    - name: Download a Build Artifact
+    - name: Download a Build Artifact-Mac
       uses: actions/download-artifact@v2.1.1
       with:
-       name: suveryX-artifact
+       name: suveryX-artifact-mac
+     
+    - name: Upload Artifact-Linux
+      uses: actions/upload-artifact@v2
+      with:
+       name: suveryX-artifact-linux
+       path: ${{ github.workspace }}/suveryX_Linux
+
+    - name: Download a Build Artifact-Linux
+      uses: actions/download-artifact@v2.1.1
+      with:
+       name: suveryX-artifact-linux
+
+    - name: Upload Artifact-Windows
+      uses: actions/upload-artifact@v2
+      with:
+       name: suveryX-artifact-windows
+       path: ${{ github.workspace }}/suveryX_Windows
+
+    - name: Download a Build Artifact-Windows
+      uses: actions/download-artifact@v2.1.1
+      with:
+       name: suveryX-artifact-windows
     
