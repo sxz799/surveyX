@@ -28,15 +28,15 @@ jobs:
       
     - name: Move Files
       run: |
-        mkdir suveryX_WEB
-        tar -czf suveryX-artifact-web.tar.gz web/dist
-        mv suveryX-artifact-web.tar.gz suveryX_WEB/
+        mkdir surveyX_WEB
+        tar -czf surveyX-artifact-web.tar.gz web/dist
+        mv surveyX-artifact-web.tar.gz surveyX_WEB/
       
     - name: Upload Artifact-Web
       uses: actions/upload-artifact@v2
       with:
-       name: suveryX-artifact-web
-       path: ${{ github.workspace }}/suveryX_WEB
+       name: surveyX-artifact-web
+       path: ${{ github.workspace }}/surveyX_WEB
 
   build-linux:
     needs: build-web
@@ -61,26 +61,26 @@ jobs:
     - name: Download Web Artifact
       uses: actions/download-artifact@v2.1.1
       with:
-       name: suveryX-artifact-web
+       name: surveyX-artifact-web
 
     - name: Copy Files
       run: |
-        mkdir suveryX_Linux
-        tar xzf suveryX-artifact-web.tar.gz -C .
-        cp -r web/dist suveryX_Linux/
-        cp -r server/conf.yaml suveryX_Linux/
-        cp -r server/bin/app_linux suveryX_Linux/
+        mkdir surveyX_Linux
+        tar xzf surveyX-artifact-web.tar.gz -C .
+        cp -r web/dist surveyX_Linux/
+        cp -r server/conf.yaml surveyX_Linux/
+        cp -r server/bin/app_linux surveyX_Linux/
 
     - name: Upload Artifact-Linux
       uses: actions/upload-artifact@v2
       with:
-       name: suveryX-artifact-linux
-       path: ${{ github.workspace }}/suveryX_Linux
+       name: surveyX-artifact-linux
+       path: ${{ github.workspace }}/surveyX_Linux
 
     - name: Download a Build Artifact-Linux
       uses: actions/download-artifact@v2.1.1
       with:
-       name: suveryX-artifact-linux
+       name: surveyX-artifact-linux
 
   build-mac:
     needs: build-web
@@ -101,26 +101,26 @@ jobs:
     - name: Download Web Artifact
       uses: actions/download-artifact@v2.1.1
       with:
-       name: suveryX-artifact-web
+       name: surveyX-artifact-web
 
     - name: Copy Files
       run: |
-        mkdir suveryX_Mac
-        tar xzf suveryX-artifact-web.tar.gz -C .
-        cp -r web/dist suveryX_Mac/
-        cp -r server/conf.yaml suveryX_Mac/
-        cp -r server/bin/app_mac suveryX_Mac/
+        mkdir surveyX_Mac
+        tar xzf surveyX-artifact-web.tar.gz -C .
+        cp -r web/dist surveyX_Mac/
+        cp -r server/conf.yaml surveyX_Mac/
+        cp -r server/bin/app_mac surveyX_Mac/
 
     - name: Upload Artifact-Mac
       uses: actions/upload-artifact@v2
       with:
-       name: suveryX-artifact-mac
-       path: ${{ github.workspace }}/suveryX_Mac
+       name: surveyX-artifact-mac
+       path: ${{ github.workspace }}/surveyX_Mac
 
     - name: Download a Build Artifact-Mac
       uses: actions/download-artifact@v2.1.1
       with:
-       name: suveryX-artifact-mac
+       name: surveyX-artifact-mac
 
   build-windows:
     needs: build-web
@@ -141,23 +141,23 @@ jobs:
     - name: Download Web Artifact
       uses: actions/download-artifact@v2.1.1
       with:
-       name: suveryX-artifact-web
+       name: surveyX-artifact-web
 
     - name: Copy Files
       run: |
-        mkdir suveryX_Windows
-        tar xzf suveryX-artifact-web.tar.gz -C .
-        cp -r web/dist suveryX_Windows/
-        cp -r server/conf.yaml suveryX_Windows/
-        cp -r server/bin/app_windows.exe suveryX_Windows/
+        mkdir surveyX_Windows
+        tar xzf surveyX-artifact-web.tar.gz -C .
+        cp -r web/dist surveyX_Windows/
+        cp -r server/conf.yaml surveyX_Windows/
+        cp -r server/bin/app_windows.exe surveyX_Windows/
 
     - name: Upload Artifact-Windows
       uses: actions/upload-artifact@v2
       with:
-       name: suveryX-artifact-windows
-       path: ${{ github.workspace }}/suveryX_Windows
+       name: surveyX-artifact-windows
+       path: ${{ github.workspace }}/surveyX_Windows
 
     - name: Download a Build Artifact-Windows
       uses: actions/download-artifact@v2.1.1
       with:
-       name: suveryX-artifact-windows
+       name: surveyX-artifact-windows
