@@ -29,13 +29,15 @@ jobs:
     - name: Move Files
       run: |
         mkdir suveryX_WEB
-        mv web/dist suveryX_WEB/
+        tar -czf suveryX-artifact-web.tar.gz web/dist
+        mv suveryX-artifact-web.tar.gz suveryX_WEB/
+        
         
     - name: Upload Artifact-Web
       uses: actions/upload-artifact@v2
       with:
        name: suveryX-artifact-web
-       path: ${{ github.workspace }}
+       path: ${{ github.workspace }}/suveryX_WEB
 
   build-linux:
     needs: build-web
