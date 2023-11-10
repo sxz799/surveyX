@@ -31,7 +31,6 @@ jobs:
         mkdir suveryX_WEB
         tar -czf suveryX-artifact-web.tar.gz web/dist
         mv suveryX-artifact-web.tar.gz suveryX_WEB/
-      working-directory: ./web
       
     - name: Upload Artifact-Web
       uses: actions/upload-artifact@v2
