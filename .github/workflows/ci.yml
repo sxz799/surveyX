@@ -69,7 +69,6 @@ jobs:
         tar xzf suveryX-artifact-web.tar.gz -C suveryX_Linux/
         cp -r server/conf.yaml suveryX_Linux/
         cp -r server/bin/app_linux suveryX_Linux/
-        cp -r dist suveryX_Linux/
         
     - name: Download a Build Artifact
       uses: actions/download-artifact@v2.1.1
