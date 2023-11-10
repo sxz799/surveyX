@@ -32,7 +32,6 @@ jobs:
         tar -czf suveryX-artifact-web.tar.gz web/dist
         mv suveryX-artifact-web.tar.gz suveryX_WEB/
         
-        
     - name: Upload Artifact-Web
       uses: actions/upload-artifact@v2
       with:
@@ -59,9 +58,15 @@ jobs:
       run: go build -ldflags="-s -w" -o bin/app_linux .
       working-directory: ./server
 
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v2.1.1
+      with:
+       name: suveryX-artifact-web
+
     - name: Copy Files
       run: |
         mkdir suveryX_Linux
+        tar xzf suveryX-artifact-web.tar.gz -C suveryX_Linux/
         cp -r server/conf.yaml suveryX_Linux/
         cp -r server/bin/app_linux suveryX_Linux/
         cp -r dist suveryX_Linux/
