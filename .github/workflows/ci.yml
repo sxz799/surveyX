@@ -29,7 +29,7 @@ jobs:
     - name: Move Files
       run: |
         mkdir suveryX_WEB
-        tar -czf suveryX-artifact-web.tar.gz web/dist/
+        tar -czf suveryX-artifact-web.tar.gz web/dist
         mv suveryX-artifact-web.tar.gz suveryX_WEB/
       working-directory: ./web
       
