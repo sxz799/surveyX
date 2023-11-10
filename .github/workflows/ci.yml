@@ -29,9 +29,10 @@ jobs:
     - name: Move Files
       run: |
         mkdir suveryX_WEB
-        tar -czf suveryX-artifact-web.tar.gz web/dist
+        tar -czf suveryX-artifact-web.tar.gz dist
         mv suveryX-artifact-web.tar.gz suveryX_WEB/
-        
+      working-directory: ./web
+      
     - name: Upload Artifact-Web
       uses: actions/upload-artifact@v2
       with:
@@ -58,7 +59,7 @@ jobs:
       run: go build -ldflags="-s -w" -o bin/app_linux .
       working-directory: ./server
 
-    - name: Download a Build Artifact
+    - name: Download Web Artifact
       uses: actions/download-artifact@v2.1.1
       with:
        name: suveryX-artifact-web
