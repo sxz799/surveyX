@@ -82,4 +82,82 @@ jobs:
       with:
        name: suveryX-artifact-linux
 
+  build-mac:
+    needs: build-web
+    runs-on: macos-latest
     
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.21
+
+    - name: Build Server for Mac
+      run: go build -ldflags="-s -w" -o bin/app_mac .
+      working-directory: ./server
+
+    - name: Download Web Artifact
+      uses: actions/download-artifact@v2.1.1
+      with:
+       name: suveryX-artifact-web
+
+    - name: Copy Files
+      run: |
+        mkdir suveryX_Mac
+        tar xzf suveryX-artifact-web.tar.gz -C .
+        cp -r web/dist suveryX_Mac/
+        cp -r server/conf.yaml suveryX_Mac/
+        cp -r server/bin/app_mac suveryX_Mac/
+
+    - name: Upload Artifact-Mac
+      uses: actions/upload-artifact@v2
+      with:
+       name: suveryX-artifact-mac
+       path: ${{ github.workspace }}/suveryX_Mac
+
+    - name: Download a Build Artifact-Mac
+      uses: actions/download-artifact@v2.1.1
+      with:
+       name: suveryX-artifact-mac
+
+  build-windows:
+    needs: build-web
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.21
+
+    - name: Build Server for Windows
+      run: go build -ldflags="-s -w" -o bin/app_windows.exe .
+      working-directory: ./server
+
+    - name: Download Web Artifact
+      uses: actions/download-artifact@v2.1.1
+      with:
+       name: suveryX-artifact-web
+
+    - name: Copy Files
+      run: |
+        mkdir suveryX_Windows
+        tar xzf suveryX-artifact-web.tar.gz -C .
+        cp -r web/dist suveryX_Windows/
+        cp -r server/conf.yaml suveryX_Windows/
+        cp -r server/bin/app_windows.exe suveryX_Windows/
+
+    - name: Upload Artifact-Windows
+      uses: actions/upload-artifact@v2
+      with:
+       name: suveryX-artifact-windows
+       path: ${{ github.workspace }}/suveryX_Windows
+
+    - name: Download a Build Artifact-Windows
+      uses: actions/download-artifact@v2.1.1
+      with:
+       name: suveryX-artifact-windows
