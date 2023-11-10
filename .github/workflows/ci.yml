@@ -29,7 +29,7 @@ jobs:
     - name: Move Files
       run: |
         mkdir suveryX_WEB
-        tar -czf suveryX-artifact-web.tar.gz dist
+        tar -czf suveryX-artifact-web.tar.gz web/dist/
         mv suveryX-artifact-web.tar.gz suveryX_WEB/
       working-directory: ./web
       
@@ -67,7 +67,8 @@ jobs:
     - name: Copy Files
       run: |
         mkdir suveryX_Linux
-        tar xzf suveryX-artifact-web.tar.gz -C suveryX_Linux/
+        tar xzf suveryX-artifact-web.tar.gz -C .
+        cp -r web/dist suveryX_Linux/
         cp -r server/conf.yaml suveryX_Linux/
         cp -r server/bin/app_linux suveryX_Linux/
 
