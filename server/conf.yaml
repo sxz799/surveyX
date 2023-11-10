@@ -1,10 +1,8 @@
 db :
   sqlType : sqlite  # mysql || sqlite || postgres
-  database: survey
-  host : dpg-cl29gtgp2gis7385crbg-a.oregon-postgres.render.com
-  port : 5432
-  username: render_3kh7_user
-  password: Ul5g400SAQZriDl16TzLc6tXAsS1ccUI
+  sqliteUrl: survey.db
+  postgresUrl : postgres://default:s8kKoq3BfrFv@ep-bold-bird-66330765-pooler.ap-southeast-1.postgres.vercel-storage.com:5432/verceldb  #
+  mysqlUrl :  # username:password@tcp(host:port)/database?charset=utf8mb4&parseTime=True&loc=Local
 server :
   port : 3000
   ginMode : debug # debug || release || test

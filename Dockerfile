@@ -10,6 +10,7 @@ RUN apk --no-cache add gcc musl-dev
 # 将应用的代码复制到容器中
 COPY ./server/ .
 
+RUN sed -i '2s|sqlite|postgres|' conf.yaml
 
 # 编译应用程序
 RUN go env -w GO111MODULE=on \
