@@ -56,17 +56,17 @@ jobs:
         mkdir suveryX_Linux
         mkdir suveryX_Windows
 
-        copy web/dist suveryX_Mac/dist/
-        copy web/dist suveryX_Linux/dist/
-        copy web/dist suveryX_Windows/dist/
+        cp web/dist suveryX_Mac/dist/
+        cp web/dist suveryX_Linux/dist/
+        cp web/dist suveryX_Windows/dist/
 
-        copy server/conf.yaml suveryX_Mac/
-        copy server/conf.yaml suveryX_Linux/
-        copy server/conf.yaml suveryX_Windows/
+        cp server/conf.yaml suveryX_Mac/
+        cp server/conf.yaml suveryX_Linux/
+        cp server/conf.yaml suveryX_Windows/
 
-        copy server/bin/app_darwin suveryX_Mac/
-        copy server/bin/app_linux suveryX_Linux/
-        copy server/bin/app_windows suveryX_Windows/
+        cp server/bin/app_darwin suveryX_Mac/
+        cp server/bin/app_linux suveryX_Linux/
+        cp server/bin/app_windows suveryX_Windows/
         
 
     - name: Upload Artifact-Mac
