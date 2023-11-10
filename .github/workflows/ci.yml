@@ -5,12 +5,40 @@ on:
     branches: [main]
 
 jobs:
-
-  build-linux:
+  build-web:
     strategy:
       matrix:
         node-version: [16.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        
+    - name: Build Web
+      run: |
+        sed -i '9s|//||' vite.config.js
+        npm install && npm run build
+      working-directory: ./web
+
+    - name: Copy  Files
+      run: |
+        mkdir suveryX_Web
+        cp -r web/dist suveryX_Web/
+
+    - name: Upload Artifact-Web
+      uses: actions/upload-artifact@v2
+      with:
+       name: suveryX-artifact-web
+       path: ${{ github.workspace }}/web
+
+  build-linux:
+    depends-on: build-web
     runs-on: ubuntu-latest
     container: docker.io/centos:7
     steps:
@@ -29,23 +57,12 @@ jobs:
       run: go build -ldflags="-s -w" -o bin/app_linux .
       working-directory: ./server
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        
-    - name: Build Web
-      run: |
-        sed -i '9s|//||' vite.config.js
-        npm install && npm run build
-      working-directory: ./web
-
     - name: Copy  Files
       run: |
         mkdir suveryX_Linux
-        cp -r web/dist suveryX_Linux/dist/
         cp -r server/conf.yaml suveryX_Linux/
         cp -r server/bin/app_linux suveryX_Linux/
+        cp -r ${{ github.workspace }}/web suveryX_Linux/
         
     - name: Upload Artifact-Linux
       uses: actions/upload-artifact@v2
@@ -58,101 +75,4 @@ jobs:
       with:
        name: suveryX-artifact-linux
 
-    
-  build-mac:
-    strategy:
-      matrix:
-        node-version: [16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-    runs-on: macos-latest
-   
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: 1.21
-
-    - name: Build Server for Mac
-      run: go build -ldflags="-s -w" -o bin/app_darwin .
-      working-directory: ./server
-
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        
-    - name: Build Web
-      run: |
-        sed -i '9s|//||' vite.config.js
-        npm install && npm run build
-      working-directory: ./web
-
-    - name: Copy  Files
-      run: |
-        mkdir suveryX_Mac
-        cp -r web/dist suveryX_Mac/dist/
-        cp -r server/conf.yaml suveryX_Mac/
-        cp -r server/bin/app_darwin suveryX_Mac/
-
-      
-    - name: Upload Artifact-Mac
-      uses: actions/upload-artifact@v2
-      with:
-       name: suveryX-artifact-mac
-       path: ${{ github.workspace }}/suveryX_Mac
-
-    - name: Download a Build Artifact-Mac
-      uses: actions/download-artifact@v2.1.1
-      with:
-       name: suveryX-artifact-mac
-     
-    
-  build-windows:
-    strategy:
-      matrix:
-        node-version: [16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: 1.21
-
-    - name: Build Server for Windows
-      run: go build -ldflags="-s -w" -o bin/app_windows.exe .
-      working-directory: ./server
-      
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        
-    - name: Build Web
-      run: |
-        sed -i '9s|//||' vite.config.js
-        npm install && npm run build
-      working-directory: ./web
-
-    - name: Copy  Files
-      run: |
-        mkdir suveryX_Windows
-        cp -r web/dist suveryX_Windows/dist/
-        cp -r server/conf.yaml suveryX_Windows/
-        cp -r server/bin/app_windows.exe suveryX_Windows/
-        
-    - name: Upload Artifact-Windows
-      uses: actions/upload-artifact@v2
-      with:
-       name: suveryX-artifact-windows
-       path: ${{ github.workspace }}/suveryX_Windows
-
-    - name: Download a Build Artifact-Windows
-      uses: actions/download-artifact@v2.1.1
-      with:
-       name: suveryX-artifact-windows
     
