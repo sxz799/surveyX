@@ -69,10 +69,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: intall deps
-      run: |
-        yum install -y wget tar gcc automake autoconf libtool make
-
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
@@ -121,10 +117,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
-
-    - name: intall deps
-      run: |
-        yum install -y wget tar gcc automake autoconf libtool make
 
     - name: Set up Go
       uses: actions/setup-go@v3
