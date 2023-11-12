@@ -13,15 +13,18 @@
   <el-table border :data="questionList" @expand-change="ExpandChange">
     <el-table-column type="expand">
       <template #default="props">
-        <div style="width: 80%;margin: auto">
-          <el-table v-if="props.row.type!=='text'" border size="small" :data="props.row.options">
-            <el-table-column label="选项" prop="label"/>
-            <el-table-column label="内容" prop="value"/>
-          </el-table>
-          <el-table border size="small" :data="questionAnalysisResults[props.row.id]">
-            <el-table-column v-if="props.row.type!=='text'" label="选项" prop="label"/>
+        <div v-if="props.row.type!=='text'" style="padding-left: 10px">
+          <el-tag v-for="op in props.row.options">{{ op.label }} : {{ op.value }}</el-tag>
+        </div>
+        <div style="padding-left: 10px">
+          <el-tag type="success">{{ questionAnalysisResults[props.row.id] }}</el-tag>
+        </div>
+
+        <div style="width: 90%;margin: auto">
+          <el-table fit border size="small" :data="questionAnalysisDetails[props.row.id]">
+            <el-table-column width="50" align="center" v-if="props.row.type!=='text'" label="选项" prop="label"/>
             <el-table-column v-if="props.row.type!=='text'" label="备注" prop="ext_msg"/>
-            <el-table-column v-if="props.row.type==='text'" label="简答题答案" prop="content"/>
+            <el-table-column v-if="props.row.type==='text'" label="答案" prop="content"/>
             <el-table-column label="浏览器指纹" prop="finger"/>
             <el-table-column label="联系方式" prop="contact"/>
           </el-table>
@@ -73,6 +76,7 @@ const props = defineProps({
 const total = ref(0)
 const questionList = ref([])
 
+const questionAnalysisDetails = ref({})
 const questionAnalysisResults = ref({})
 
 const analysisSurveyData = ref({
@@ -130,7 +134,34 @@ function ListQuestion() {
 function getQuestionAnalysis(question_id) {
   listAnswer({question_id: question_id}).then(res => {
     if (res.success) {
-      questionAnalysisResults.value[question_id] = res.data
+      const labelCount = {};
+      const uniqueFinger = new Set();
+      const uniqueContact = new Set();
+      let data = res.data
+      questionAnalysisDetails.value[question_id] = data
+      data.forEach(function (item) {
+        uniqueFinger.add(item.finger)
+        uniqueContact.add(item.contact)
+        const label = item.label;
+        labelCount[label] = (labelCount[label] || 0) + 1;
+      });
+      const totalCount = data.length;
+      const labelPercentage = {};
+      for (const label in labelCount) {
+        const count = labelCount[label];
+        const percentage = (count / totalCount) * 100;
+        labelPercentage[label] = {
+          count: count,
+          percentage: percentage.toFixed(2) + "%",
+        };
+      }
+      const result = "共有" + uniqueFinger.size + "个浏览器参与了本题调查,共留下" + uniqueContact.size + "个联系方式! ";
+      let result2 = "";
+      for (const item in labelPercentage) {
+        if (item === "") break
+        result2 += "  选项" + item + "被选择了" + labelPercentage[item].count + "次,占比为:" + labelPercentage[item].percentage
+      }
+      questionAnalysisResults.value[question_id] = result + result2
     } else {
       ElMessage.error(res.message)
     }
