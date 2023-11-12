@@ -165,7 +165,7 @@
                 <QuestionList v-if="openDetails" :surveyId="surveyId"/>
               </el-tab-pane>
               <el-tab-pane label="问卷分析">
-                未实现
+                <SurveyAnalysis v-if="openDetails" :surveyId="surveyId"/>
               </el-tab-pane>
             </el-tabs>
             </el-card>
@@ -183,6 +183,7 @@
 import {onMounted, reactive, ref, toRefs} from 'vue'
 import {list, add, del, update, get} from "@/api/admin/survey.js";
 import QuestionList from "./QuestionList.vue";
+import SurveyAnalysis from "@/views/admin/SurveyAnalysis.vue";
 import {
   Delete,
   Plus,

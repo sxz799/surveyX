@@ -100,3 +100,17 @@ func Import(c *gin.Context) {
 		response.OkWithMessage("导入成功", c)
 	}
 }
+
+// Analysis godoc
+func Analysis(c *gin.Context) {
+	id := c.Param("id")
+	if id == "" {
+		response.FailWithMessage("参数有误", c)
+		return
+	}
+	if result, err := ss.Analysis(id); err == nil {
+		response.OkWithData(result, c)
+	} else {
+		response.FailWithMessage(err.Error(), c)
+	}
+}

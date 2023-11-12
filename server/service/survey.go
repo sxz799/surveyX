@@ -79,6 +79,21 @@ func (ts *SurveyService) Get(id string) (s entity.Survey, err error) {
 	return
 }
 
+func (ts *SurveyService) Analysis(id string) (any, error) {
+	var result struct {
+		QuestionCount int
+		FingerCount   int
+		ContactCount  int
+		MinCreateAt   string
+		MaxCreateAt   string
+	}
+	err := utils.DB.Table("answers").
+		Select("COUNT(DISTINCT question_id) as question_count, COUNT(DISTINCT finger) as finger_count, COUNT(DISTINCT contact) as contact_count, min(create_at) as min_create_at, max(create_at) as max_create_at").
+		Where("survey_id = ?", id).
+		Scan(&result).Error
+	return result, err
+}
+
 func (ts *SurveyService) Import(file *multipart.FileHeader) (err error) {
 	// 1. 读取文件
 	r, err := file.Open()
@@ -115,7 +130,7 @@ func (ts *SurveyService) Import(file *multipart.FileHeader) (err error) {
 		"无":     "",
 		"单选题":   "radio",
 		"多选题":   "checkbox",
-		"简答题":    "text",
+		"简答题":   "text",
 	}
 	// 2.1 读取问卷信息
 	startTime, _ := time.Parse("20060102150405", surveyRow[2])
