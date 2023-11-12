@@ -25,3 +25,18 @@ func Add(c *gin.Context) {
 	}
 
 }
+
+// List godoc
+func List(c *gin.Context) {
+	var a entity.AnswerSearch
+	err := c.ShouldBindQuery(&a)
+	if err != nil {
+		response.FailWithMessage("参数有误", c)
+		return
+	}
+	if list, err := as.List(a); err == nil {
+		response.OkWithData(list, c)
+	} else {
+		response.Fail(c)
+	}
+}

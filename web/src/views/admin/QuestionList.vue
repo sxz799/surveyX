@@ -16,7 +16,7 @@
     <el-table :data="questionList">
       <el-table-column type="selection" width="50" align="center"/>
       <el-table-column label="序号" width="70" type="index" align="center" />
-      <el-table-column label="题目" align="center" key="text" prop="text" :show-overflow-tooltip="true">
+      <el-table-column label="题目" align="left" key="text" prop="text" :show-overflow-tooltip="true">
         <template #default="scope">
 
           <el-tag v-if="scope.row.type === 'radio'">单选</el-tag>
@@ -25,7 +25,7 @@
           <span>{{ scope.row.text }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="选项" align="center" key="options" prop="options" :show-overflow-tooltip="true">
+      <el-table-column label="选项" align="left" key="options" prop="options" :show-overflow-tooltip="true">
         <template #default="scope">
           <span v-if="scope.row.type !== 'text'">
             <span v-for="(option, index) in scope.row.options" :key="option.key">

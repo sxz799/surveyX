@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
 	"github.com/sxz799/surveyX/utils"
 	"time"
@@ -11,12 +10,8 @@ import (
 type AnswerService struct {
 }
 
-func (as *AnswerService) List(a entity.AnswerSearch) (response.PageResult, error) {
+func (as *AnswerService) List(a entity.AnswerSearch) ([]entity.Answer, error) {
 	var answers []entity.Answer
-	var total int64
-	pi := a.PageInfo
-	limit := pi.PageSize
-	offset := pi.PageSize * (pi.PageNum - 1)
 	db := utils.DB.Model(&entity.Answer{})
 	answer := a.Answer
 	if answer.SurveyId != "" {
@@ -37,15 +32,8 @@ func (as *AnswerService) List(a entity.AnswerSearch) (response.PageResult, error
 	if !a.EndTime.IsZero() {
 		db = db.Where("create_at < ?", a.EndTime)
 	}
-	db.Debug().Count(&total)
-	db = db.Limit(limit).Offset(offset)
-	err := db.Debug().Order("id DESC").Find(&answers).Error
-	return response.PageResult{
-			List:     answers,
-			Total:    total,
-			PageNum:  pi.PageNum,
-			PageSize: pi.PageSize},
-		err
+	err := db.Find(&answers).Error
+	return answers, err
 
 }
 

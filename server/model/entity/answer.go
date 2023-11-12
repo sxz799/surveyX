@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"github.com/sxz799/surveyX/model/common/request"
 	"time"
 )
 
@@ -18,8 +17,7 @@ type Answer struct {
 }
 
 type AnswerSearch struct {
-	PageInfo  request.PageInfo `json:"pageInfo"`
-	Answer    Answer           `json:"answer"`
-	StartTime time.Time        `json:"start_time" form:"start_time"`
-	EndTime   time.Time        `json:"end_time" form:"end_time"`
+	Answer    Answer    `json:"answer"`
+	StartTime time.Time `json:"start_time" form:"start_time"`
+	EndTime   time.Time `json:"end_time" form:"end_time"`
 }
