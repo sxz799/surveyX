@@ -24,7 +24,7 @@
             :hide-on-single-page="false"
             :current-page="queryParams.pageNum"
             :page-size="queryParams.pageSize"
-            :page-sizes="[2,5, 10, 30, 50]"
+            :page-sizes="[5, 10, 30, 50]"
             :total="total"
             layout=" sizes, prev, pager, next"
             @current-change="handleCurrentChange"
