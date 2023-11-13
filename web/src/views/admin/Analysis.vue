@@ -13,23 +13,22 @@
   <el-table border :data="questionList" @expand-change="ExpandChange">
     <el-table-column type="expand">
       <template #default="props">
-        <div v-if="props.row.type!=='text'" style="padding-left: 10px">
-          <el-tag v-for="op in props.row.options">{{ op.label }} : {{ op.value }}</el-tag>
-        </div>
-        <div v-if="questionAnalysisResults[props.row.id]"
-             v-for="result in questionAnalysisResults[props.row.id].split('###') " style="padding-left: 10px">
-          <el-tag type="success">{{ result }}</el-tag>
+        <div style="padding-left: 10px">
+          <div v-if="props.row.type!=='text'">
+            <el-tag v-for="op in props.row.options">{{ op.label }} : {{ op.value }}</el-tag>
+          </div>
+          <div v-if="questionAnalysisResults[props.row.id]"
+               v-for="result in questionAnalysisResults[props.row.id].split('###')">
+            <el-tag type="success">{{ result }}</el-tag>
+          </div>
+
+          <el-button size="small" type="info" plain
+                     @click="handleAnswerDetails(props.row.type,questionAnalysisDetails[props.row.id])">查看答案详情
+          </el-button>
+
         </div>
 
-        <div style="width: 90%;margin: auto">
-          <el-table fit border size="small" :data="questionAnalysisDetails[props.row.id]">
-            <el-table-column width="50" align="center" v-if="props.row.type!=='text'" label="选项" prop="label"/>
-            <el-table-column v-if="props.row.type!=='text'" label="备注" prop="ext_msg"/>
-            <el-table-column v-if="props.row.type==='text'" label="答案" prop="content"/>
-            <el-table-column label="浏览器指纹" prop="finger"/>
-            <el-table-column label="联系方式" prop="contact"/>
-          </el-table>
-        </div>
+
       </template>
     </el-table-column>
 
@@ -58,6 +57,10 @@
       @size-change="handleSizeChange"
   />
 
+  <el-dialog title="答案详情" v-model="showDetails" width="50%" append-to-body>
+    <AnswerDetails :question-type="currType" :answer-details="currDetails"></AnswerDetails>
+  </el-dialog>
+
 
 </template>
 
@@ -68,11 +71,16 @@ import {analysis} from "@/api/admin/survey.js";
 import {list as listQuestion} from "@/api/admin/question.js";
 import {list as listAnswer} from "@/api/admin/answer.js";
 import {onMounted, reactive, ref, watch} from "vue";
-
+import AnswerDetails from "@/views/admin/AnswerDetails.vue";
 
 const props = defineProps({
   surveyId: String,
 })
+
+const showDetails = ref(false)
+const currType = ref('')
+const currDetails = ref([])
+
 
 const total = ref(0)
 const questionList = ref([])
@@ -167,7 +175,7 @@ function getQuestionAnalysis(question_id) {
         if (item === "") break
         result2 += "  选项 " + item + " 被选择了 " + labelPercentage[item].count + " 次,占比为: " + labelPercentage[item].percentage + " ###";
       }
-      questionAnalysisResults.value[question_id] = result + result2 + "下面是详细内容:"
+      questionAnalysisResults.value[question_id] = result + result2 + "点击按钮查看答案详情"
     } else {
       ElMessage.error(res.message)
     }
@@ -182,6 +190,13 @@ function handleSizeChange(val) {
 function handleCurrentChange(val) {
   queryParams.pageNum = val
   ListQuestion()
+}
+
+function handleAnswerDetails(type, details) {
+  console.log(type, details)
+  currType.value = type
+  currDetails.value = details
+  showDetails.value = true
 }
 
 
