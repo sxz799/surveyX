@@ -16,7 +16,8 @@
         <div v-if="props.row.type!=='text'" style="padding-left: 10px">
           <el-tag v-for="op in props.row.options">{{ op.label }} : {{ op.value }}</el-tag>
         </div>
-        <div v-for="result in questionAnalysisResults[props.row.id].split('###') " style="padding-left: 10px">
+        <div v-if="questionAnalysisResults[props.row.id]"
+             v-for="result in questionAnalysisResults[props.row.id].split('###') " style="padding-left: 10px">
           <el-tag type="success">{{ result }}</el-tag>
         </div>
 
@@ -105,7 +106,12 @@ onMounted(() => {
 
 
 function ExpandChange(row, expandedRows) {
-  getQuestionAnalysis(row.id)
+  //expandedRows是一个数组，里面包含了所有展开的行的数据,要过滤expandedRows，只保留当前行的数据
+  expandedRows = expandedRows.filter(item => item.id === row.id)
+  if (expandedRows.length > 0) {
+    getQuestionAnalysis(row.id)
+  }
+
 }
 
 function getSurveyAnalysis() {

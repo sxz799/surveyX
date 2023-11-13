@@ -92,8 +92,12 @@ func (ts *SurveyService) Analysis(id string) (any, error) {
 		Where("survey_id = ?", id).
 		Scan(&result).Error
 	//时间转为字符串
-	result.MinCreateAt = result.MinCreateAt[:19]
-	result.MaxCreateAt = result.MaxCreateAt[:19]
+	if result.MinCreateAt != "" {
+		result.MinCreateAt = result.MinCreateAt[:19]
+	}
+	if result.MaxCreateAt != "" {
+		result.MaxCreateAt = result.MaxCreateAt[:19]
+	}
 	return result, err
 }
 

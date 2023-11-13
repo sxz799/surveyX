@@ -14,7 +14,6 @@
     </el-row>
 
     <el-table :data="questionList">
-      <el-table-column type="selection" width="50" align="center"/>
       <el-table-column label="序号" width="70" type="index" align="center" />
       <el-table-column label="题目" align="left" key="text" prop="text" :show-overflow-tooltip="true">
         <template #default="scope">
@@ -173,7 +172,9 @@ const rules = ({
 })
 
 
-watch(() => props.surveyId, (newValue) => {
+
+watch(() => props.surveyId, (oldValue,newValue) => {
+  console.log(oldValue,newValue)
   queryParams.value.survey_id= newValue
   getList()
 });
