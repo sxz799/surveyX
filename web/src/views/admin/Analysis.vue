@@ -19,19 +19,14 @@
           </div>
           <div v-if="questionAnalysisResults[props.row.id]"
                v-for="result in questionAnalysisResults[props.row.id].split('###')">
-            <el-tag type="success">{{ result }}</el-tag>
+            <span>{{ result }}</span>
           </div>
-
           <el-button size="small" type="info" plain
                      @click="handleAnswerDetails(props.row.type,questionAnalysisDetails[props.row.id])">查看答案详情
           </el-button>
-
         </div>
-
-
       </template>
     </el-table-column>
-
     <el-table-column label="题目" align="left" key="text" prop="text" :show-overflow-tooltip="true">
       <template #default="scope">
         <el-tag v-if="scope.row.type === 'radio'">单选</el-tag>
@@ -40,8 +35,9 @@
         <span>{{ scope.row.text }}</span>
       </template>
     </el-table-column>
-
   </el-table>
+
+
   <el-pagination
       style="padding-top: 20px"
       small
