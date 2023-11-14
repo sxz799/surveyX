@@ -39,3 +39,10 @@ export function del(id) {
         method: 'delete',
     })
 }
+
+export function analysis(id) {
+    return request({
+        url: '/admin/question/analysis/'+id,
+        method: 'get',
+    })
+}

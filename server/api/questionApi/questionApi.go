@@ -85,3 +85,13 @@ func Del(c *gin.Context) {
 	}
 
 }
+
+// Analysis godoc
+func Analysis(c *gin.Context) {
+	id := c.Param("id")
+	if result, err := qs.Analysis(id); err == nil {
+		response.OkWithData(result, c)
+	} else {
+		response.FailWithMessage(err.Error(), c)
+	}
+}

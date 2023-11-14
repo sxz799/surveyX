@@ -26,7 +26,6 @@ func (ts *QuestionService) List(q entity.QuestionSearch) (response.PageResult, e
 		ops := optionService.List(qs[i].Id)
 		qs[i].Options = ops
 	}
-
 	return response.PageResult{
 		List:     qs,
 		Total:    total,
@@ -80,4 +79,34 @@ func (ts *QuestionService) Get(id int) (q entity.Question, err error) {
 	ops := optionService.List(id)
 	q.Options = ops
 	return
+}
+
+func (ts *QuestionService) Analysis(id string) (any, error) {
+	type answer struct {
+		QuestionId int    `json:"question_id" form:"question_id"`
+		Content    string `json:"content" form:"content"`
+		Label      string `json:"label" form:"label"`
+		Contact    string `json:"contact" form:"contact"`
+		Finger     string `json:"finger" form:"finger"`
+	}
+	var answers []answer
+	err := utils.DB.Table("answers").Where("question_id=?", id).Find(&answers).Error
+	contactMap := make(map[string]struct{})
+	fingerMap := make(map[string]struct{})
+	labelMap := make(map[string]int)
+	for _, a := range answers {
+		contactMap[a.Contact] = struct{}{}
+		fingerMap[a.Finger] = struct{}{}
+		labelMap[a.Label]++
+	}
+	type result struct {
+		ContactCount int `json:"contact_count"`
+		FingerCount  int `json:"finger_count"`
+		LabelInfo    any `json:"label_info"`
+	}
+	var r result
+	r.ContactCount = len(contactMap)
+	r.FingerCount = len(fingerMap)
+	r.LabelInfo = labelMap
+	return r, err
 }

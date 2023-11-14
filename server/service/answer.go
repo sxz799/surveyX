@@ -14,6 +14,10 @@ func (as *AnswerService) List(a entity.AnswerSearch) ([]entity.Answer, error) {
 	var answers []entity.Answer
 	db := utils.DB.Model(&entity.Answer{})
 	answer := a.Answer
+	pi := a.PageInfo
+	limit := pi.PageSize
+	offset := pi.PageSize * (pi.PageNum - 1)
+	var total int64
 	if answer.SurveyId != "" {
 		db = db.Where("survey_id = ?", answer.SurveyId)
 	}
@@ -26,15 +30,9 @@ func (as *AnswerService) List(a entity.AnswerSearch) ([]entity.Answer, error) {
 	if answer.Finger != "" {
 		db = db.Where("finger = ?", answer.Finger)
 	}
-	if !a.StartTime.IsZero() {
-		db = db.Where("create_at > ?", a.StartTime)
-	}
-	if !a.EndTime.IsZero() {
-		db = db.Where("create_at < ?", a.EndTime)
-	}
-	err := db.Find(&answers).Error
+	db.Count(&total)
+	err := db.Limit(limit).Offset(offset).Find(&answers).Error
 	return answers, err
-
 }
 
 func (as *AnswerService) Add(a []entity.Answer) (err error) {

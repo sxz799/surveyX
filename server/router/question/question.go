@@ -14,9 +14,12 @@ func Question(e *gin.Engine) {
 		g1.PUT("/", questionApi.Update)
 		g1.GET("/:id", questionApi.Get)
 		g1.DELETE("/:id", questionApi.Del)
+		g1.GET("/analysis/:id", questionApi.Analysis)
+
 	}
 	g2 := e.Group("/api/user/question")
 	{
+
 		g2.GET("/list", questionApi.List)
 	}
 }

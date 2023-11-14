@@ -63,8 +63,8 @@
 <script setup>
 
 import {ElMessage} from "element-plus";
-import {analysis} from "@/api/admin/survey.js";
-import {list as listQuestion} from "@/api/admin/question.js";
+import {analysis as SurveyAnalysis} from "@/api/admin/survey.js";
+import {list as listQuestion,analysis as QuestionAnalysis} from "@/api/admin/question.js";
 import {list as listAnswer} from "@/api/admin/answer.js";
 import {onMounted, reactive, ref, watch} from "vue";
 import AnswerDetails from "@/views/admin/AnswerDetails.vue";
@@ -119,7 +119,7 @@ function ExpandChange(row, expandedRows) {
 }
 
 function getSurveyAnalysis() {
-  analysis(props.surveyId).then(res => {
+  SurveyAnalysis(props.surveyId).then(res => {
     if (res.success) {
       analysisSurveyData.value = res.data
     } else {
@@ -142,34 +142,14 @@ function ListQuestion() {
 }
 
 function getQuestionAnalysis(question_id) {
-  listAnswer({question_id: question_id}).then(res => {
+  QuestionAnalysis(question_id).then(res => {
     if (res.success) {
-      const labelCount = {};
-      const uniqueFinger = new Set();
-      const uniqueContact = new Set();
-      let data = res.data
-      questionAnalysisDetails.value[question_id] = data
-      data.forEach(function (item) {
-        uniqueFinger.add(item.finger)
-        uniqueContact.add(item.contact)
-        const label = item.label;
-        labelCount[label] = (labelCount[label] || 0) + 1;
-      });
-      const totalCount = data.length;
-      const labelPercentage = {};
-      for (const label in labelCount) {
-        const count = labelCount[label];
-        const percentage = (count / totalCount) * 100;
-        labelPercentage[label] = {
-          count: count,
-          percentage: percentage.toFixed(2) + "%",
-        };
-      }
-      const result = "共有 " + uniqueFinger.size + " 个浏览器参与了本题调查,共留下 " + uniqueContact.size + " 个联系方式! ###";
+      const result = "共有 " + res.data.finger_count + " 个浏览器参与了本题调查,共留下 " + res.data.contact_count + " 个联系方式! ###";
       let result2 = "";
-      for (const item in labelPercentage) {
+
+      for (const item in res.data.label_info) {
         if (item === "") break
-        result2 += "  选项 " + item + " 被选择了 " + labelPercentage[item].count + " 次,占比为: " + labelPercentage[item].percentage + " ###";
+        result2 += "  选项 " + item + " 被选择了 " + res.data.label_info[item] + " 次###";
       }
       questionAnalysisResults.value[question_id] = result + result2 + "点击按钮查看答案详情"
     } else {
