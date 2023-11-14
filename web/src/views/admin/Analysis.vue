@@ -17,13 +17,16 @@
           <div v-if="props.row.type!=='text'">
             <el-tag v-for="op in props.row.options">{{ op.label }} : {{ op.value }}</el-tag>
           </div>
-          <div v-if="questionAnalysisResults[props.row.id]"
+          <div v-if="questionAnalysisResults[props.row.id]" style="padding: 2px"
                v-for="result in questionAnalysisResults[props.row.id].split('###')">
             <span>{{ result }}</span>
           </div>
-          <el-button size="small" type="info" plain
-                     @click="handleAnswerDetails(props.row.type,questionAnalysisDetails[props.row.id])">查看答案详情
-          </el-button>
+          <div style="padding: 4px">
+            <el-button size="small" type="info" plain
+                       @click="handleAnswerDetails(props.row.type,props.row.id)">查看答案详情
+            </el-button>
+          </div>
+
         </div>
       </template>
     </el-table-column>
@@ -53,8 +56,8 @@
       @size-change="handleSizeChange"
   />
 
-  <el-dialog title="答案详情" v-model="showDetails" width="50%" append-to-body>
-    <AnswerDetails :question-type="currType" :answer-details="currDetails"></AnswerDetails>
+  <el-dialog title="答案详情" v-model="showDetails" width="70%" append-to-body>
+    <AnswerDetails :question-type="currType" :question-id="currQuestionId" ></AnswerDetails>
   </el-dialog>
 
 
@@ -65,7 +68,7 @@
 import {ElMessage} from "element-plus";
 import {analysis as SurveyAnalysis} from "@/api/admin/survey.js";
 import {list as listQuestion,analysis as QuestionAnalysis} from "@/api/admin/question.js";
-import {list as listAnswer} from "@/api/admin/answer.js";
+
 import {onMounted, reactive, ref, watch} from "vue";
 import AnswerDetails from "@/views/admin/AnswerDetails.vue";
 
@@ -75,13 +78,12 @@ const props = defineProps({
 
 const showDetails = ref(false)
 const currType = ref('')
-const currDetails = ref([])
+const currQuestionId = ref(0)
 
 
 const total = ref(0)
 const questionList = ref([])
 
-const questionAnalysisDetails = ref({})
 const questionAnalysisResults = ref({})
 
 const analysisSurveyData = ref({
@@ -113,6 +115,7 @@ function ExpandChange(row, expandedRows) {
   //expandedRows是一个数组，里面包含了所有展开的行的数据,要过滤expandedRows，只保留当前行的数据
   expandedRows = expandedRows.filter(item => item.id === row.id)
   if (expandedRows.length > 0) {
+    currQuestionId.value=row.id
     getQuestionAnalysis(row.id)
   }
 
@@ -144,12 +147,15 @@ function ListQuestion() {
 function getQuestionAnalysis(question_id) {
   QuestionAnalysis(question_id).then(res => {
     if (res.success) {
-      const result = "共有 " + res.data.finger_count + " 个浏览器参与了本题调查,共留下 " + res.data.contact_count + " 个联系方式! ###";
+      const data= res.data
+      const result = "共有 " + data.finger_count + " 个浏览器参与了本题调查,共留下 " + data.contact_count + " 个联系方式! ###";
       let result2 = "";
-
-      for (const item in res.data.label_info) {
+      const count = data.count
+      for (const item in data.label_info) {
         if (item === "") break
-        result2 += "  选项 " + item + " 被选择了 " + res.data.label_info[item] + " 次###";
+        const tCount=data.label_info[item]
+        const rate= tCount / count * 100
+        result2 += "  选项 " + item + " 被选择了 " + tCount + " 次,占比为 "+rate.toFixed(2)+" %###";
       }
       questionAnalysisResults.value[question_id] = result + result2 + "点击按钮查看答案详情"
     } else {
@@ -168,10 +174,10 @@ function handleCurrentChange(val) {
   ListQuestion()
 }
 
-function handleAnswerDetails(type, details) {
-  console.log(type, details)
+function handleAnswerDetails(type,qid) {
   currType.value = type
-  currDetails.value = details
+  currQuestionId.value=0
+  currQuestionId.value=qid
   showDetails.value = true
 }
 

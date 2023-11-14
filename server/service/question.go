@@ -88,6 +88,7 @@ func (ts *QuestionService) Analysis(id string) (any, error) {
 		Label      string `json:"label" form:"label"`
 		Contact    string `json:"contact" form:"contact"`
 		Finger     string `json:"finger" form:"finger"`
+		CreateAt   string `json:"create_at" form:"create_at"`
 	}
 	var answers []answer
 	err := utils.DB.Table("answers").Where("question_id=?", id).Find(&answers).Error
@@ -97,16 +98,21 @@ func (ts *QuestionService) Analysis(id string) (any, error) {
 	for _, a := range answers {
 		contactMap[a.Contact] = struct{}{}
 		fingerMap[a.Finger] = struct{}{}
-		labelMap[a.Label]++
+		if a.Label != "" {
+			labelMap[a.Label]++
+		}
+		
 	}
 	type result struct {
 		ContactCount int `json:"contact_count"`
 		FingerCount  int `json:"finger_count"`
 		LabelInfo    any `json:"label_info"`
+		Count        int `json:"count"`
 	}
 	var r result
 	r.ContactCount = len(contactMap)
 	r.FingerCount = len(fingerMap)
 	r.LabelInfo = labelMap
+	r.Count = len(answers)
 	return r, err
 }

@@ -174,7 +174,6 @@ const rules = ({
 
 
 watch(() => props.surveyId, (oldValue,newValue) => {
-  console.log(oldValue,newValue)
   queryParams.value.survey_id= newValue
   getList()
 });
