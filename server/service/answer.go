@@ -2,9 +2,11 @@ package service
 
 import (
 	"errors"
+	"github.com/google/uuid"
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
 	"github.com/sxz799/surveyX/utils"
+	"strings"
 	"time"
 )
 
@@ -79,9 +81,11 @@ func (as *AnswerService) Add(ans []entity.Answer) (err error) {
 			utils.DB.Model(&entity.Answer{}).Delete(&entity.Answer{}, "finger = ? and survey_id=?", finger, surveyId)
 		}
 	}
-	unix := time.Now().Unix()
+
+	key := strings.ReplaceAll(uuid.New().String(), "-", "")
+
 	for _, a := range ans {
-		a.Key = unix
+		a.Key = key
 		a.CreateAt = time.Now()
 		err = utils.DB.Create(&a).Error
 	}

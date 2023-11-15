@@ -12,6 +12,7 @@
     </el-table-column>
     <el-table-column label="联系方式" prop="contact"/>
     <el-table-column label="浏览器指纹" prop="finger"/>
+    <el-table-column label="用户标记" prop="key"/>
   </el-table>
   <el-pagination
       style="padding-top: 20px"

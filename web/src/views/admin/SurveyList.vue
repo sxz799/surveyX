@@ -139,6 +139,8 @@
                   <el-form-item label="联系方式类型" v-if="form.need_contact==='yes'" prop="contact_type">
                     <el-select v-model="form.contact_type" placeholder="请选择">
                       <el-option label="手机号" value="phone"></el-option>
+                      <el-option label="邮箱" value="email"></el-option>
+                      <el-option label="手机号或邮箱" value="phone|mail"></el-option>
                       <el-option label="其它" value="other"></el-option>
                     </el-select>
                   </el-form-item>

@@ -91,7 +91,7 @@ func (ts *QuestionService) Analysis(id string) (any, error) {
 		CreateAt   string `json:"create_at" form:"create_at"`
 	}
 	var answers []answer
-	err := utils.DB.Table("answers").Where("question_id=?", id).Find(&answers).Error
+	err := utils.DB.Table("answers").Where("question_id=?", id).Order("key").Find(&answers).Error
 	contactMap := make(map[string]struct{})
 	fingerMap := make(map[string]struct{})
 	labelMap := make(map[string]int)
@@ -101,7 +101,7 @@ func (ts *QuestionService) Analysis(id string) (any, error) {
 		if a.Label != "" {
 			labelMap[a.Label]++
 		}
-		
+
 	}
 	type result struct {
 		ContactCount int `json:"contact_count"`

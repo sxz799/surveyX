@@ -6,7 +6,7 @@
       <el-col :span="12" :xs="24">
         <h2 class="survey-title">{{ survey.title }}</h2>
         <h4 class="survey-description">{{ survey.description }}</h4>
-        <el-form :disabled="disabled" ref="answersRef" :model="form" :rules="rules" label-width="0">
+        <el-form :disabled="disabled" ref="formRef" :model="form" :rules="rules" label-width="0">
           <div class="question-container" v-for="(question , index) in survey.questions">
             <el-form-item :prop="'answers.' + question.id ">
               <!--题目-->
@@ -67,7 +67,7 @@
             <el-input v-model="form.contact" placeholder="请填写联系方式"></el-input>
           </el-form-item>
         </el-form>
-        <el-button class="submit-button" v-if="allowSubmit" @click="submitAnswer(answersRef)">提交</el-button>
+        <el-button class="submit-button" v-if="allowSubmit" @click="submitAnswer(formRef)">提交</el-button>
         <div style="position: relative; bottom: 0; left: 0; right: 0; text-align: center; padding: 20px 0;">
           <el-link type="info" href="https://github.com/sxz799/surveyX">SurveyX 提供技术支持</el-link>
         </div>
@@ -99,14 +99,16 @@ const survey = reactive({
   water_mark: [],
   questions: [],
 })
-const answersRef = ref()
-const rules = ({
-  contact: [{required: true, message: '请填写联系方式', trigger: 'blur'}],
-})
+const formRef = ref()
+
 
 const form = reactive({
   contact: undefined,
   answers: {},
+})
+
+const rules = ({
+  contact: [{required: true, message: '请填写联系方式', trigger: 'blur'}],
 })
 
 onMounted(() => {
@@ -129,6 +131,7 @@ async function initSurvey() {
   survey.title = surveyData.data.title;
   survey.description = surveyData.data.description;
   survey.need_contact = surveyData.data.need_contact;
+  survey.contact_type = surveyData.data.contact_type;
   survey.water_mark = surveyData.data.water_mark.split('\n');
   survey.questions = (await list({pageNum: 1, pageSize: 99999, survey_id: surveyId})).data.list;
   survey.questions.forEach((q) => {
@@ -145,6 +148,47 @@ function submitAnswer(elForm) {
       })
       return
     }
+
+    if(survey.need_contact==='yes'){
+      if(survey.contact_type==='phone'){
+        const reg = /^[1][3-9][0-9]{9}$/
+        if(!reg.test(form.contact)){
+          ElNotification({
+            title: '联系方式不正确！',
+            message: '请填写正确的手机号码',
+            type: 'warning',
+          })
+          return
+        }
+      }
+      if (survey.contact_type === 'email') {
+        const reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/
+        if (!reg.test(form.contact)) {
+          ElNotification({
+            title: '联系方式不正确！',
+            message: '请填写正确的邮箱',
+            type: 'warning',
+          })
+          return
+        }
+      }
+
+      if(survey.contact_type==='phone|mail'){
+        //手机号或者邮箱
+        const reg1 = /^[1][3-9][0-9]{9}$/
+        const reg2 = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/
+        if(!reg1.test(form.contact) && !reg2.test(form.contact)){
+          ElNotification({
+            title: '联系方式不正确！',
+            message: '请填写正确的手机号码或邮箱',
+            type: 'warning',
+          })
+          return
+        }
+      }
+    }
+
+
     let answerResult = []
     // 遍历问题
     for (const index in survey.questions) {
