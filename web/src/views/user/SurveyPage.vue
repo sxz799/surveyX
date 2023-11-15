@@ -132,13 +132,17 @@ async function initSurvey() {
   survey.water_mark = surveyData.data.water_mark.split('\n');
   survey.questions = (await list({pageNum: 1, pageSize: 99999, survey_id: surveyId})).data.list;
   survey.questions.forEach((q) => {
-    rules[`answers.${q.id}`] = [{required: true, message: "请答题", trigger: q.type === 'text' ? "blur" : "change"}];
+    rules[`answers.${q.id}`] = [{required: true, message: "请填写", trigger: q.type === 'text' ? "blur" : "change"}];
   });
 }
 
 function submitAnswer(elForm) {
   elForm.validate((valid) => {
     if (!valid) {
+      ElNotification({
+        title: '问卷信息不完整！',
+        type: 'info',
+      })
       return
     }
     let answerResult = []

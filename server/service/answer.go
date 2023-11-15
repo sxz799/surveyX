@@ -40,18 +40,18 @@ func (as *AnswerService) List(a entity.AnswerSearch) (response.PageResult, error
 		PageSize: pi.PageSize}, err
 }
 
-func (as *AnswerService) Add(a []entity.Answer) (err error) {
+func (as *AnswerService) Add(ans []entity.Answer) (err error) {
 	var survey entity.Survey
 	var surveyId string
 	var contact, finger string
-	if len(a) > 0 {
-		surveyId = a[0].SurveyId
+	if len(ans) > 0 {
+		surveyId = ans[0].SurveyId
 		err = utils.DB.Where("id = ?", surveyId).First(&survey).Error
 		if err != nil {
 			return
 		}
-		contact = a[0].Contact
-		finger = a[0].Finger
+		contact = ans[0].Contact
+		finger = ans[0].Finger
 	}
 	repeat := survey.Repeat
 	check := survey.RepeatCheck
@@ -79,7 +79,9 @@ func (as *AnswerService) Add(a []entity.Answer) (err error) {
 			utils.DB.Model(&entity.Answer{}).Delete(&entity.Answer{}, "finger = ? and survey_id=?", finger, surveyId)
 		}
 	}
-	for _, a := range a {
+	unix := time.Now().Unix()
+	for _, a := range ans {
+		a.Key = unix
 		a.CreateAt = time.Now()
 		err = utils.DB.Create(&a).Error
 	}

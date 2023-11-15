@@ -136,6 +136,12 @@
                       <el-option label="否" value="no"></el-option>
                     </el-select>
                   </el-form-item>
+                  <el-form-item label="联系方式类型" v-if="form.need_contact==='yes'" prop="contact_type">
+                    <el-select v-model="form.contact_type" placeholder="请选择">
+                      <el-option label="手机号" value="phone"></el-option>
+                      <el-option label="其它" value="other"></el-option>
+                    </el-select>
+                  </el-form-item>
                   <el-form-item label="可重复提交" prop="repeat">
                     <el-select v-model="form.repeat" placeholder="请选择">
                       <el-option label="是" value="yes"></el-option>
@@ -225,6 +231,7 @@ const rules = ({
   title: [{required: true, message: '请填写', trigger: 'blur'}],
   description: [{required: true, message: '请填写', trigger: 'blur'}],
   need_contact: [{required: true, message: '请填写', trigger: 'blur'}],
+  contact_type: [{required: true, message: '请填写', trigger: 'blur'}],
   repeat: [{required: true, message: '请填写', trigger: 'blur'}],
   repeat_check: [{required: true, message: '请填写', trigger: 'blur'}],
   start_time: [{required: true, message: '请填写', trigger: 'blur'}],

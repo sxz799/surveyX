@@ -15,6 +15,7 @@ type Answer struct {
 	Contact    string    `json:"contact" form:"contact"`
 	Finger     string    `json:"finger" form:"finger"`
 	CreateAt   time.Time `json:"create_at" form:"create_at"`
+	Key        int64     `json:"key"`
 }
 
 type AnswerSearch struct {

@@ -3,8 +3,9 @@
 
   <div class="analysis-container">
     <el-tag>题目数量 : {{ analysisSurveyData.QuestionCount }}</el-tag>
-    <el-tag>浏览器数量 : {{ analysisSurveyData.FingerCount }}</el-tag>
-    <el-tag>联系方式数量 : {{ analysisSurveyData.ContactCount }}</el-tag>
+    <el-tag>答题次数 : {{ analysisSurveyData.KeyCount }}</el-tag>
+    <el-tag>统计的浏览器数量 : {{ analysisSurveyData.FingerCount }}</el-tag>
+    <el-tag>统计的联系方式数量 : {{ analysisSurveyData.ContactCount }}</el-tag>
     <el-tag>第一次答题时间 : {{ analysisSurveyData.MinCreateAt }}</el-tag>
     <el-tag>最后一次答题时间 : {{ analysisSurveyData.MaxCreateAt }}</el-tag>
   </div>
@@ -87,6 +88,7 @@ const questionList = ref([])
 const questionAnalysisResults = ref({})
 
 const analysisSurveyData = ref({
+  KeyCount: 0,
   ContactCount: 0,
   FingerCount: 0,
   MaxCreateAt: '',

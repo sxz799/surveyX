@@ -81,6 +81,7 @@ func (ts *SurveyService) Get(id string) (s entity.Survey, err error) {
 
 func (ts *SurveyService) Analysis(id string) (any, error) {
 	var result struct {
+		KeyCount      int
 		QuestionCount int
 		FingerCount   int
 		ContactCount  int
@@ -88,7 +89,7 @@ func (ts *SurveyService) Analysis(id string) (any, error) {
 		MaxCreateAt   string
 	}
 	err := utils.DB.Table("answers").
-		Select("COUNT(DISTINCT question_id) as question_count, COUNT(DISTINCT finger) as finger_count, COUNT(DISTINCT contact) as contact_count, min(create_at) as min_create_at, max(create_at) as max_create_at").
+		Select("COUNT(DISTINCT key) as key_count, COUNT(DISTINCT question_id) as question_count, COUNT(DISTINCT finger) as finger_count, COUNT(DISTINCT contact) as contact_count, min(create_at) as min_create_at, max(create_at) as max_create_at").
 		Where("survey_id = ?", id).
 		Scan(&result).Error
 	//时间转为字符串

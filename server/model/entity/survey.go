@@ -14,6 +14,7 @@ type Survey struct {
 	EndTime     time.Time `json:"end_time" form:"end_time"`
 	Questions   []int     `gorm:"-" json:"questions" form:"questions"`
 	NeedContact string    `json:"need_contact" form:"need_contact"`
+	ContactType string    `json:"contact_type" form:"contact_type"`
 	Repeat      string    `json:"repeat" form:"repeat"`             // 是否允许重复提交 no yes update
 	RepeatCheck string    `json:"repeat_check" form:"repeat_check"` // 重复提交检查方式 finger contact
 	WaterMark   string    `json:"water_mark" form:"water_mark"`     // 水印
