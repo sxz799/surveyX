@@ -141,7 +141,7 @@
                       <el-option label="手机号" value="phone"></el-option>
                       <el-option label="邮箱" value="email"></el-option>
                       <el-option label="手机号或邮箱" value="phone|mail"></el-option>
-                      <el-option label="其它" value="other"></el-option>
+                      <el-option label="不限制" value="other"></el-option>
                     </el-select>
                   </el-form-item>
                   <el-form-item label="可重复提交" prop="repeat">

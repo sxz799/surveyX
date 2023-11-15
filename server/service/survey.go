@@ -130,15 +130,19 @@ func (ts *SurveyService) Import(file *multipart.FileHeader) (err error) {
 	rows = rows[1:]
 	surveyRow := rows[1]
 	var dict = map[string]string{
-		"是":     "yes",
-		"否":     "no",
-		"更新":    "update",
-		"浏览器指纹": "finger",
-		"联系方式":  "contact",
-		"无":     "",
-		"单选题":   "radio",
-		"多选题":   "checkbox",
-		"简答题":   "text",
+		"手机号":    "phone",
+		"邮箱":     "email",
+		"手机号或邮箱": "phone|email",
+		"不限制":    "other",
+		"是":      "yes",
+		"否":      "no",
+		"更新":     "update",
+		"浏览器指纹":  "finger",
+		"联系方式":   "contact",
+		"无":      "",
+		"单选题":    "radio",
+		"多选题":    "checkbox",
+		"简答题":    "text",
 	}
 	// 2.1 读取问卷信息
 	startTime, _ := time.Parse("20060102150405", surveyRow[2])
@@ -151,9 +155,10 @@ func (ts *SurveyService) Import(file *multipart.FileHeader) (err error) {
 		StartTime:   startTime,
 		EndTime:     endTime,
 		NeedContact: dict[surveyRow[4]],
-		Repeat:      dict[surveyRow[5]],
-		RepeatCheck: dict[surveyRow[6]],
-		WaterMark:   surveyRow[7],
+		ContactType: dict[surveyRow[5]],
+		Repeat:      dict[surveyRow[6]],
+		RepeatCheck: dict[surveyRow[7]],
+		WaterMark:   surveyRow[8],
 	}
 	var questions []entity.Question
 	questionRows := rows[3:]
