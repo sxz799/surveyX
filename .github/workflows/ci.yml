@@ -49,20 +49,23 @@ jobs:
       with:
         go-version: 1.21
 
-    - name: Build Server for Linux(Ubuntu)
-      run: go build -ldflags="-s -w" -o bin/app .
-      working-directory: ./server
-
     - name: Download Web Artifact
       uses: actions/download-artifact@v2.1.1
       with:
        name: surveyX-artifact-web
 
+    - name: Copy Web Files
+      run: |
+        tar xzf surveyX-artifact-web.tar.gz -C .
+        cp -r web/dist server/
+
+    - name: Build Server for Linux(Ubuntu)
+      run: go build -ldflags="-s -w" -o bin/app .
+      working-directory: ./server
+
     - name: Copy Files
       run: |
         mkdir surveyX
-        tar xzf surveyX-artifact-web.tar.gz -C .
-        cp -r web/dist surveyX/
         cp -r server/conf.yaml surveyX/
         cp -r server/bin/app surveyX/
 
@@ -93,20 +96,23 @@ jobs:
       with:
         go-version: 1.21
 
-    - name: Build Server for Linux(Redhat)
-      run: go build -ldflags="-s -w" -o bin/app .
-      working-directory: ./server
-
     - name: Download Web Artifact
       uses: actions/download-artifact@v2.1.1
       with:
        name: surveyX-artifact-web
 
+    - name: Copy Web Files
+      run: |
+        tar xzf surveyX-artifact-web.tar.gz -C .
+        cp -r web/dist server/
+
+    - name: Build Server for Linux(Redhat)
+      run: go build -ldflags="-s -w" -o bin/app .
+      working-directory: ./server
+
     - name: Copy Files
       run: |
         mkdir surveyX
-        tar xzf surveyX-artifact-web.tar.gz -C .
-        cp -r web/dist surveyX/
         cp -r server/conf.yaml surveyX/
         cp -r server/bin/app surveyX/
 
@@ -133,20 +139,23 @@ jobs:
       with:
         go-version: 1.21
 
-    - name: Build Server for Mac
-      run: go build -ldflags="-s -w" -o bin/app .
-      working-directory: ./server
-
     - name: Download Web Artifact
       uses: actions/download-artifact@v2.1.1
       with:
        name: surveyX-artifact-web
 
+    - name: Copy Web Files
+      run: |
+        tar xzf surveyX-artifact-web.tar.gz -C .
+        cp -r web/dist server/
+
+    - name: Build Server for Mac
+      run: go build -ldflags="-s -w" -o bin/app .
+      working-directory: ./server
+
     - name: Copy Files
       run: |
         mkdir surveyX
-        tar xzf surveyX-artifact-web.tar.gz -C .
-        cp -r web/dist surveyX/
         cp -r server/conf.yaml surveyX/
         cp -r server/bin/app surveyX/
 
@@ -173,20 +182,23 @@ jobs:
       with:
         go-version: 1.21
 
-    - name: Build Server for Windows
-      run: go build -ldflags="-s -w" -o bin/app.exe .
-      working-directory: ./server
-
     - name: Download Web Artifact
       uses: actions/download-artifact@v2.1.1
       with:
        name: surveyX-artifact-web
 
+    - name: Copy Web Files
+      run: |
+        tar xzf surveyX-artifact-web.tar.gz -C .
+        cp -r web/dist server/
+
+    - name: Build Server for Windows
+      run: go build -ldflags="-s -w" -o bin/app.exe .
+      working-directory: ./server
+
     - name: Copy Files
       run: |
         mkdir surveyX
-        tar xzf surveyX-artifact-web.tar.gz -C .
-        cp -r web/dist surveyX/
         cp -r server/conf.yaml surveyX/
         cp -r server/bin/app.exe surveyX/
 

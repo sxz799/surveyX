@@ -1,3 +1,13 @@
+FROM node:16
+
+WORKDIR /go/src/github.com/sxz799/surveyX/web
+COPY ./web/ .
+
+RUN sed -i '9s|//||' vite.config.js
+
+RUN yarn && yarn build
+
+
 
 # 使用官方 Golang 镜像作为基础镜像
 FROM golang:1.21-alpine as builder
@@ -10,7 +20,7 @@ RUN apk --no-cache add gcc musl-dev
 # 将应用的代码复制到容器中
 COPY ./server/ .
 
-# RUN sed -i '2s|sqlite|postgres|' conf.yaml
+COPY --from=0 /go/src/github.com/sxz799/surveyX/web/dist/ ./dist
 
 # 编译应用程序
 RUN go env -w GO111MODULE=on \
@@ -18,15 +28,7 @@ RUN go env -w GO111MODULE=on \
     && go mod tidy \
     && go build -ldflags="-s -w" -o app .
 
-FROM node:16
 
-
-WORKDIR /go/src/github.com/sxz799/surveyX/web
-COPY ./web/ .
-
-RUN sed -i '9s|//||' vite.config.js
-
-RUN yarn && yarn build
 
 FROM alpine:latest
 
@@ -38,9 +40,9 @@ RUN apk update && apk add tzdata
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime 
 RUN echo "Asia/Shanghai" > /etc/timezone
 
-COPY --from=0 /go/src/github.com/sxz799/surveyX/server/app ./
-COPY --from=0 /go/src/github.com/sxz799/surveyX/server/conf.yaml ./
-COPY --from=1 /go/src/github.com/sxz799/surveyX/web/dist/ ./dist
+COPY --from=1 /go/src/github.com/sxz799/surveyX/server/app ./
+COPY --from=1 /go/src/github.com/sxz799/surveyX/server/conf.yaml ./
+
 
 EXPOSE 3000
 
