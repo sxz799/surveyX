@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/spf13/viper"
+	"github.com/sxz799/surveyX/config"
 	"github.com/sxz799/surveyX/model/entity"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
@@ -13,17 +13,17 @@ import (
 var DB *gorm.DB
 
 func InitDB() {
-	sqlType := viper.GetString("db.sqlType")
+	sqlType := config.SqlType
 	switch sqlType {
 	case "postgres":
-		dsn := viper.GetString("db.postgresUrl")
+		dsn := config.PostgresUrl
 		var err error
 		DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		if err != nil {
 			log.Panicln("postgres数据库连接失败。", err)
 		}
 	case "mysql":
-		dsn := viper.GetString("db.mysqlUrl")
+		dsn := config.MysqlUrl
 		var err error
 		DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 		if err != nil {
@@ -31,7 +31,7 @@ func InitDB() {
 		}
 	case "sqlite":
 		var err error
-		dsn := viper.GetString("db.sqliteUrl")
+		dsn := config.SqliteUrl
 		DB, err = gorm.Open(sqlite.Open(dsn), &gorm.Config{})
 		if err != nil {
 			log.Panicln("sqlite数据库连接失败。", err)

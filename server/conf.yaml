@@ -5,7 +5,7 @@ db :
   mysqlUrl :  # username:password@tcp(host:port)/database?charset=utf8mb4&parseTime=True&loc=Local
 server :
   port : 3000
-  ginMode : debug # debug || release || test
+  ginMode : release # debug || release || test
 admin :
   key : 123456
 

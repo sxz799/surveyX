@@ -7,9 +7,13 @@ import (
 )
 
 var (
-	ServerPort string
-	GinMode    string
-	Key        string
+	ServerPort  string
+	GinMode     string
+	Key         string
+	SqlType     string
+	SqliteUrl   string
+	MysqlUrl    string
+	PostgresUrl string
 )
 
 func init() {
@@ -17,8 +21,10 @@ func init() {
 	if _, err := os.Stat("conf.yaml"); os.IsNotExist(err) {
 		log.Println("没找到配置文件,使用默认配置...")
 		ServerPort = "3000"
-		GinMode = "debug"
-		Key = "1234"
+		GinMode = "release"
+		Key = "123456"
+		SqlType = "sqlite"
+		SqliteUrl = "surveyX.db"
 	} else {
 		viper.SetConfigFile("conf.yaml")
 		err = viper.ReadInConfig()
@@ -28,6 +34,10 @@ func init() {
 		ServerPort = viper.GetString("server.port")
 		GinMode = viper.GetString("server.ginMode")
 		Key = viper.GetString("admin.key")
+		SqlType = viper.GetString("db.sqlType")
+		SqliteUrl = viper.GetString("db.sqliteUrl")
+		MysqlUrl = viper.GetString("db.mysqlUrl")
+		PostgresUrl = viper.GetString("db.postgresUrl")
 	}
 
 }
