@@ -2,7 +2,7 @@ import {defineConfig} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
 
-// https://vitejs.dev/config/
+// 第9行的注释不能删除，docker镜像打包时会用到 github actions 会用到
 export default defineConfig(({mode, command}) => {
     return {
         plugins: [vue()],

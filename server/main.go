@@ -24,8 +24,6 @@ func main() {
 	utils.InitDB()
 	gin.SetMode(config.GinMode)
 	r := gin.Default()
-	r.Use(cors.Default())
-	router.RegRouter(r)
 
 	//------前后端分离调试时请注释下面代码------
 	temp := template.Must(template.New("").ParseFS(content, "dist/*.html"))
@@ -38,6 +36,8 @@ func main() {
 	log.Println("已开启前后端整合模式！")
 	//------前后端分离调试时请注释上面代码------
 
+	r.Use(cors.Default())
+	router.RegRouter(r)
 	log.Println("服务启动中,当前使用端口：", config.ServerPort)
 	_ = r.Run(":" + config.ServerPort)
 }
