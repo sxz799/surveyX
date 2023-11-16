@@ -35,3 +35,12 @@ Vue3 vite element-plus
 | 问卷结果分析                     | ✅ |
 | 逐题分析                     | ✅ |
 
+
+## 请我喝杯咖啡
+
+![微信](https://raw.githubusercontent.com/sxz799/tuchuang-blog/main/img/202303/202303021532231.png)
+
+![支付宝](https://raw.githubusercontent.com/sxz799/tuchuang-blog/main/img/202303/202303021531496.png)
+
+
+
