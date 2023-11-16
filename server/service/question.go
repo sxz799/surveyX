@@ -21,7 +21,7 @@ func (ts *QuestionService) List(q entity.QuestionSearch) (response.PageResult, e
 	db := utils.DB.Model(&entity.Question{})
 	db.Where("survey_id=?", sId)
 	db.Count(&total)
-	err := db.Debug().Limit(limit).Offset(offset).Order("`order`").Find(&qs).Error
+	err := db.Limit(limit).Offset(offset).Order("`order`").Find(&qs).Error
 	for i := range qs {
 		ops := optionService.List(qs[i].Id)
 		qs[i].Options = ops
@@ -35,7 +35,7 @@ func (ts *QuestionService) List(q entity.QuestionSearch) (response.PageResult, e
 
 func (ts *QuestionService) Add(q entity.Question) (err error) {
 
-	err = utils.DB.Debug().Create(&q).Error
+	err = utils.DB.Create(&q).Error
 
 	for i := range q.Options {
 		q.Options[i].QuestionId = q.Id
@@ -48,7 +48,7 @@ func (ts *QuestionService) Add(q entity.Question) (err error) {
 
 func (ts *QuestionService) Update(q entity.Question) (err error) {
 
-	err = utils.DB.Debug().Updates(&q).Error
+	err = utils.DB.Updates(&q).Error
 	for i := range q.Options {
 		q.Options[i].QuestionId = q.Id
 		q.Options[i].SurveyId = q.SurveyId
@@ -68,7 +68,7 @@ func (ts *QuestionService) Del(id int) (err error) {
 }
 
 func (ts *QuestionService) DelBySurveyId(surveyId string) (err error) {
-	err = utils.DB.Debug().Where("survey_id=?", surveyId).Delete(&entity.Question{}).Error
+	err = utils.DB.Where("survey_id=?", surveyId).Delete(&entity.Question{}).Error
 	optionService.DelBySurveyId(surveyId)
 	return
 }

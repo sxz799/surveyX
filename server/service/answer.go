@@ -62,7 +62,7 @@ func (as *AnswerService) Add(ans []entity.Answer) (err error) {
 		switch check {
 		case "contact":
 			var num int64
-			utils.DB.Debug().Model(&entity.Answer{}).Where("contact = ? and survey_id=?", contact, surveyId).Count(&num)
+			utils.DB.Model(&entity.Answer{}).Where("contact = ? and survey_id=?", contact, surveyId).Count(&num)
 			if num > 0 {
 				return errors.New("该问卷不允许重复提交")
 			}

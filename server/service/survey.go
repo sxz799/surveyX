@@ -42,9 +42,9 @@ func (ts *SurveyService) List(s entity.SurveySearch) (response.PageResult, error
 		db = db.Where("end_time > ?", survey.EndTime)
 	}
 
-	db.Debug().Count(&total)
+	db.Count(&total)
 	db = db.Limit(limit).Offset(offset)
-	err := db.Debug().Order("id DESC").Find(&surveys).Error
+	err := db.Order("id DESC").Find(&surveys).Error
 	return response.PageResult{
 		List:     surveys,
 		Total:    total,
@@ -55,12 +55,12 @@ func (ts *SurveyService) List(s entity.SurveySearch) (response.PageResult, error
 func (ts *SurveyService) Add(s entity.Survey) (err error) {
 	s.Id = uuid.New().String()
 	s.Status = "new"
-	err = utils.DB.Debug().Create(&s).Error
+	err = utils.DB.Create(&s).Error
 	return
 }
 
 func (ts *SurveyService) Update(s entity.Survey) error {
-	err := utils.DB.Debug().Where("id=?", s.Id).Updates(&s).Error
+	err := utils.DB.Where("id=?", s.Id).Updates(&s).Error
 	return err
 }
 
@@ -192,7 +192,7 @@ func (ts *SurveyService) Import(file *multipart.FileHeader) (err error) {
 		questions = append(questions, question)
 	}
 
-	utils.DB.Debug().Create(&survey)
+	utils.DB.Create(&survey)
 	for _, question := range questions {
 		question.SurveyId = survey.Id
 		if err := questionService.Add(question); err != nil {
