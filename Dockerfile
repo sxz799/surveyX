@@ -41,7 +41,6 @@ RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 RUN echo "Asia/Shanghai" > /etc/timezone
 
 COPY --from=1 /go/src/github.com/sxz799/surveyX/server/app ./
-COPY --from=1 /go/src/github.com/sxz799/surveyX/server/conf.yaml ./
 
 
 EXPOSE 3000

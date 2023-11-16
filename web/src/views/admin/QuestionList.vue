@@ -222,6 +222,10 @@ function handleDelete(row) {
 function submitForm(elForm) {
   elForm.validate((valid, fields) => {
     if (valid) {
+      if(form.value.type!=='text' && form.value.options.length===0){
+        ElMessage.error('请添加选项')
+        return
+      }
       if (form.value.id) {
         update(form.value).then(res => {
           if (res.success) {

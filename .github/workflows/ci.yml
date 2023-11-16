@@ -70,7 +70,7 @@ jobs:
     - name: Copy Files
       run: |
         mkdir surveyX
-        cp -r server/conf.yaml surveyX/
+        cp -r doc/ surveyX/
         cp -r server/bin/app surveyX/
 
     - name: Upload Artifact-Linux(Ubuntu)
@@ -117,7 +117,7 @@ jobs:
     - name: Copy Files
       run: |
         mkdir surveyX
-        cp -r server/conf.yaml surveyX/
+        cp -r doc/ surveyX/
         cp -r server/bin/app surveyX/
 
     - name: Upload Artifact-Linux(Redhat)
@@ -160,7 +160,7 @@ jobs:
     - name: Copy Files
       run: |
         mkdir surveyX
-        cp -r server/conf.yaml surveyX/
+        cp -r doc/ surveyX/
         cp -r server/bin/app surveyX/
 
     - name: Upload Artifact-Mac
@@ -203,7 +203,7 @@ jobs:
     - name: Copy Files
       run: |
         mkdir surveyX
-        cp -r server/conf.yaml surveyX/
+        cp -r doc/ surveyX/
         cp -r server/bin/app.exe surveyX/
 
     - name: Upload Artifact-Windows

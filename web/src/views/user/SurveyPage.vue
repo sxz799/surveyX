@@ -67,14 +67,25 @@
             <el-input v-model="form.contact" placeholder="请填写联系方式"></el-input>
           </el-form-item>
         </el-form>
-        <el-button class="submit-button" v-if="allowSubmit" @click="submitAnswer(formRef)">提交</el-button>
+        <el-button class="submit-button" v-if="allowSubmit" @click="checkAnswer(formRef)">提交</el-button>
         <div style="position: relative; bottom: 0; left: 0; right: 0; text-align: center; padding: 20px 0;">
           <el-link type="info" href="https://github.com/sxz799/surveyX">SurveyX 提供技术支持</el-link>
         </div>
       </el-col>
       <el-col :span="6" :xs="0"/>
-
     </el-row>
+
+    <el-dialog
+        title="确定提交?"
+        :show-close="false"
+        v-model="confirmDialogVisible"
+        width="300px" center>
+      <template #footer>
+        <el-button @click="confirmDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitAnswer()">确 定</el-button>
+      </template>
+    </el-dialog>
+
   </el-watermark>
 </template>
 <script setup>
@@ -87,6 +98,8 @@ import {useRoute} from "vue-router";
 import {ElNotification} from 'element-plus'
 import Fingerprint2 from 'fingerprintjs2';
 
+
+const confirmDialogVisible = ref(false)
 const disabled = ref(false)
 const allowSubmit = ref(true)
 const route = useRoute()
@@ -139,8 +152,9 @@ async function initSurvey() {
   });
 }
 
-function submitAnswer(elForm) {
+function checkAnswer(elForm) {
   elForm.validate((valid) => {
+    console.log(valid)
     if (!valid) {
       ElNotification({
         title: '问卷信息不完整！',
@@ -148,11 +162,10 @@ function submitAnswer(elForm) {
       })
       return
     }
-
-    if(survey.need_contact==='yes'){
-      if(survey.contact_type==='phone'){
+    if (survey.need_contact === 'yes') {
+      if (survey.contact_type === 'phone') {
         const reg = /^[1][3-9][0-9]{9}$/
-        if(!reg.test(form.contact)){
+        if (!reg.test(form.contact)) {
           ElNotification({
             title: '联系方式不正确！',
             message: '请填写正确的手机号码',
@@ -172,12 +185,11 @@ function submitAnswer(elForm) {
           return
         }
       }
-
-      if(survey.contact_type==='phone|mail'){
+      if (survey.contact_type === 'phone|mail') {
         //手机号或者邮箱
         const reg1 = /^[1][3-9][0-9]{9}$/
         const reg2 = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/
-        if(!reg1.test(form.contact) && !reg2.test(form.contact)){
+        if (!reg1.test(form.contact) && !reg2.test(form.contact)) {
           ElNotification({
             title: '联系方式不正确！',
             message: '请填写正确的手机号码或邮箱',
@@ -187,88 +199,91 @@ function submitAnswer(elForm) {
         }
       }
     }
+    confirmDialogVisible.value = true
+  })
+}
 
-
-    let answerResult = []
-    // 遍历问题
-    for (const index in survey.questions) {
-      const question = survey.questions[index] // 问题
-      let options = question.options// 选项
-      const answer = form.answers[question.id].toString()// 答案
-      switch (question.type) {// 答案类型
-        case 'text':
-          answerResult.push({question_id: question.id, content: answer});// 答案
-          break;
-        case 'radio':
+function submitAnswer() {
+  let answerResult = []
+  // 遍历问题
+  for (const index in survey.questions) {
+    const question = survey.questions[index] // 问题
+    let options = question.options// 选项
+    const answer = form.answers[question.id].toString()// 答案
+    switch (question.type) {// 答案类型
+      case 'text':
+        answerResult.push({question_id: question.id, content: answer});// 答案
+        break;
+      case 'radio':
+        let extMsg = ''
+        for (let option of options) {// 遍历选项
+          // 如果有补充信息，但是没有填写
+          if (option.has_ext_msg === 'yes' && option.label === answer && (option.extMsg === undefined || option.extMsg === '')) {
+            ElNotification({
+              title: '信息不全',
+              message: '请填写[第' + (Number(index) + 1) + '题]的补充信息',
+              type: 'warning',
+            })
+            return
+          }
+          // 如果选项等于答案，就把补充信息赋值给extMsg
+          if (option.label === answer) {
+            extMsg = option.extMsg
+          }
+        }
+        // 把答案添加到答案数组中
+        answerResult.push({question_id: question.id, label: answer, ext_msg: extMsg,});
+        break;
+      case 'checkbox':
+        // 选项是一个数组，遍历选项
+        const labels = answer.split(',')
+        for (let label of labels) {
           let extMsg = ''
-          for (let option of options) {// 遍历选项
-            // 如果有补充信息，但是没有填写
-            if (option.has_ext_msg === 'yes' && option.label === answer && (option.extMsg === undefined || option.extMsg === '')) {
+          // 如果有补充信息，但是没有填写
+          for (let option of options) {
+            if (option.has_ext_msg === 'yes' && option.label === label && (option.extMsg === undefined || option.extMsg === '')) {
               ElNotification({
                 title: '信息不全',
-                message: '请填写[第' + (Number(index) + 1) + '题]的补充信息',
+                message: '请填写[第' + (Number(index) + 1) + '题,选项' + option.label + ']的补充信息',
                 type: 'warning',
               })
               return
             }
             // 如果选项等于答案，就把补充信息赋值给extMsg
-            if (option.label === answer) {
+            if (option.label === label) {
               extMsg = option.extMsg
             }
           }
           // 把答案添加到答案数组中
-          answerResult.push({question_id: question.id, label: answer, ext_msg: extMsg,});
-          break;
-        case 'checkbox':
-          // 选项是一个数组，遍历选项
-          const labels = answer.split(',')
-          for (let label of labels) {
-            let extMsg = ''
-            // 如果有补充信息，但是没有填写
-            for (let option of options) {
-              if (option.has_ext_msg === 'yes' && option.label === label && (option.extMsg === undefined || option.extMsg === '')) {
-                ElNotification({
-                  title: '信息不全',
-                  message: '请填写[第' + (Number(index) + 1) + '题,选项' + option.label + ']的补充信息',
-                  type: 'warning',
-                })
-                return
-              }
-              // 如果选项等于答案，就把补充信息赋值给extMsg
-              if (option.label === label) {
-                extMsg = option.extMsg
-              }
-            }
-            // 把答案添加到答案数组中
-            answerResult.push({question_id: question.id, label: label, ext_msg: extMsg,});
-          }
-      }
+          answerResult.push({question_id: question.id, label: label, ext_msg: extMsg,});
+        }
     }
-    // 遍历答案数组，添加指纹、问卷id、联系方式
-    answerResult.forEach(a => {
-      a.finger = finger.value
-      a.survey_id = surveyId
-      a.contact = form.contact
-    })
-    // 提交答案
-    add(answerResult).then(res => {
-      if (res.success) {
-        ElNotification({
-          title: '提交成功',
-          message: res.message,
-          type: 'success',
-        })
-        allowSubmit.value = false
-        disabled.value = true
-      } else {
-        ElNotification({
-          title: '提交失败',
-          message: res.message,
-          type: 'error',
-        })
-      }
-    })
+  }
+  // 遍历答案数组，添加指纹、问卷id、联系方式
+  answerResult.forEach(a => {
+    a.finger = finger.value
+    a.survey_id = surveyId
+    a.contact = form.contact
   })
+  // 提交答案
+  add(answerResult).then(res => {
+    if (res.success) {
+      ElNotification({
+        title: '提交成功',
+        message: res.message,
+        type: 'success',
+      })
+      allowSubmit.value = false
+      disabled.value = true
+    } else {
+      ElNotification({
+        title: '提交失败',
+        message: res.message,
+        type: 'error',
+      })
+    }
+  })
+  confirmDialogVisible.value = false
 }
 
 // 获取浏览器指纹
