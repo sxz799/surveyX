@@ -10,7 +10,7 @@
 go gin gorm jwt 
 
 ### 数据库
-sqlite[推荐]  mysql  postgres
+sqlite[推荐,默认]  mysql  postgres
  
 ### 前端
 Vue3 vite element-plus
