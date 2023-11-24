@@ -1,43 +1,46 @@
 package config
 
 import (
+	"flag"
 	"github.com/spf13/viper"
 	"log"
 	"os"
 )
 
 var (
-	ServerPort  string
-	GinMode     string
-	Key         string
-	SqlType     string
-	SqliteUrl   string
-	MysqlUrl    string
-	PostgresUrl string
+	Port    string
+	Key     string
+	SqlType string
+	SqlUrl  string
 )
 
-func init() {
-	log.Println("正在应用配置文件...")
+func Init() {
+	log.Println("正在读取配置文件...")
 	if _, err := os.Stat("conf.yaml"); os.IsNotExist(err) {
 		log.Println("没找到配置文件,使用默认配置...")
-		ServerPort = "3000"
-		GinMode = "release"
+		Port = "3000"
 		Key = "123456"
 		SqlType = "sqlite"
-		SqliteUrl = "surveyX.db"
+		SqlUrl = "survey.db"
 	} else {
 		viper.SetConfigFile("conf.yaml")
 		err = viper.ReadInConfig()
 		if err != nil {
 			log.Panicln("配置文件读取失败...")
 		}
-		ServerPort = viper.GetString("server.port")
-		GinMode = viper.GetString("server.ginMode")
-		Key = viper.GetString("admin.key")
+		Port = viper.GetString("port")
+		Key = viper.GetString("key")
 		SqlType = viper.GetString("db.sqlType")
-		SqliteUrl = viper.GetString("db.sqliteUrl")
-		MysqlUrl = viper.GetString("db.mysqlUrl")
-		PostgresUrl = viper.GetString("db.postgresUrl")
+		SqlUrl = viper.GetString("db.sqlUrl")
 	}
-
+	// 读取命令行参数
+	port := flag.String("port", Port, "端口号")
+	key := flag.String("key", Key, "密钥")
+	sqlType := flag.String("sqlType", SqlType, "数据库类型")
+	sqlUrl := flag.String("sqlUrl", SqlUrl, "数据库地址")
+	flag.Parse()
+	Port = *port
+	Key = *key
+	SqlType = *sqlType
+	SqlUrl = *sqlUrl
 }
