@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     paths:
-      - 'VERSION1' # 仅更新版本时推送
+      - 'VERSION' # 仅更新版本时推送
 
 jobs:
   build-web:
