@@ -5,7 +5,7 @@ import (
 	"github.com/sxz799/surveyX/model/entity"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
-	"gorm.io/driver/sqlite"
+	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 	"log"
 )
