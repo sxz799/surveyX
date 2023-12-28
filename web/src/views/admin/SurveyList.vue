@@ -205,7 +205,7 @@ import {
   VideoPause
 } from "@element-plus/icons";
 import useClipboard from 'vue-clipboard3';
-import {ElMessage} from "element-plus";
+
 
 const {toClipboard} = useClipboard();
 const surveyRef = ref()

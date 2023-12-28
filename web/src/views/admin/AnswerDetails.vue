@@ -35,7 +35,7 @@
 
 import {list} from "@/api/admin/answer.js";
 import {onMounted, reactive, ref, toRefs, watch} from "vue";
-import {ElMessage} from "element-plus";
+
 
 const props = defineProps({
   questionType: String,

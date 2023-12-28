@@ -95,7 +95,6 @@ import {get} from "@/api/user/survey.js";
 import {list} from "@/api/user/question.js";
 import {add} from "@/api/user/answer.js";
 import {useRoute} from "vue-router";
-import {ElNotification} from 'element-plus'
 import Fingerprint2 from 'fingerprintjs2';
 
 

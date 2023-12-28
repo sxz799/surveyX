@@ -66,7 +66,7 @@
 
 <script setup>
 
-import {ElMessage} from "element-plus";
+
 import {analysis as SurveyAnalysis} from "@/api/admin/survey.js";
 import {list as listQuestion,analysis as QuestionAnalysis} from "@/api/admin/question.js";
 
