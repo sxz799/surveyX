@@ -3,6 +3,8 @@ node_modules
 dist/
 *.db
 
+server/surveyX
+
 
 # local env files
 .env.local
