@@ -1,0 +1,215 @@
+name: CI
+
+on:
+  push:
+    paths:
+      - 'VERSION' # 仅更新版本时推送
+
+jobs:
+  build-web:
+    strategy:
+      matrix:
+        node-version: [16.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        
+    - name: Build Web
+      run: |
+        sed -i '9s|//||' vite.config.js
+        npm install && npm run build
+      working-directory: ./web
+      
+    - name: Move Files
+      run: |
+        mkdir surveyX_WEB
+        tar -czf surveyX-artifact-web.tar.gz web/dist
+        mv surveyX-artifact-web.tar.gz surveyX_WEB/
+      
+    - name: Upload Artifact-Web
+      uses: actions/upload-artifact@v2
+      with:
+       name: surveyX-artifact-web
+       path: ${{ github.workspace }}/surveyX_WEB
+
+  build-linux-ubuntu:
+    needs: build-web
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.21
+
+    - name: Download Web Artifact
+      uses: actions/download-artifact@v2.1.1
+      with:
+       name: surveyX-artifact-web
+
+    - name: Copy Web Files
+      run: |
+        tar xzf surveyX-artifact-web.tar.gz -C .
+        cp -r web/dist server/
+
+    - name: Build Server for Linux(Ubuntu)
+      run: go build -ldflags="-s -w" -o bin/app .
+      working-directory: ./server
+
+    - name: Copy Files
+      run: |
+        mkdir surveyX
+        cp -r doc/ surveyX/doc/
+        cp -r server/bin/app surveyX/
+
+    - name: Upload Artifact-Linux(Ubuntu)
+      uses: actions/upload-artifact@v2
+      with:
+       name: surveyX-artifact-linux-ubuntu
+       path: ${{ github.workspace }}/surveyX
+
+    - name: Download a Build Artifact-Linux(Ubuntu)
+      uses: actions/download-artifact@v2.1.1
+      with:
+       name: surveyX-artifact-linux-ubuntu
+
+  build-linux-redhat:
+    needs: build-web
+    runs-on: ubuntu-latest
+    container: docker.io/centos:7
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: intall deps
+      run: |
+        yum install -y wget tar gcc automake autoconf libtool make
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.21
+
+    - name: Download Web Artifact
+      uses: actions/download-artifact@v2.1.1
+      with:
+       name: surveyX-artifact-web
+
+    - name: Copy Web Files
+      run: |
+        tar xzf surveyX-artifact-web.tar.gz -C .
+        cp -r web/dist server/
+
+    - name: Build Server for Linux(Redhat)
+      run: go build -ldflags="-s -w" -o bin/app .
+      working-directory: ./server
+
+    - name: Copy Files
+      run: |
+        mkdir surveyX
+        cp -r doc/ surveyX/doc/
+        cp -r server/bin/app surveyX/
+
+    - name: Upload Artifact-Linux(Redhat)
+      uses: actions/upload-artifact@v2
+      with:
+       name: surveyX-artifact-linux-redhat
+       path: ${{ github.workspace }}/surveyX
+
+    - name: Download a Build Artifact-Linux(Redhat)
+      uses: actions/download-artifact@v2.1.1
+      with:
+       name: surveyX-artifact-linux-redhat
+
+  build-mac:
+    needs: build-web
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.21
+
+    - name: Download Web Artifact
+      uses: actions/download-artifact@v2.1.1
+      with:
+       name: surveyX-artifact-web
+
+    - name: Copy Web Files
+      run: |
+        tar xzf surveyX-artifact-web.tar.gz -C .
+        cp -r web/dist server/
+
+    - name: Build Server for Mac
+      run: go build -ldflags="-s -w" -o bin/app .
+      working-directory: ./server
+
+    - name: Copy Files
+      run: |
+        mkdir surveyX
+        cp -r doc/ surveyX/doc/
+        cp -r server/bin/app surveyX/
+
+    - name: Upload Artifact-Mac
+      uses: actions/upload-artifact@v2
+      with:
+       name: surveyX-artifact-mac
+       path: ${{ github.workspace }}/surveyX
+
+    - name: Download a Build Artifact-Mac
+      uses: actions/download-artifact@v2.1.1
+      with:
+       name: surveyX-artifact-mac
+
+  build-windows:
+    needs: build-web
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.21
+
+    - name: Download Web Artifact
+      uses: actions/download-artifact@v2.1.1
+      with:
+       name: surveyX-artifact-web
+
+    - name: Copy Web Files
+      run: |
+        tar xzf surveyX-artifact-web.tar.gz -C .
+        cp -r web/dist server/
+
+    - name: Build Server for Windows
+      run: go build -ldflags="-s -w" -o bin/app.exe .
+      working-directory: ./server
+
+    - name: Copy Files
+      run: |
+        mkdir surveyX
+        cp -r doc/ surveyX/doc/
+        cp -r server/bin/app.exe surveyX/
+
+    - name: Upload Artifact-Windows
+      uses: actions/upload-artifact@v2
+      with:
+       name: surveyX-artifact-windows
+       path: ${{ github.workspace }}/surveyX
+
+    - name: Download a Build Artifact-Windows
+      uses: actions/download-artifact@v2.1.1
+      with:
+       name: surveyX-artifact-windows
