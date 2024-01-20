@@ -3,7 +3,7 @@ FROM node:16
 WORKDIR /go/src/github.com/sxz799/surveyX/web
 COPY ./web/ .
 
-RUN sed -i '9s|//||' vite.config.js
+RUN sed -i 's#//sed_tag/base#base#g' vite.config.js
 
 RUN yarn && yarn build
 
