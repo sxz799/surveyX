@@ -85,19 +85,19 @@ func (ts *SurveyService) Analysis(id string) (any, error) {
 		QuestionCount int
 		FingerCount   int
 		ContactCount  int
-		MinCreateAt   string
-		MaxCreateAt   string
+		FirstCreateAt string
+		LastCreateAt  string
 	}
 	err := utils.DB.Table("answers").
-		Select("COUNT(DISTINCT key) as key_count, COUNT(DISTINCT question_id) as question_count, COUNT(DISTINCT finger) as finger_count, COUNT(DISTINCT contact) as contact_count, min(create_at) as min_create_at, max(create_at) as max_create_at").
+		Select("COUNT(DISTINCT key) as key_count, COUNT(DISTINCT question_id) as question_count, COUNT(DISTINCT finger) as finger_count, COUNT(DISTINCT contact) as contact_count, min(create_at) as first_create_at, max(create_at) as last_create_at").
 		Where("survey_id = ?", id).
 		Scan(&result).Error
 	//时间转为字符串
-	if result.MinCreateAt != "" {
-		result.MinCreateAt = result.MinCreateAt[:19]
+	if result.FirstCreateAt != "" {
+		result.FirstCreateAt = result.FirstCreateAt[:19]
 	}
-	if result.MaxCreateAt != "" {
-		result.MaxCreateAt = result.MaxCreateAt[:19]
+	if result.LastCreateAt != "" {
+		result.LastCreateAt = result.LastCreateAt[:19]
 	}
 	return result, err
 }

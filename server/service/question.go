@@ -101,7 +101,6 @@ func (ts *QuestionService) Analysis(id string) (any, error) {
 		if a.Label != "" {
 			labelMap[a.Label]++
 		}
-
 	}
 	type result struct {
 		ContactCount int `json:"contact_count"`
@@ -110,9 +109,19 @@ func (ts *QuestionService) Analysis(id string) (any, error) {
 		Count        int `json:"count"`
 	}
 	var r result
+	var LabelCount []struct {
+		Label string `json:"label"`
+		Count int    `json:"count"`
+	}
+	for k, v := range labelMap {
+		LabelCount = append(LabelCount, struct {
+			Label string `json:"label"`
+			Count int    `json:"count"`
+		}{Label: k, Count: v})
+	}
 	r.ContactCount = len(contactMap)
 	r.FingerCount = len(fingerMap)
-	r.LabelInfo = labelMap
+	r.LabelInfo = LabelCount
 	r.Count = len(answers)
 	return r, err
 }
