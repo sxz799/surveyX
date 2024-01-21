@@ -3,11 +3,11 @@
 
   <div class="analysis-container">
     <el-tag>题目数量 : {{ analysisSurveyData.QuestionCount }}</el-tag>
-    <el-tag>答题次数 : {{ analysisSurveyData.KeyCount }}</el-tag>
+    <el-tag>填写次数 : {{ analysisSurveyData.KeyCount }}</el-tag>
     <el-tag>统计的浏览器数量 : {{ analysisSurveyData.FingerCount }}</el-tag>
     <el-tag>统计的联系方式数量 : {{ analysisSurveyData.ContactCount }}</el-tag>
-    <el-tag>第一次答题时间 : {{ analysisSurveyData.FirstCreateAt }}</el-tag>
-    <el-tag>最后一次答题时间 : {{ analysisSurveyData.LastCreateAt }}</el-tag>
+    <el-tag>第一次填写时间 : {{ analysisSurveyData.FirstCreateAt }}</el-tag>
+    <el-tag>最后一次填写时间 : {{ analysisSurveyData.LastCreateAt }}</el-tag>
   </div>
 
 

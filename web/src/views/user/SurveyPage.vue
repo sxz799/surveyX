@@ -134,7 +134,7 @@ async function initSurvey() {
   if (datetime < new Date(surveyData.data.start_time) || datetime > new Date(surveyData.data.end_time)) {
     ElNotification({
       title: '抱歉',
-      message: '当前问卷不在答题时间内!',
+      message: '当前问卷不在填写时间内!',
       type: 'warning',
     })
     allowSubmit.value = false

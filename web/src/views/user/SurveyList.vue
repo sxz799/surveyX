@@ -12,7 +12,7 @@
                            :show-overflow-tooltip="true"/>
           <el-table-column label="操作" align="center" width="150">
             <template #default="scope">
-              <el-button type="text" :icon="Edit" @click="router.push('/survey/'+scope.row.id)">答题</el-button>
+              <el-button type="text" :icon="Edit" @click="router.push('/survey/'+scope.row.id)">填写</el-button>
             </template>
           </el-table-column>
         </el-table>

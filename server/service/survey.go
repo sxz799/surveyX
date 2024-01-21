@@ -140,9 +140,9 @@ func (ts *SurveyService) Import(file *multipart.FileHeader) (err error) {
 		"浏览器指纹":  "finger",
 		"联系方式":   "contact",
 		"无":      "",
-		"单选题":    "radio",
-		"多选题":    "checkbox",
-		"简答题":    "text",
+		"单选":    "radio",
+		"多选":    "checkbox",
+		"简答":    "text",
 	}
 	// 2.1 读取问卷信息
 	startTime, _ := time.Parse("20060102150405", surveyRow[2])
