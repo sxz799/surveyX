@@ -15,13 +15,8 @@
               <el-card>
                 <el-form :model="queryParams" size="small" :inline="true">
                   <el-form-item label="标题" prop="roleName">
-                    <el-input
-                        v-model="queryParams.title"
-                        placeholder="请输入标题"
-                        clearable
-                        style="width: 240px"
-                        @keyup.enter="handleQuery"
-                    />
+                    <el-input v-model="queryParams.title" placeholder="请输入标题" clearable style="width: 240px"
+                      @keyup.enter="handleQuery" />
                   </el-form-item>
                   <el-form-item>
                     <el-button type="primary" :icon="Search" @click="handleQuery">搜索</el-button>
@@ -33,38 +28,34 @@
                     <el-button type="primary" plain size="small" :icon="Plus" @click="handleAdd">新建问卷</el-button>
                   </el-col>
                   <el-col :span="1.5">
-                    <el-button type="success" plain size="small" :icon="VideoPlay" :disabled="selectedRows.length===0"
-                               @click="handleStartCollect">开始收集
+                    <el-button type="success" plain size="small" :icon="VideoPlay" :disabled="selectedRows.length === 0"
+                      @click="handleStartCollect">开始收集
                     </el-button>
                   </el-col>
                   <el-col :span="1.5">
-                    <el-button type="danger" plain size="small" :disabled="selectedRows.length===0" :icon="VideoPause"
-                               @click="handleStopCollect">停止收集
+                    <el-button type="danger" plain size="small" :disabled="selectedRows.length === 0" :icon="VideoPause"
+                      @click="handleStopCollect">停止收集
                     </el-button>
                   </el-col>
                   <el-col :span="1.5">
-                    <el-button type="success" plain size="small" :disabled="selectedRows.length!==1" :icon="Link"
-                               @click="copySurveyLink">复制链接
+                    <el-button type="success" plain size="small" :disabled="selectedRows.length !== 1" :icon="Link"
+                      @click="copySurveyLink">复制链接
                     </el-button>
                   </el-col>
                   <el-col :span="1.5">
-                    <el-upload
-                        :on-success="handleUploadSuccess"
-                        :on-error="handleUploadFail"
-                        accept=".xlsx"
-                        :show-file-list="false"
-                        action="/api/admin/survey/import">
+                    <el-upload :on-success="handleUploadSuccess" :on-error="handleUploadFail" accept=".xlsx"
+                      :show-file-list="false" action="/api/admin/survey/import">
                       <el-button color="#555555" size="small" :icon="UploadFilled" plain>上传问卷</el-button>
                     </el-upload>
                   </el-col>
                 </el-row>
                 <el-table border fit :highlight-current-row="true" :data="surveyList" @row-click="handleClickRow"
-                          @selection-change="handleSelectionChange">
-                  <el-table-column type="selection" align="center"/>
-                  <el-table-column label="序号" width="70" align="center" type="index"/>
-                  <el-table-column label="标题" align="center" key="title" prop="title" :show-overflow-tooltip="false"/>
+                  @selection-change="handleSelectionChange">
+                  <el-table-column type="selection" align="center" />
+                  <el-table-column label="序号" width="70" align="center" type="index" />
+                  <el-table-column label="标题" align="center" key="title" prop="title" :show-overflow-tooltip="false" />
                   <el-table-column label="状态" align="center" width="100" key="title" prop="status"
-                                   :show-overflow-tooltip="false">
+                    :show-overflow-tooltip="false">
                     <template #default="scope">
                       <el-tag v-if="scope.row.status === 'new'">初始</el-tag>
                       <el-tag type="success" v-if="scope.row.status === 'collecting'">收集中</el-tag>
@@ -73,11 +64,8 @@
                   </el-table-column>
                   <el-table-column label="操作" align="center" width="150">
                     <template #default="scope">
-                      <el-popconfirm
-                          confirm-button-text="确定"
-                          cancel-button-text="取消"
-                          @confirm="handleDelete(scope.row)"
-                          title="确定要删除吗?">
+                      <el-popconfirm confirm-button-text="确定" cancel-button-text="取消" @confirm="handleDelete(scope.row)"
+                        title="确定要删除吗?">
                         <template #reference>
                           <el-button link type="danger" :icon="Delete">删除</el-button>
                         </template>
@@ -85,20 +73,10 @@
                     </template>
                   </el-table-column>
                 </el-table>
-                <el-pagination
-                    style="padding-top: 20px"
-                    small
-                    :style="{'justify-content':'center'}"
-                    :background="true"
-                    :hide-on-single-page="false"
-                    :current-page="queryParams.pageNum"
-                    :page-size="queryParams.pageSize"
-                    :page-sizes="[5, 10, 30, 50]"
-                    :total="total"
-                    layout=" sizes, prev, pager, next"
-                    @current-change="handleCurrentChange"
-                    @size-change="handleSizeChange"
-                />
+                <el-pagination style="padding-top: 20px" small :style="{ 'justify-content': 'center' }" :background="true"
+                  :hide-on-single-page="false" :current-page="queryParams.pageNum" :page-size="queryParams.pageSize"
+                  :page-sizes="[5, 10, 30, 50]" :total="total" layout=" sizes, prev, pager, next"
+                  @current-change="handleCurrentChange" @size-change="handleSizeChange" />
               </el-card>
             </div>
             <div style="margin-bottom: 4px;">
@@ -106,29 +84,21 @@
                 <template #header>
                   <span>{{ title }}</span>
                 </template>
-                <el-form :disabled="title==='详 情'" @click="title='修 改'" ref="surveyRef" :model="form" :inline="true"
-                         size="small" :rules="rules">
+                <el-form :disabled="title === '详 情'" @click="title = '修 改'" ref="surveyRef" :model="form" :inline="true"
+                  size="small" :rules="rules">
                   <el-form-item label="标题" prop="title">
                     <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" v-model="form.title"
-                              placeholder="请输入标题"></el-input>
+                      placeholder="请输入标题"></el-input>
                   </el-form-item>
                   <el-form-item label="描述" prop="description">
                     <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" v-model="form.description"
-                              placeholder="请输入描述"></el-input>
+                      placeholder="请输入描述"></el-input>
                   </el-form-item>
                   <el-form-item label="开始时间" prop="start_time">
-                    <el-date-picker
-                        v-model="form.start_time"
-                        type="datetime"
-                        placeholder="选择开始日期时间"
-                    />
+                    <el-date-picker v-model="form.start_time" type="datetime" placeholder="选择开始日期时间" />
                   </el-form-item>
                   <el-form-item label="结束时间" prop="end_time">
-                    <el-date-picker
-                        v-model="form.end_time"
-                        type="datetime"
-                        placeholder="选择结束日期时间"
-                    />
+                    <el-date-picker v-model="form.end_time" type="datetime" placeholder="选择结束日期时间" />
                   </el-form-item>
                   <el-form-item label="填写联系方式" prop="need_contact">
                     <el-select v-model="form.need_contact" placeholder="请选择">
@@ -136,7 +106,7 @@
                       <el-option label="否" value="no"></el-option>
                     </el-select>
                   </el-form-item>
-                  <el-form-item label="联系方式类型" v-if="form.need_contact==='yes'" prop="contact_type">
+                  <el-form-item label="联系方式类型" v-if="form.need_contact === 'yes'" prop="contact_type">
                     <el-select v-model="form.contact_type" placeholder="请选择">
                       <el-option label="手机号" value="phone"></el-option>
                       <el-option label="邮箱" value="email"></el-option>
@@ -153,13 +123,13 @@
                   </el-form-item>
                   <el-form-item label="重复提交检查方式" prop="repeat_check">
                     <el-select v-model="form.repeat_check" placeholder="请选择">
-                      <el-option v-if="form.need_contact==='yes'" label="联系方式" value="contact"></el-option>
+                      <el-option v-if="form.need_contact === 'yes'" label="联系方式" value="contact"></el-option>
                       <el-option label="浏览器指纹" value="finger"></el-option>
                     </el-select>
                   </el-form-item>
                   <el-form-item label="水印" prop="water_mark">
                     <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" v-model="form.water_mark"
-                              placeholder="请输入水印"></el-input>
+                      placeholder="请输入水印"></el-input>
                   </el-form-item>
                   <el-form-item>
                     <el-button type="primary" @click="submitForm(surveyRef)">确定</el-button>
@@ -172,10 +142,10 @@
             <el-card>
               <el-tabs>
                 <el-tab-pane label="题目管理">
-                  <QuestionList v-if="openDetails" :surveyId="surveyId"/>
+                  <QuestionList v-if="openDetails" :surveyId="surveyId" />
                 </el-tab-pane>
                 <el-tab-pane label="问卷分析">
-                  <Analysis v-if="openDetails" :surveyId="surveyId"/>
+                  <Analysis v-if="openDetails" :surveyId="surveyId" />
                 </el-tab-pane>
               </el-tabs>
             </el-card>
@@ -190,8 +160,8 @@
 </template>
 
 <script setup>
-import {onMounted, reactive, ref, toRefs} from 'vue'
-import {list, add, del, update, get} from "@/api/admin/survey.js";
+import { onMounted, reactive, ref, toRefs } from 'vue'
+import { list, add, del, update, get } from "@/api/admin/survey.js";
 import QuestionList from "./QuestionList.vue";
 import Analysis from "@/views/admin/Analysis.vue";
 import {
@@ -207,7 +177,7 @@ import {
 import useClipboard from 'vue-clipboard3';
 
 
-const {toClipboard} = useClipboard();
+const { toClipboard } = useClipboard();
 const surveyRef = ref()
 const surveyId = ref('')
 const open = ref(false)
@@ -226,18 +196,18 @@ const data = reactive({
     title: '',
   },
 });
-const {queryParams, form} = toRefs(data);
+const { queryParams, form } = toRefs(data);
 
 
 const rules = ({
-  title: [{required: true, message: '请填写', trigger: 'blur'}],
-  description: [{required: true, message: '请填写', trigger: 'blur'}],
-  need_contact: [{required: true, message: '请填写', trigger: 'blur'}],
-  contact_type: [{required: true, message: '请填写', trigger: 'blur'}],
-  repeat: [{required: true, message: '请填写', trigger: 'blur'}],
-  repeat_check: [{required: true, message: '请填写', trigger: 'blur'}],
-  start_time: [{required: true, message: '请填写', trigger: 'blur'}],
-  end_time: [{required: true, message: '请填写', trigger: 'blur'}],
+  title: [{ required: true, message: '请填写', trigger: 'blur' }],
+  description: [{ required: true, message: '请填写', trigger: 'blur' }],
+  need_contact: [{ required: true, message: '请填写', trigger: 'blur' }],
+  contact_type: [{ required: true, message: '请填写', trigger: 'blur' }],
+  repeat: [{ required: true, message: '请填写', trigger: 'blur' }],
+  repeat_check: [{ required: true, message: '请填写', trigger: 'blur' }],
+  start_time: [{ required: true, message: '请填写', trigger: 'blur' }],
+  end_time: [{ required: true, message: '请填写', trigger: 'blur' }],
 })
 
 onMounted(() => {
@@ -278,7 +248,7 @@ function handleCurrentChange(val) {
 }
 
 function reset() {
-  form.value = {options: []};
+  form.value = { options: [] };
 }
 
 function handleAdd() {
@@ -401,6 +371,16 @@ function submitForm(elForm) {
 
 <style scoped>
 
+/*
+  解决el-upload按钮不对齐
+ */
+:deep(.el-upload) {
+  display: inline;
+  text-align: center;
+  cursor: pointer;
+  outline: 0;
+}
+
 .app-container {
   padding: 20px;
 }
@@ -441,5 +421,4 @@ function submitForm(elForm) {
   margin-left: 5px;
   color: #606266;
 }
-
 </style>

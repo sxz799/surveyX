@@ -76,10 +76,12 @@
     </el-row>
 
     <el-dialog
-        title="确定提交?"
         :show-close="false"
         v-model="confirmDialogVisible"
         width="300px" center>
+        <div style="text-align: center;">
+          <span style="font-size: larger;">确定提交?</span>
+        </div>
       <template #footer>
         <el-button @click="confirmDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="submitAnswer()">确 定</el-button>

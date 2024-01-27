@@ -1,14 +1,25 @@
 <template>
 
-
-  <div class="analysis-container">
-    <el-tag>题目数量 : {{ analysisSurveyData.QuestionCount }}</el-tag>
-    <el-tag>填写次数 : {{ analysisSurveyData.KeyCount }}</el-tag>
-    <el-tag>统计的浏览器数量 : {{ analysisSurveyData.FingerCount }}</el-tag>
-    <el-tag>统计的联系方式数量 : {{ analysisSurveyData.ContactCount }}</el-tag>
-    <el-tag>第一次填写时间 : {{ analysisSurveyData.FirstCreateAt }}</el-tag>
-    <el-tag>最后一次填写时间 : {{ analysisSurveyData.LastCreateAt }}</el-tag>
-  </div>
+  <el-row class="mb8">
+    <el-col :span="6">
+      <el-statistic title="题目数量" group-separator=","  :value="analysisSurveyData.QuestionCount" />
+    </el-col>
+    <el-col :span="6">
+      <el-statistic title="填写次数" group-separator=","   :value="analysisSurveyData.KeyCount" />
+    </el-col>
+    <el-col :span="6">
+      <el-statistic title="浏览器数量" group-separator=","   :value="analysisSurveyData.FingerCount" />
+    </el-col>
+    <el-col :span="6">
+      <el-statistic title="联系方式数量" group-separator=","   :value="analysisSurveyData.ContactCount" />
+    </el-col>
+    <el-col :span="12">
+      <el-statistic title="第一次填写时间" group-separator=","   :value="analysisSurveyData.FirstCreateAt" />
+    </el-col>
+    <el-col :span="12">
+      <el-statistic title="最后一次填写时间" group-separator=","   :value="analysisSurveyData.LastCreateAt" />
+    </el-col>
+  </el-row>
 
 
   <el-table border :data="questionList" @expand-change="ExpandChange">
@@ -160,16 +171,15 @@ function handleAnswerDetails(type,qid) {
 </script>
 
 <style scoped>
-.analysis-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 20px;
+.mb8 {
+  margin-bottom: 8px;
 }
-
 .el-tag {
   margin-bottom: 8px;
   margin-right: 8px;
+}
+.el-col {
+  text-align: center;
 }
 
 </style>
