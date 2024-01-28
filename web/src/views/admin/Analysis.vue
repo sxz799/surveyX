@@ -89,7 +89,6 @@ const currQuestionId = ref(0)
 const total = ref(0)
 const questionList = ref([])
 
-const questionAnalysisResults = ref({})
 
 const analysisSurveyData = ref({
   KeyCount: 0,
@@ -108,6 +107,18 @@ const queryParams = reactive({
 
 
 watch(() => props.surveyId, (newValue) => {
+  if (newValue==='') {
+    questionList.value = []
+    analysisSurveyData.value={
+      KeyCount: 0,
+      ContactCount: 0,
+      FingerCount: 0,
+      LastCreateAt: '',
+      FirstCreateAt: '',
+      QuestionCount: 0,
+    }
+    return
+  }
   queryParams.survey_id = newValue
   getSurveyAnalysis()
 });

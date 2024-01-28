@@ -2,13 +2,7 @@
   <div class="app-container">
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button
-            type="primary"
-            plain
-            size="small"
-            :icon="Plus"
-            @click="handleAdd"
-        >新增题目
+        <el-button type="primary" plain size="small" :icon="Plus" @click="handleAdd">新增题目
         </el-button>
       </el-col>
     </el-row>
@@ -34,15 +28,12 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="排序" width="70" align="center" key="order" prop="order" :show-overflow-tooltip="true"/>
+      <el-table-column label="排序" width="70" align="center" key="order" prop="order" :show-overflow-tooltip="true" />
       <el-table-column label="操作" align="center" width="150">
         <template #default="scope">
           <el-button link type="primary" @click="handleEdit(scope.row)" :icon="Edit">修改</el-button>
-          <el-popconfirm
-              confirm-button-text="确定"
-              cancel-button-text="取消"
-              @confirm="handleDelete(scope.row)"
-              title="确定要删除吗?">
+          <el-popconfirm confirm-button-text="确定" cancel-button-text="取消" @confirm="handleDelete(scope.row)"
+            title="确定要删除吗?">
             <template #reference>
               <el-button link type="danger" :icon="Delete">删除</el-button>
             </template>
@@ -50,20 +41,10 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-        style="padding-top: 20px"
-        small
-        :style="{'justify-content':'center'}"
-        :background="true"
-        :hide-on-single-page="false"
-        :current-page="queryParams.pageNum"
-        :page-size="queryParams.pageSize"
-        :page-sizes="[5, 10, 30, 50]"
-        :total="total"
-        layout=" sizes, prev, pager, next"
-        @current-change="handleCurrentChange"
-        @size-change="handleSizeChange"
-    />
+    <el-pagination style="padding-top: 20px" small :style="{ 'justify-content': 'center' }" :background="true"
+      :hide-on-single-page="false" :current-page="queryParams.pageNum" :page-size="queryParams.pageSize"
+      :page-sizes="[5, 10, 30, 50]" :total="total" layout=" sizes, prev, pager, next"
+      @current-change="handleCurrentChange" @size-change="handleSizeChange" />
 
     <el-dialog :title="title" v-model="open" :width="dialogWidth" append-to-body>
       <el-form ref="questionRef" :model="form" :rules="rules" label-width="20%">
@@ -76,7 +57,7 @@
           <el-col :span="24">
             <el-form-item label="题目内容" prop="text">
               <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 5 }" v-model="form.text"
-                        placeholder="请输入题目内容"></el-input>
+                placeholder="请输入题目内容"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -86,24 +67,21 @@
                 <el-option label="多选" value="checkbox"></el-option>
                 <el-option label="简答" value="text"></el-option>
               </el-select>
-              <el-divider v-if="form.type !== 'text'" direction="vertical"/>
+              <el-divider v-if="form.type !== 'text'" direction="vertical" />
               <el-button v-if="form.type !== 'text'" type="success" @click="addOption">新增选项</el-button>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item v-if="form.type !== 'text'"
-                          v-for="(option, index) in form.options"
-                          :label="'选项 ' + String.fromCharCode(65 + index)"
-                          :key="option.key"
-                          :prop="'options.' + index + '.value'">
+            <el-form-item v-if="form.type !== 'text'" v-for="(option, index) in form.options"
+              :label="'选项 ' + String.fromCharCode(65 + index)" :key="option.key" :prop="'options.' + index + '.value'">
               <div style="display: contents;vertical-align: middle;">
                 <div style="padding: 3px;width: 60%">
                   <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 5 }"
-                            v-model="form.options[index].value"></el-input>
+                    v-model="form.options[index].value"></el-input>
                 </div>
                 <div style="padding: 3px">
-                  <el-checkbox-button  v-model="form.options[index].has_ext_msg" true-label="yes" false-label="no"
-                               label="填写备注"/>
+                  <el-checkbox-button v-model="form.options[index].has_ext_msg" true-label="yes" false-label="no"
+                    label="填写备注" />
                 </div>
                 <div style="padding: 3px">
                   <el-button type="danger" @click.prevent="removeOption(option)">删除</el-button>
@@ -130,14 +108,13 @@
 
 
   </div>
-
 </template>
 
 <script setup>
-import {computed, onMounted, reactive, ref, toRefs, watch} from 'vue'
-import {list, add, del, update, get} from "@/api/admin/question.js";
+import { computed, onMounted, reactive, ref, toRefs, watch } from 'vue'
+import { list, add, del, update, get } from "@/api/admin/question.js";
 
-import {Delete, Edit, Plus} from "@element-plus/icons";
+import { Delete, Edit, Plus } from "@element-plus/icons";
 
 
 const props = defineProps({
@@ -163,18 +140,22 @@ const data = reactive({
   },
 });
 
-const {queryParams, form} = toRefs(data);
+const { queryParams, form } = toRefs(data);
 
 const rules = ({
-  text: [{required: true, message: '请输入题目内容', trigger: 'blur'}],
-  type: [{required: true, message: '请选择题目类型', trigger: 'change'}],
-  order: [{required: true, message: '请输入排序', trigger: 'blur'}],
+  text: [{ required: true, message: '请输入题目内容', trigger: 'blur' }],
+  type: [{ required: true, message: '请选择题目类型', trigger: 'change' }],
+  order: [{ required: true, message: '请输入排序', trigger: 'blur' }],
 })
 
 
 
-watch(() => props.surveyId, (oldValue,newValue) => {
-  queryParams.value.survey_id= newValue
+watch(() => props.surveyId, (newValue) => {
+  if (newValue === '') {
+    questionList.value = []
+    return
+  }
+  queryParams.value.survey_id = newValue
   getList()
 });
 
@@ -203,7 +184,7 @@ function handleEdit(row) {
     title.value = '修改'
     //添加校验项
     for (let i = 0; i < form.value.options.length; i++) {
-      rules['options.' + i + '.value'] = [{required: true, message: '不能为空', trigger: 'blur'}]
+      rules['options.' + i + '.value'] = [{ required: true, message: '不能为空', trigger: 'blur' }]
     }
   })
 }
@@ -222,7 +203,7 @@ function handleDelete(row) {
 function submitForm(elForm) {
   elForm.validate((valid, fields) => {
     if (valid) {
-      if(form.value.type!=='text' && form.value.options.length===0){
+      if (form.value.type !== 'text' && form.value.options.length === 0) {
         ElMessage.error('请添加选项')
         return
       }
@@ -267,14 +248,14 @@ function reset() {
 
 function addOption() {
   form.value.options.push({
-        label: String.fromCharCode(65 + form.value.options.length), // A B C D
-        value: '', // 选项的值
-        key: Date.now() // 选项的唯一标识
-      }
+    label: String.fromCharCode(65 + form.value.options.length), // A B C D
+    value: '', // 选项的值
+    key: Date.now() // 选项的唯一标识
+  }
   )
   //添加校验项
   const index = form.value.options.length - 1
-  rules['options.' + index + '.value'] = [{required: true, message: '不能为空', trigger: 'blur'}]
+  rules['options.' + index + '.value'] = [{ required: true, message: '不能为空', trigger: 'blur' }]
 }
 
 function removeOption(op) {
@@ -303,7 +284,6 @@ function handleCurrentChange(val) {
 </script>
 
 <style scoped>
-
 .mb8 {
   margin-bottom: 8px;
 }

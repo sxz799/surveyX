@@ -101,7 +101,7 @@
                     <el-date-picker v-model="form.end_time" type="datetime" placeholder="选择结束日期时间" />
                   </el-form-item>
                   <el-form-item label="填写联系方式" prop="need_contact">
-                    <el-select v-model="form.need_contact" placeholder="请选择">
+                    <el-select @change="(val)=>{if(val==='no'){form.repeat_check='finger'}}" v-model="form.need_contact" placeholder="请选择">
                       <el-option label="是" value="yes"></el-option>
                       <el-option label="否" value="no"></el-option>
                     </el-select>
@@ -261,6 +261,7 @@ function handleDelete(row) {
   del(row.id).then(res => {
     if (res.success) {
       ElMessage.success('删除成功！');
+      surveyId.value=''
       getList()
     } else {
       ElMessage.error('删除失败！');
@@ -305,6 +306,7 @@ function handleSelectionChange(val) {
 }
 
 function handleClickRow(row) {
+  console.log(row);
   title.value = '详 情'
   surveyId.value = row.id
   openDetails.value = true
