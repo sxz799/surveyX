@@ -6,10 +6,9 @@ import (
 	"github.com/sxz799/surveyX/utils"
 )
 
-type QuestionService struct {
-}
+type QuestionService struct {}
 
-var optionService OptionService
+
 
 func (ts *QuestionService) List(q entity.QuestionSearch) (response.PageResult, error) {
 	var qs []entity.Question
@@ -64,11 +63,12 @@ func (ts *QuestionService) Del(id int) (err error) {
 	}
 	err = utils.DB.Delete(&q).Error
 	optionService.Del(id)
+	answerService.DelByQuestionId(id)
 	return
 }
 
 func (ts *QuestionService) DelBySurveyId(surveyId string) (err error) {
-	err = utils.DB.Where("survey_id=?", surveyId).Delete(&entity.Question{}).Error
+	err = utils.DB.Delete(&entity.Question{}, "survey_id=?", surveyId).Error
 	optionService.DelBySurveyId(surveyId)
 	return
 }

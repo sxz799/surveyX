@@ -13,10 +13,8 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-type SurveyService struct {
-}
+type SurveyService struct {}
 
-var questionService QuestionService
 
 func (ts *SurveyService) List(s entity.SurveySearch) (response.PageResult, error) {
 	var surveys []entity.Survey
@@ -69,6 +67,7 @@ func (ts *SurveyService) Del(id string) (err error) {
 		Id: id,
 	}
 	_ = questionService.DelBySurveyId(id)
+	_ = answerService.DelBySurveyId(id)
 	err = utils.DB.Delete(&s).Error
 	return
 }
@@ -140,9 +139,9 @@ func (ts *SurveyService) Import(file *multipart.FileHeader) (err error) {
 		"浏览器指纹":  "finger",
 		"联系方式":   "contact",
 		"无":      "",
-		"单选":    "radio",
-		"多选":    "checkbox",
-		"简答":    "text",
+		"单选":     "radio",
+		"多选":     "checkbox",
+		"简答":     "text",
 	}
 	// 2.1 读取问卷信息
 	startTime, _ := time.Parse("20060102150405", surveyRow[2])

@@ -10,8 +10,7 @@ import (
 	"time"
 )
 
-type AnswerService struct {
-}
+type AnswerService struct {}
 
 func (as *AnswerService) List(a entity.AnswerSearch) (response.PageResult, error) {
 	var answers []entity.Answer
@@ -89,5 +88,15 @@ func (as *AnswerService) Add(ans []entity.Answer) (err error) {
 		a.CreateAt = time.Now()
 		err = utils.DB.Create(&a).Error
 	}
+	return
+}
+
+func (as *AnswerService) DelBySurveyId(surveyId string) (err error) {
+	err = utils.DB.Delete(&entity.Answer{}, "survey_id = ?", surveyId).Error
+	return
+}
+
+func (as *AnswerService) DelByQuestionId(questionId int) (err error) {
+	err = utils.DB.Delete(&entity.Answer{}, "question_id = ?", questionId).Error
 	return
 }
