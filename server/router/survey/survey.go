@@ -19,7 +19,6 @@ func Survey(e *gin.Engine) {
 	}
 	g2 := e.Group("/api/user/survey")
 	{
-		g2.GET("/list", surveyApi.List)
 		g2.GET("/:id", surveyApi.Get)
 	}
 }
