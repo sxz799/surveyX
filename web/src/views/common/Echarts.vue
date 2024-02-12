@@ -14,7 +14,7 @@ import {
 import VChart, {THEME_KEY} from "vue-echarts";
 import {ref, provide} from "vue";
 import {analysis as QuestionAnalysis} from "@/api/admin/question.js";
-
+import {ElMessage} from "element-plus";
 
 use([
   CanvasRenderer,

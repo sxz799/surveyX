@@ -113,7 +113,7 @@
 <script setup>
 import { computed, onMounted, reactive, ref, toRefs, watch } from 'vue'
 import { list, add, del, update, get } from "@/api/admin/question.js";
-
+import {ElMessage} from "element-plus";
 import { Delete, Edit, Plus } from "@element-plus/icons";
 
 

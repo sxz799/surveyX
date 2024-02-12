@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
 import viteCompression from 'vite-plugin-compression'
+
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
@@ -20,7 +21,6 @@ export default defineConfig(({ mode, command }) => {
                 threshold: 10240 // 对大于 1mb 的文件进行压缩
             })
         ],
-        // 第9行的注释不能删除，docker镜像打包时会用到 github actions 会用到
         //sed_tag/base: '/dist/',
         server: {
             proxy: {
