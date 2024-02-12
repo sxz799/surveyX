@@ -13,8 +13,7 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-type SurveyService struct {}
-
+type SurveyService struct{}
 
 func (ts *SurveyService) List(s entity.SurveySearch) (response.PageResult, error) {
 	var surveys []entity.Survey
@@ -25,6 +24,7 @@ func (ts *SurveyService) List(s entity.SurveySearch) (response.PageResult, error
 	db := utils.DB.Model(&entity.Survey{})
 
 	survey := s.Survey
+
 	if survey.Title != "" {
 		db = db.Where("title like ?", "%"+survey.Title+"%")
 	}
@@ -39,6 +39,8 @@ func (ts *SurveyService) List(s entity.SurveySearch) (response.PageResult, error
 	if !survey.EndTime.IsZero() {
 		db = db.Where("end_time > ?", survey.EndTime)
 	}
+
+	db = db.Where("user_id = ?", survey.UserId)
 
 	db.Count(&total)
 	db = db.Limit(limit).Offset(offset)
@@ -101,7 +103,7 @@ func (ts *SurveyService) Analysis(id string) (any, error) {
 	return result, err
 }
 
-func (ts *SurveyService) Import(file *multipart.FileHeader) (err error) {
+func (ts *SurveyService) Import(userId int, file *multipart.FileHeader) (err error) {
 	// 1. 读取文件
 	r, err := file.Open()
 	if err != nil {
@@ -191,6 +193,7 @@ func (ts *SurveyService) Import(file *multipart.FileHeader) (err error) {
 		questions = append(questions, question)
 	}
 
+	survey.UserId = userId
 	utils.DB.Create(&survey)
 	for _, question := range questions {
 		question.SurveyId = survey.Id

@@ -70,12 +70,11 @@
 
 
 import {analysis as SurveyAnalysis} from "@/api/admin/survey.js";
-import {list as listQuestion,analysis as QuestionAnalysis} from "@/api/admin/question.js";
+import {list as listQuestion} from "@/api/admin/question.js";
 
 import {onMounted, reactive, ref, watch} from "vue";
 import AnswerDetails from "@/views/admin/AnswerDetails.vue";
 import Echarts from "@/views/common/Echarts.vue";
-import {ElMessage} from "element-plus";
 
 const props = defineProps({
   surveyId: String,

@@ -5,6 +5,7 @@ import (
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
 	"github.com/sxz799/surveyX/service"
+	"strconv"
 )
 
 var ss service.SurveyService
@@ -17,6 +18,11 @@ func List(c *gin.Context) {
 		response.FailWithMessage("参数有误", c)
 		return
 	}
+	// 从cookie中获取userId
+	userId, _ := c.Cookie("userId")
+	atoi, err := strconv.Atoi(userId)
+	s.Survey.UserId = atoi
+
 	if list, err := ss.List(s); err == nil {
 		response.OkWithData(list, c)
 	} else {
@@ -32,6 +38,10 @@ func Add(c *gin.Context) {
 		response.FailWithMessage("参数有误", c)
 		return
 	}
+	// 从cookie中获取userId
+	userId, _ := c.Cookie("userId")
+	atoi, err := strconv.Atoi(userId)
+	s.UserId = atoi
 	if err = ss.Add(s); err == nil {
 		response.OkWithMessage("添加成功", c)
 	} else {
@@ -91,8 +101,9 @@ func Import(c *gin.Context) {
 		response.FailWithMessage("没有获取到文件!", c)
 		return
 	}
-
-	err = ss.Import(file)
+	userId, _ := c.Cookie("userId")
+	atoi, err := strconv.Atoi(userId)
+	err = ss.Import(atoi, file)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return

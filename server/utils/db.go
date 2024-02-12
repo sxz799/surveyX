@@ -1,11 +1,11 @@
 package utils
 
 import (
+	"github.com/glebarez/sqlite"
 	"github.com/sxz799/surveyX/config"
 	"github.com/sxz799/surveyX/model/entity"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
-	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 	"log"
 )
@@ -43,5 +43,14 @@ func initDBTables() {
 	_ = DB.AutoMigrate(entity.Question{})
 	_ = DB.AutoMigrate(entity.Option{})
 	_ = DB.AutoMigrate(entity.Answer{})
+	_ = DB.AutoMigrate(entity.User{})
+	initUser()
+}
 
+func initUser() {
+	var u entity.User
+	u.Nickname = "管理员"
+	u.Username = "admin"
+	u.Password = "admin"
+	_ = DB.Create(&u)
 }

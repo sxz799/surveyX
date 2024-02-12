@@ -7,6 +7,7 @@ import (
 
 type Survey struct {
 	Id          string    `gorm:"primary_key" json:"id"`
+	UserId      int       `json:"user_id" form:"user_id"`
 	Title       string    `json:"title" form:"title"`
 	Description string    `json:"description" form:"description"`
 	Status      string    `json:"status" form:"status"`

@@ -7,6 +7,10 @@
           <span class="main-title">SurveyX</span>
           <span class="subtitle">——免费的问卷调查系统</span>
         </div>
+        <div class="logout">
+          <el-button type="text" @click="Logout">退出登录</el-button>
+        </div>
+
       </el-header>
       <el-main>
         <el-row :gutter="4">
@@ -54,7 +58,7 @@
                   <el-table-column type="selection" align="center" />
                   <el-table-column label="序号" width="70" align="center" type="index" />
                   <el-table-column label="标题" align="center" key="title" prop="title" :show-overflow-tooltip="false" />
-                  <el-table-column label="状态" align="center" width="100" key="title" prop="status"
+                  <el-table-column label="状态" align="center"  key="title" prop="status"
                     :show-overflow-tooltip="false">
                     <template #default="scope">
                       <el-tag v-if="scope.row.status === 'new'">初始</el-tag>
@@ -62,7 +66,7 @@
                       <el-tag type="danger" v-if="scope.row.status === 'stop'">停止</el-tag>
                     </template>
                   </el-table-column>
-                  <el-table-column label="操作" align="center" width="150">
+                  <el-table-column label="操作" align="center">
                     <template #default="scope">
                       <el-popconfirm confirm-button-text="确定" cancel-button-text="取消" @confirm="handleDelete(scope.row)"
                         title="确定要删除吗?">
@@ -175,6 +179,8 @@ import {
   VideoPause
 } from "@element-plus/icons";
 import useClipboard from 'vue-clipboard3';
+import router from "@/utils/router.js";
+import {logout} from "@/api/common/login.js";
 
 
 const { toClipboard } = useClipboard();
@@ -369,6 +375,16 @@ function submitForm(elForm) {
   })
 }
 
+function Logout() {
+  logout().then(res => {
+    if (res.success) {
+      ElMessage.success('退出成功！');
+      router.push('/login')
+    } else {
+      ElMessage.error('退出失败！');
+    }
+  })
+}
 </script>
 
 <style scoped>
@@ -405,6 +421,7 @@ function submitForm(elForm) {
   display: flex;
   align-items: center;
 }
+
 
 .logo-img {
   height: 80px;
