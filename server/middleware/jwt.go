@@ -10,14 +10,18 @@ import (
 var JwtKey = []byte("survey_secret_key")
 
 type Claims struct {
-	Key string `json:"key"`
+	UserId   int    `json:"userId"`
+	Username string `json:"username"`
+	Nickname string `json:"nickname"`
 	jwt.RegisteredClaims
 }
 
-func GenToken(key string) (tokenStr string, err error) {
+func GenToken(userId int, username, nickname string) (tokenStr string, err error) {
 	// 创建jwt accessClaims 设置过期时间25s
 	claims := &Claims{
-		Key: key,
+		UserId:   userId,
+		Username: username,
+		Nickname: nickname,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(30 * time.Minute)),
 		},
@@ -53,7 +57,7 @@ func JWTAuth() gin.HandlerFunc {
 		}
 		if token.Valid {
 			if claims.ExpiresAt.Unix()-time.Now().Unix() < 15 {
-				str, _ := GenToken(claims.Key)
+				str, _ := GenToken(claims.UserId, claims.Username, claims.Nickname)
 				c.SetCookie("token", str, 60*30, "", "", false, true)
 			}
 			c.Set("claims", claims)

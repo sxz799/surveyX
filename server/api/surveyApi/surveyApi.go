@@ -2,10 +2,10 @@ package surveyApi
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/sxz799/surveyX/api/commonApi"
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
 	"github.com/sxz799/surveyX/service"
-	"strconv"
 )
 
 var ss service.SurveyService
@@ -18,10 +18,9 @@ func List(c *gin.Context) {
 		response.FailWithMessage("参数有误", c)
 		return
 	}
-	// 从cookie中获取userId
-	userId, _ := c.Cookie("userId")
-	atoi, err := strconv.Atoi(userId)
-	s.Survey.UserId = atoi
+
+	userInfo := commonApi.GetCurrentUser(c)
+	s.Survey.UserId = userInfo.Id
 
 	if list, err := ss.List(s); err == nil {
 		response.OkWithData(list, c)
@@ -39,9 +38,8 @@ func Add(c *gin.Context) {
 		return
 	}
 	// 从cookie中获取userId
-	userId, _ := c.Cookie("userId")
-	atoi, err := strconv.Atoi(userId)
-	s.UserId = atoi
+	userInfo := commonApi.GetCurrentUser(c)
+	s.UserId = userInfo.Id
 	if err = ss.Add(s); err == nil {
 		response.OkWithMessage("添加成功", c)
 	} else {
@@ -101,9 +99,8 @@ func Import(c *gin.Context) {
 		response.FailWithMessage("没有获取到文件!", c)
 		return
 	}
-	userId, _ := c.Cookie("userId")
-	atoi, err := strconv.Atoi(userId)
-	err = ss.Import(atoi, file)
+	userInfo := commonApi.GetCurrentUser(c)
+	err = ss.Import(userInfo.Id, file)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return

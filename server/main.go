@@ -2,16 +2,20 @@ package main
 
 import (
 	"embed"
+	"encoding/gob"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/gzip"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
+	"github.com/gin-gonic/gin"
+	"github.com/sxz799/surveyX/config"
+	"github.com/sxz799/surveyX/model/entity"
+	"github.com/sxz799/surveyX/router"
+	"github.com/sxz799/surveyX/utils"
+	"html/template"
 	"io/fs"
 	"log"
 	"net/http"
-	"html/template"
-	"github.com/gin-contrib/cors"
-	"github.com/gin-contrib/gzip"
-	"github.com/gin-gonic/gin"
-	"github.com/sxz799/surveyX/config"
-	"github.com/sxz799/surveyX/router"
-	"github.com/sxz799/surveyX/utils"
 )
 
 // ------前后端分离调试时请注释下面代码------
@@ -24,10 +28,18 @@ var content embed.FS
 func main() {
 	config.Init()
 	utils.InitDB()
+	startGin()
+}
+
+func startGin() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.Use(cors.Default())
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
+	// 注册User结构体，否则session.Save()会报错
+	gob.Register(entity.LoginUser{})
+	store := cookie.NewStore([]byte("surveyX")) // 设置生成sessionId的密钥
+	r.Use(sessions.Sessions("surveySession", store))
 
 	//------前后端分离调试时请注释下面代码------
 	temp := template.Must(template.New("").ParseFS(content, "dist/index.html"))

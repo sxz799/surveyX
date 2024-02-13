@@ -5,9 +5,9 @@
     <el-col :span="12" :xs="24">
       <div class="login-container">
         <h2 class="login-title">欢迎登录</h2>
-        <el-input :autofocus="true" v-model="username" placeholder="请输入您的密钥" @keyup.enter="Login"
+        <el-input :autofocus="true" v-model="username" placeholder="请输入用户名" @keyup.enter="Login"
                   class="login-input"></el-input>
-        <el-input v-model="password" placeholder="请输入您的密钥" @keyup.enter="Login" class="login-input"></el-input>
+        <el-input v-model="password" placeholder="请输入密码" @keyup.enter="Login" class="login-input"></el-input>
         <el-button type="primary" @click="Login" class="login-button">登录</el-button>
       </div>
     </el-col>

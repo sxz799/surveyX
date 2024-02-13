@@ -48,9 +48,11 @@ func initDBTables() {
 }
 
 func initUser() {
-	var u entity.User
-	u.Nickname = "管理员"
-	u.Username = "admin"
-	u.Password = "admin"
-	_ = DB.Create(&u)
+
+	users := []entity.User{
+		{Nickname: "管理员", Username: "admin", Password: "admin"},
+		{Nickname: "33", Username: "33", Password: "33"},
+	}
+
+	_ = DB.Create(&users)
 }

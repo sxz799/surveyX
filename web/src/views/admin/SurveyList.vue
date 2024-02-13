@@ -6,10 +6,9 @@
           <img src="@/assets/favicon.png" class="logo-img" alt="SurveyX logo">
           <span class="main-title">SurveyX</span>
           <span class="subtitle">——免费的问卷调查系统</span>
-        </div>
-        <div class="logout">
           <el-button type="text" @click="Logout">退出登录</el-button>
         </div>
+
 
       </el-header>
       <el-main>
@@ -378,10 +377,10 @@ function submitForm(elForm) {
 function Logout() {
   logout().then(res => {
     if (res.success) {
-      ElMessage.success('退出成功！');
+      ElMessage.success(res.message);
       router.push('/login')
     } else {
-      ElMessage.error('退出失败！');
+      ElMessage.error('退出失败');
     }
   })
 }
@@ -440,4 +439,5 @@ function Logout() {
   margin-left: 5px;
   color: #606266;
 }
+
 </style>
