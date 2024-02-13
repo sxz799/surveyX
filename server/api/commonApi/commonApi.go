@@ -1,7 +1,6 @@
 package commonApi
 
 import (
-	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/sxz799/surveyX/middleware"
 	"github.com/sxz799/surveyX/model/common/response"
@@ -10,19 +9,6 @@ import (
 )
 
 var us service.UserService
-
-func GetCurrentUser(c *gin.Context) (userInfo entity.LoginUser) {
-	session := sessions.Default(c)
-	userInfo = session.Get("currentUser").(entity.LoginUser) // 类型转换一下
-	return
-}
-
-func setCurrentUser(c *gin.Context, userInfo entity.LoginUser) {
-	session := sessions.Default(c)
-	session.Set("currentUser", userInfo)
-	// 一定要Save否则不生效，若未使用gob注册User结构体，调用Save时会返回一个Error
-	session.Save()
-}
 
 func Login(c *gin.Context) {
 
@@ -43,13 +29,6 @@ func Login(c *gin.Context) {
 		response.FailWithMessage("生成Token错误!", c)
 		return
 	}
-	var userInfo entity.LoginUser
-	userInfo.Id = u.Id
-	userInfo.Username = u.Username
-	userInfo.Nickname = u.Nickname
-	userInfo.Email = u.Email
-	userInfo.Phone = u.Phone
-	setCurrentUser(c, userInfo)
 	c.SetCookie("token", token, 60*30, "", "", false, true)
 	response.OkWithDetailed(token, "登录成功", c)
 

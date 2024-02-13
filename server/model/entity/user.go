@@ -8,11 +8,3 @@ type User struct {
 	Email    string `json:"email" form:"email"`
 	Phone    string `json:"phone" form:"phone"`
 }
-
-type LoginUser struct {
-	Id       int    `gorm:"primary_key" json:"id"`
-	Username string `json:"username" form:"username" gorm:"unique"`
-	Nickname string `json:"nickname" form:"nickname"`
-	Email    string `json:"email" form:"email"`
-	Phone    string `json:"phone" form:"phone"`
-}

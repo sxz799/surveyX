@@ -9,7 +9,7 @@ import (
 
 var JwtKey = []byte("survey_secret_key")
 
-type Claims struct {
+type UserClaims struct {
 	UserId   int    `json:"userId"`
 	Username string `json:"username"`
 	Nickname string `json:"nickname"`
@@ -18,7 +18,7 @@ type Claims struct {
 
 func GenToken(userId int, username, nickname string) (tokenStr string, err error) {
 	// 创建jwt accessClaims 设置过期时间25s
-	claims := &Claims{
+	claims := &UserClaims{
 		UserId:   userId,
 		Username: username,
 		Nickname: nickname,
@@ -36,26 +36,31 @@ func GenToken(userId int, username, nickname string) (tokenStr string, err error
 	return tokenStr, nil
 }
 
+func ParseToken(c *gin.Context) (claims *UserClaims, err error) {
+	tokenStr, err := c.Cookie("token")
+	claims = &UserClaims{}
+	token, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
+		return JwtKey, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	if token.Valid {
+		return claims, nil
+	} else {
+		return nil, err
+	}
+}
+
 func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		tokenStr, err := c.Cookie("token")
-		if err != nil {
-			// 获取access-token失败
-			response.FailWithMessage("Token Expired!", c)
-			c.Abort()
-			return
-		}
-
-		claims := &Claims{}
-		token, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
-			return JwtKey, nil
-		})
+		claims, err := ParseToken(c)
 		if err != nil {
 			response.FailWithMessage("Token Expired!", c)
 			c.Abort()
 			return
 		}
-		if token.Valid {
+		if claims != nil {
 			if claims.ExpiresAt.Unix()-time.Now().Unix() < 15 {
 				str, _ := GenToken(claims.UserId, claims.Username, claims.Nickname)
 				c.SetCookie("token", str, 60*30, "", "", false, true)
