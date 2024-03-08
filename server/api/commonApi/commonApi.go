@@ -79,9 +79,9 @@ func LogoutByGithub(c *gin.Context) {
 	githubId := githubUser["id"].(float64)
 	user, _ := us.GetByGithubId(githubId)
 	if user.Id == 0 {
-		user.Username = githubUser["name"].(string)
+		user.Username = githubUser["login"].(string)
 		user.Nickname = githubUser["login"].(string)
-		user.Password = ""
+		user.Password = "123456"
 		user.GithubUID = githubUser["id"].(float64)
 		us.Add(user)
 	}
