@@ -1,14 +1,16 @@
 <template>
 
-  <h1>Github 登录中,请耐心等待跳转。。。若长时间无反应,请刷新页面！</h1>
-
-
+  <el-result icon="info" title="Github登录中，请耐心等待！">
+    <template #sub-title>
+      <p>若长时间无翻译，请刷新页面！</p>
+    </template>
+  </el-result>
 </template>
 
 <script setup>
 
 import {loginByGithub} from '@/api/common/login.js'
-import { onMounted} from "vue";
+import {onMounted} from "vue";
 import {useRouter} from "vue-router";
 
 const router = useRouter()

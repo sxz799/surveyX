@@ -47,8 +47,8 @@ func LogoutByGithub(c *gin.Context) {
 		"Content-Type": "application/json",
 	}
 	body := map[string]string{
-		"client_id":     "ff3f2aa615877bd961e7",
-		"client_secret": "84f840226a1fe34990e4725d9040fa9e6086da36",
+		"client_id":     "c6bd08245fa8ed2ea4d5",
+		"client_secret": "292afc799ce36ab90701f76921a5036f8c7a113e",
 		"code":          code,
 	}
 	marshal, _ := json.Marshal(body)
