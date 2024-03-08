@@ -33,11 +33,11 @@ func Login(c *gin.Context) {
 		return
 	}
 	c.SetCookie("token", token, 60*30, "", "", false, true)
-	response.OkWithDetailed(token, "登录成功", c)
+	response.OkWithDetail(token, "登录成功", c)
 
 }
 
-func LogoutByGithub(c *gin.Context) {
+func LoginByGithub(c *gin.Context) {
 	code := c.Query("code")
 	if code == "" {
 		response.FailWithMessage("code为空", c)
@@ -94,7 +94,7 @@ func LogoutByGithub(c *gin.Context) {
 		return
 	}
 	c.SetCookie("token", token, 60*30, "", "", false, true)
-	response.OkWithDetailed(token, "登录成功"+extMsg, c)
+	response.OkWithDetail(token, "登录成功"+extMsg, c)
 
 }
 

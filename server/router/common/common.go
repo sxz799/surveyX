@@ -11,7 +11,7 @@ func Common(e *gin.Engine) {
 
 	e.POST("/api/login", commonApi.Login)
 	e.POST("/api/logout", commonApi.Logout)
-	e.POST("/api/oauth/github", commonApi.LogoutByGithub)
+	e.POST("/api/oauth/github", commonApi.LoginByGithub)
 	e.GET("/api/oauth/loginUrl", func(c *gin.Context) {
 		response.OkWithData("https://github.com/login/oauth/authorize?client_id="+config.OauthClientId, c)
 	})
