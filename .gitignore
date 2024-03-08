@@ -4,6 +4,8 @@ dist/
 *.db
 
 server/surveyX
+server/conf.yaml
+
 
 
 # local env files
