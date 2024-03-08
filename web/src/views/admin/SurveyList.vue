@@ -6,9 +6,10 @@
           <img src="@/assets/favicon.png" class="logo-img" alt="SurveyX logo">
           <span class="main-title">SurveyX</span>
           <span class="subtitle">——免费的问卷调查系统</span>
-          <el-button type="text" @click="Logout">退出登录</el-button>
         </div>
-
+        <div class="logout-button">
+          <el-button type="text" @click="Logout" >退出登录</el-button>
+        </div>
 
       </el-header>
       <el-main>
@@ -408,19 +409,31 @@ function Logout() {
 
 .el-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
   text-align: center;
-  padding: 10px;
+  padding:20px;
+
   background-color: #f8f8f9;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+  position: relative;
 }
 
 .logo {
   display: flex;
+  justify-content: space-between;
   align-items: center;
+  position: relative;
 }
 
+.logout-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  top: 0;
+  right: 0;
+}
 
 .logo-img {
   height: 80px;
