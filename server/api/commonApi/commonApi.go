@@ -78,12 +78,14 @@ func LogoutByGithub(c *gin.Context) {
 	_ = json.Unmarshal(request, &githubUser)
 	githubId := githubUser["id"].(float64)
 	user, _ := us.GetByGithubId(githubId)
+	extMsg := ""
 	if user.Id == 0 {
 		user.Username = githubUser["login"].(string)
 		user.Nickname = githubUser["login"].(string)
 		user.Password = "123456"
-		user.GithubUID = githubUser["id"].(float64)
+		user.GithubUID = githubId
 		us.Add(user)
+		extMsg = "(已为您注册账号,账号:" + user.Username + ",密码:123456)"
 	}
 
 	token, err := middleware.GenToken(user.Id, user.Username, user.Nickname)
@@ -92,7 +94,7 @@ func LogoutByGithub(c *gin.Context) {
 		return
 	}
 	c.SetCookie("token", token, 60*30, "", "", false, true)
-	response.OkWithDetailed(token, "登录成功", c)
+	response.OkWithDetailed(token, "登录成功"+extMsg, c)
 
 }
 
