@@ -8,6 +8,13 @@ export function login(data) {
     })
 }
 
+export function getGithubLoginUrl() {
+    return request({
+        url: '/oauth/loginUrl',
+        method: 'GET'
+    })
+}
+
 export function loginByGithub(code) {
     return request({
         url: '/oauth/github?code=' + code,

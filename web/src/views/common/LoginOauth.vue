@@ -2,7 +2,7 @@
 
   <el-result icon="info" title="Github登录中，请耐心等待！">
     <template #sub-title>
-      <p>若长时间无翻译，请刷新页面！</p>
+      <p>若长时间无反应，请刷新页面！</p>
     </template>
   </el-result>
 </template>

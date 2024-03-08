@@ -11,14 +11,14 @@
         <el-row>
 
 
-        <el-col :span="12" :xs="24">
-          <el-button type="primary" @click="Login" class="login-button">登录</el-button>
+          <el-col :span="12" :xs="24">
+            <el-button type="primary" @click="Login" class="login-button">登录</el-button>
 
-        </el-col>
-        <el-col :span="12" :xs="24">
+          </el-col>
+          <el-col :span="12" :xs="24">
 
-          <el-button type="primary" @click="LoginWithGithub" class="login-button">GITHUB登录</el-button>
-        </el-col>
+            <el-button type="primary" @click="LoginWithGithub" class="login-button">GITHUB登录</el-button>
+          </el-col>
         </el-row>
       </div>
     </el-col>
@@ -30,7 +30,7 @@
 
 <script setup>
 
-import {login,} from '@/api/common/login.js'
+import {login, getGithubLoginUrl} from '@/api/common/login.js'
 import {ref,} from "vue";
 import {useRouter} from "vue-router";
 
@@ -51,7 +51,14 @@ function Login() {
 }
 
 function LoginWithGithub() {
-  window.location.href = 'https://github.com/login/oauth/authorize?client_id=c6bd08245fa8ed2ea4d5'
+  getGithubLoginUrl().then(res => {
+    if (res.success) {
+      window.location.href = res.data
+    } else {
+      ElMessage.error(res.message)
+    }
+  })
+
 }
 
 

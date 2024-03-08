@@ -8,10 +8,12 @@ import (
 )
 
 var (
-	Port    string
-	Key     string
-	SqlType string
-	SqlUrl  string
+	Port              string
+	Key               string
+	SqlType           string
+	SqlUrl            string
+	OauthClientId     string
+	OauthClientSecret string
 )
 
 func Init() {
@@ -22,6 +24,8 @@ func Init() {
 		Key = "123456"
 		SqlType = "sqlite"
 		SqlUrl = "survey.db"
+		OauthClientId = "yourClientId"
+		OauthClientSecret = "yourClientSecret"
 	} else {
 		viper.SetConfigFile("conf.yaml")
 		err = viper.ReadInConfig()
@@ -32,15 +36,21 @@ func Init() {
 		Key = viper.GetString("key")
 		SqlType = viper.GetString("db.sqlType")
 		SqlUrl = viper.GetString("db.sqlUrl")
+		OauthClientId = viper.GetString("oauth.clientId")
+		OauthClientSecret = viper.GetString("oauth.clientSecret")
 	}
 	// 读取命令行参数
 	port := flag.String("port", Port, "端口号")
 	key := flag.String("key", Key, "密钥")
 	sqlType := flag.String("sqlType", SqlType, "数据库类型")
 	sqlUrl := flag.String("sqlUrl", SqlUrl, "数据库地址")
+	clientId := flag.String("clientId", OauthClientId, "clientId")
+	clientSecret := flag.String("clientSecret", OauthClientSecret, "clientSecret")
 	flag.Parse()
 	Port = *port
 	Key = *key
 	SqlType = *sqlType
 	SqlUrl = *sqlUrl
+	OauthClientId = *clientId
+	OauthClientSecret = *clientSecret
 }
