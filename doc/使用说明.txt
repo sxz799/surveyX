@@ -1,11 +1,11 @@
 程序默认使用sqlite数据库
 默认端口为3000
 默认登录地址为/login
-默认秘钥为123456
 
 自定义方式1:使用配置文件 将doc目录中的conf.yaml移动到程序同级目录并修改相关配置
 自定义方式2:使用命令行参数(优先级高于方式1):
 
 举例:
-./surveyX -port 7992 -key 654321 -sqlType sqlite -sqlUrl surveyX1.db
+./surveyX -port 7992 -sqlType sqlite -sqlUrl surveyX1.db
+
 注:本程序完全开源免费

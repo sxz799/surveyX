@@ -44,4 +44,4 @@ COPY --from=1 /go/src/github.com/sxz799/surveyX/server/app ./
 EXPOSE 3000
 
 # 运行应用程序
-CMD ["./app"]
+CMD ["./app -port 3000"]

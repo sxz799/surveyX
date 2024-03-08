@@ -7,8 +7,6 @@ db :
 
 port : 3000
 
-key : 123456
-
 oauth:
   clientId : abcd
   clientSecret : defg
