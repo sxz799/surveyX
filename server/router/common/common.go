@@ -9,5 +9,6 @@ func Common(e *gin.Engine) {
 
 	e.POST("/api/login", commonApi.Login)
 	e.POST("/api/logout", commonApi.Logout)
+	e.POST("/api/oauth/github", commonApi.LogoutByGithub)
 
 }

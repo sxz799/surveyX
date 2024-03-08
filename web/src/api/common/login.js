@@ -8,6 +8,13 @@ export function login(data) {
     })
 }
 
+export function loginByGithub(code) {
+    return request({
+        url: '/oauth/github?code=' + code,
+        method: 'post'
+    })
+}
+
 export function logout() {
     return request({
         url: '/logout',

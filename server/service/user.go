@@ -27,8 +27,8 @@ func (us *UserService) List(user entity.User) (users []entity.User, err error) {
 	return
 }
 
-func (us *UserService) Get(user entity.User) (u entity.User, err error) {
-	err = utils.DB.First(&u, user.Id).Error
+func (us *UserService) GetByGithubId(id float64) (u entity.User, err error) {
+	err = utils.DB.Where("github_uid=?", id).First(&u).Error
 	return
 }
 

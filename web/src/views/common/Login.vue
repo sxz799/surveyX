@@ -12,7 +12,7 @@
       </div>
     </el-col>
     <el-col :span="6" :xs="0"/>
-
+    <el-button type="primary" @click="LoginWithGithub" class="login-button">GITHUB登录</el-button>
   </el-row>
 
 
@@ -20,13 +20,15 @@
 
 <script setup>
 
-import {login} from '@/api/common/login.js'
-import {ref} from "vue";
+import {login, } from '@/api/common/login.js'
+import {ref, } from "vue";
 import {useRouter} from "vue-router";
 
 const router = useRouter()
 const username = ref('admin')
 const password = ref('admin')
+
+
 
 function Login() {
   login({username: username.value, password: password.value}).then(res => {
@@ -38,6 +40,12 @@ function Login() {
     }
   })
 }
+
+function LoginWithGithub() {
+  window.location.href = 'https://github.com/login/oauth/authorize?client_id=ff3f2aa615877bd961e7'
+}
+
+
 
 </script>
 
