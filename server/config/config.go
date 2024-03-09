@@ -19,7 +19,7 @@ func Init() {
 	log.Println("正在读取配置文件...")
 	if _, err := os.Stat("conf.yaml"); os.IsNotExist(err) {
 		log.Println("没找到配置文件,使用默认配置...")
-		Port = "3000"
+		Port = "65534"
 		SqlType = "sqlite"
 		SqlUrl = "survey.db"
 		OauthClientId = "yourClientId"
