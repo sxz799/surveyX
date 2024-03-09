@@ -8,7 +8,10 @@ build:
 	make move-dist
 	make build-server
 
-
+build-arm:
+	make build-web
+	make move-dist
+	make build-server-arm
 
 build-web:
 ifeq ($(shell uname -s), Darwin)
@@ -21,3 +24,6 @@ move-dist:
 
 build-server:
 	cd ./server/ && go mod tidy && CGO_ENABLED=0 go build -ldflags "-s -w" -o $(APP_NAME)
+
+build-server-arm:
+	cd ./server/ && go mod tidy && CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags "-s -w" -o $(APP_NAME)
