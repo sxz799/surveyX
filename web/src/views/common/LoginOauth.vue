@@ -12,6 +12,7 @@
 import {loginByGithub} from '@/api/common/login.js'
 import {onMounted} from "vue";
 import {useRouter} from "vue-router";
+import {ElMessage} from "element-plus";
 
 const router = useRouter()
 

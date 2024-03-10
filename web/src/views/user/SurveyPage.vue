@@ -101,6 +101,7 @@ import Fingerprint2 from 'fingerprintjs2';
 import {ElNotification} from "element-plus";
 
 
+
 const confirmDialogVisible = ref(false)
 const disabled = ref(false)
 const allowSubmit = ref(true)
@@ -156,7 +157,6 @@ async function initSurvey() {
 
 function checkAnswer(elForm) {
   elForm.validate((valid) => {
-    console.log(valid)
     if (!valid) {
       ElNotification({
         title: '问卷信息不完整！',
@@ -201,6 +201,7 @@ function checkAnswer(elForm) {
         }
       }
     }
+
     confirmDialogVisible.value = true
   })
 }
@@ -226,6 +227,7 @@ function submitAnswer() {
               message: '请填写[第' + (Number(index) + 1) + '题]的补充信息',
               type: 'warning',
             })
+            confirmDialogVisible.value = false
             return
           }
           // 如果选项等于答案，就把补充信息赋值给extMsg
@@ -249,6 +251,7 @@ function submitAnswer() {
                 message: '请填写[第' + (Number(index) + 1) + '题,选项' + option.label + ']的补充信息',
                 type: 'warning',
               })
+              confirmDialogVisible.value = false
               return
             }
             // 如果选项等于答案，就把补充信息赋值给extMsg
