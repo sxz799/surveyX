@@ -28,6 +28,7 @@ function LoginByGithub(code) {
   loginByGithub(code).then(res => {
     if (res.success) {
       ElMessage.success(res.message)
+      localStorage.setItem("token",res.data.token)
       router.push({path: '/admin'})
     } else {
       ElMessage.error(res.message)

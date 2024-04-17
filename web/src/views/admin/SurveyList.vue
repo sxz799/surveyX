@@ -8,7 +8,7 @@
           <span class="subtitle">——免费的问卷调查系统</span>
         </div>
         <div class="logout-button">
-          <el-button type="text" @click="Logout" >退出登录</el-button>
+          <el-button @click="Logout" >退出登录</el-button>
         </div>
 
       </el-header>
@@ -379,6 +379,7 @@ function Logout() {
   logout().then(res => {
     if (res.success) {
       ElMessage.success(res.message);
+      localStorage.removeItem('token')
       router.push('/login')
     } else {
       ElMessage.error('退出失败');

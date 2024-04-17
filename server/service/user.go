@@ -23,7 +23,7 @@ func (us *UserService) Delete(user entity.User) (err error) {
 }
 
 func (us *UserService) List(user entity.User) (users []entity.User, err error) {
-	err = utils.DB.Find(&users).Error
+	err = utils.DB.Model(&user).Find(&users).Error
 	return
 }
 

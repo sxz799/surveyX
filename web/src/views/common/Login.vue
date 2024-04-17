@@ -43,6 +43,7 @@ function Login() {
   login({username: username.value, password: password.value}).then(res => {
     if (res.success) {
       ElMessage.success(res.message)
+      localStorage.setItem('token', res.data.token)
       router.push({path: '/admin'})
     } else {
       ElMessage.error(res.message)

@@ -30,8 +30,7 @@ func Login(c *gin.Context) {
 		response.FailWithMessage("生成Token错误!", c)
 		return
 	}
-	c.SetCookie("token", token, 60*30, "", "", false, true)
-	response.OkWithDetail(token, "登录成功", c)
+	response.OkWithDetail(gin.H{"token": token}, "登录成功", c)
 
 }
 
@@ -61,12 +60,10 @@ func LoginByGithub(c *gin.Context) {
 		response.FailWithMessage("生成Token错误", c)
 		return
 	}
-	c.SetCookie("token", token, 60*30, "", "", false, true)
 	response.OkWithDetail(token, "登录成功"+extMsg, c)
 
 }
 
 func Logout(c *gin.Context) {
-	c.SetCookie("userId", "", 0, "", "", false, true)
 	response.OkWithMessage("退出成功", c)
 }

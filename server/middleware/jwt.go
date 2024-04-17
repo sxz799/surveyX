@@ -4,6 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/sxz799/surveyX/model/common/response"
+	"log"
+	"strings"
 	"time"
 )
 
@@ -23,7 +25,7 @@ func GenToken(userId int, username, nickname string) (tokenStr string, err error
 		Username: username,
 		Nickname: nickname,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(30 * time.Minute)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(120 * time.Minute)),
 		},
 	}
 
@@ -37,7 +39,9 @@ func GenToken(userId int, username, nickname string) (tokenStr string, err error
 }
 
 func ParseToken(c *gin.Context) (claims *UserClaims, err error) {
-	tokenStr, err := c.Cookie("token")
+	auth := c.Request.Header.Get("Authorization")
+	tokenStr := strings.Replace(auth, "Bearer ", "", 1)
+	log.Println(tokenStr)
 	claims = &UserClaims{}
 	token, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
 		return JwtKey, nil
@@ -61,10 +65,6 @@ func JWTAuth() gin.HandlerFunc {
 			return
 		}
 		if claims != nil {
-			if claims.ExpiresAt.Unix()-time.Now().Unix() < 15 {
-				str, _ := GenToken(claims.UserId, claims.Username, claims.Nickname)
-				c.SetCookie("token", str, 60*30, "", "", false, true)
-			}
 			c.Set("claims", claims)
 			c.Next()
 		} else {
