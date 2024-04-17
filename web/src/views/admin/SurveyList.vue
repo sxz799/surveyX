@@ -48,6 +48,7 @@
                   </el-col>
                   <el-col :span="1.5">
                     <el-upload :on-success="handleUploadSuccess" :on-error="handleUploadFail" accept=".xlsx"
+                               :headers="headers"
                       :show-file-list="false" action="/api/admin/survey/import">
                       <el-button color="#555555" size="small" :icon="UploadFilled" plain>上传问卷</el-button>
                     </el-upload>
@@ -183,6 +184,7 @@ import router from "@/utils/router.js";
 import {logout} from "@/api/common/login.js";
 import {ElMessage} from "element-plus";
 
+const headers=ref({"Authorization":"Bearer "+localStorage.getItem("token")})
 const { toClipboard } = useClipboard();
 const surveyRef = ref()
 const surveyId = ref('')
@@ -312,7 +314,6 @@ function handleSelectionChange(val) {
 }
 
 function handleClickRow(row) {
-  console.log(row);
   title.value = '详 情'
   surveyId.value = row.id
   openDetails.value = true
@@ -327,8 +328,6 @@ function handleUploadSuccess(response) {
   if (response.success) {
     ElMessage.success('上传成功！');
     getList()
-  } else {
-    ElMessage.error('上传失败！');
   }
 }
 

@@ -41,7 +41,6 @@ func GenToken(userId int, username, nickname string) (tokenStr string, err error
 func ParseToken(c *gin.Context) (claims *UserClaims, err error) {
 	auth := c.Request.Header.Get("Authorization")
 	tokenStr := strings.Replace(auth, "Bearer ", "", 1)
-	log.Println(tokenStr)
 	claims = &UserClaims{}
 	token, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
 		return JwtKey, nil

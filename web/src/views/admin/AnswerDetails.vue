@@ -56,8 +56,6 @@ const total = ref(0)
 const {queryParams} = toRefs(data);
 
 watch(() => props.questionId, (newValue) => {
-  console.log('questionId change', newValue)
-  console.log(props.questionType)
   queryParams.value.question_id= newValue
   getList()
 });
