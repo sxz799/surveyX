@@ -47,7 +47,7 @@
                     </el-button>
                   </el-col>
                   <el-col :span="1.5">
-                    <el-upload :on-success="handleUploadSuccess" :on-error="handleUploadFail" accept=".xlsx"
+                    <el-upload :on-success="handleUploadSuccess" accept=".xlsx"
                                :headers="headers"
                       :show-file-list="false" action="/api/admin/survey/import">
                       <el-button color="#555555" size="small" :icon="UploadFilled" plain>上传问卷</el-button>
@@ -89,7 +89,7 @@
                 <template #header>
                   <span>{{ title }}</span>
                 </template>
-                <el-form :disabled="title === '详 情'" @click="title = '修 改'" ref="surveyRef" :model="form" :inline="true"
+                <el-form ref="surveyRef" :model="form" :inline="true"
                   size="small" :rules="rules">
                   <el-form-item label="标题" prop="title">
                     <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" v-model="form.title"
@@ -165,20 +165,11 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref, toRefs } from 'vue'
+import { onMounted, ref } from 'vue'
 import { list, add, del, update, get } from "@/api/admin/survey.js";
 import QuestionList from "./QuestionList.vue";
 import Analysis from "@/views/admin/Analysis.vue";
-import {
-  Delete,
-  Plus,
-  Search,
-  Refresh,
-  Link,
-  UploadFilled,
-  VideoPlay,
-  VideoPause
-} from "@element-plus/icons";
+import {Delete, Plus, Search, Refresh, Link, UploadFilled, VideoPlay, VideoPause} from "@element-plus/icons";
 import useClipboard from 'vue-clipboard3';
 import router from "@/utils/router.js";
 import {logout} from "@/api/common/login.js";
@@ -194,17 +185,17 @@ const surveyList = ref([])
 const total = ref(0)
 const title = ref('新 增')
 const selectedRows = ref([])
-const data = reactive({
-  form: {
-    options: []
-  },
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    title: '',
-  },
-});
-const { queryParams, form } = toRefs(data);
+
+
+const queryParams=ref({
+  pageNum: 1,
+  pageSize: 10,
+  title: '',
+})
+
+const form=ref({
+  options: []
+})
 
 
 const rules = ({
@@ -314,7 +305,7 @@ function handleSelectionChange(val) {
 }
 
 function handleClickRow(row) {
-  title.value = '详 情'
+  title.value = '修 改'
   surveyId.value = row.id
   openDetails.value = true
 
@@ -329,10 +320,6 @@ function handleUploadSuccess(response) {
     ElMessage.success('上传成功！');
     getList()
   }
-}
-
-function handleUploadFail() {
-  ElMessage.error('上传失败！')
 }
 
 function copySurveyLink() {

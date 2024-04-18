@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/sxz799/surveyX/model/common/response"
-	"log"
 	"strings"
 	"time"
 )

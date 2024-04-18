@@ -47,7 +47,7 @@
       @current-change="handleCurrentChange" @size-change="handleSizeChange" />
 
     <el-dialog :title="title" v-model="open" :width="dialogWidth" append-to-body>
-      <el-form ref="questionRef" :model="form" :rules="rules" label-width="20%">
+      <el-form ref="questionRef" :model="form" :rules="rules" label-width="auto">
         <el-row :gutter="10">
           <el-col :span="24">
             <el-form-item label="问卷ID" prop="surveyId">
