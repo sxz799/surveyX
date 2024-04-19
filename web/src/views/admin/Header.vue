@@ -9,7 +9,7 @@
 
     <el-dropdown>
       <span class="el-dropdown-link">
-        歡迎您,{{ userInfo.nickname }}
+        欢迎您,{{ userInfo.nickname }}
         <el-icon>
           <arrow-down />
         </el-icon>
@@ -26,11 +26,11 @@
   </div>
   <el-dialog v-model="visable" title="修改密码" width="20%" append-to-body>
     <el-form label-width="auto">
-      <el-form-item label="新密碼" prop="newPwd">
-        <el-input v-model="newPwd" placeholder="请输入新密碼"></el-input>
+      <el-form-item label="新密码" prop="newPwd">
+        <el-input v-model="newPwd" placeholder="请输入新密码"></el-input>
       </el-form-item>
-      <el-form-item label="重複密碼" prop="newPwd2">
-        <el-input v-model="newPwd2" placeholder="请重複输入新密碼"></el-input>
+      <el-form-item label="重复密码" prop="newPwd2">
+        <el-input v-model="newPwd2" placeholder="请重复输入新密码"></el-input>
       </el-form-item>
     </el-form>
 
