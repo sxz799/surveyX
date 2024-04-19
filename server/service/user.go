@@ -13,7 +13,7 @@ func (us *UserService) Add(user entity.User) (err error) {
 }
 
 func (us *UserService) Update(user entity.User) (err error) {
-	err = utils.DB.Save(&user).Error
+	err = utils.DB.Updates(&user).Error
 	return
 }
 
