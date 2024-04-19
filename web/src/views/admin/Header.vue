@@ -80,6 +80,7 @@ function Logout() {
     if (res.success) {
       ElMessage.success(res.message);
       localStorage.removeItem('token')
+      localStorage.removeItem('userInfo')
       router.push('/login')
     } else {
       ElMessage.error('退出失败');

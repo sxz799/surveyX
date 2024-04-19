@@ -7,8 +7,9 @@ import (
 
 type UserService struct{}
 
-func (us *UserService) Add(user entity.User) (err error) {
+func (us *UserService) Add(user entity.User) (id int, err error) {
 	err = utils.DB.Create(&user).Error
+	id = user.Id
 	return
 }
 

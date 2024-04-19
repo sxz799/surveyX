@@ -22,8 +22,8 @@ func Init() {
 		Port = "65534"
 		SqlType = "sqlite"
 		SqlUrl = "survey.db"
-		OauthClientId = "yourClientId"
-		OauthClientSecret = "yourClientSecret"
+		OauthClientId = "ff3f2aa615877bd961e7"
+		OauthClientSecret = "84f840226a1fe34990e4725d9040fa9e6086da36"
 	} else {
 		viper.SetConfigFile("conf.yaml")
 		err = viper.ReadInConfig()

@@ -47,23 +47,24 @@ func LoginByGithub(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 	}
 	githubId := githubUser.ID
-	user, _ := us.GetByGithubId(githubId)
+	u, _ := us.GetByGithubId(githubId)
 	extMsg := ""
-	if user.Id == 0 {
-		user.Username = githubUser.Login
-		user.Nickname = githubUser.Login
-		user.Password = "123456"
-		user.GithubUID = githubId
-		us.Add(user)
-		extMsg = "(已为您注册账号,账号:" + user.Username + ",密码:123456)"
+	if u.Id == 0 {
+		u.Username = githubUser.Login
+		u.Nickname = githubUser.Login
+		u.Password = "123456"
+		u.GithubUID = githubId
+		id, _ := us.Add(u)
+		u.Id = id
+		extMsg = "(已为您注册账号,账号:" + u.Username + ",密码:123456)"
 	}
-	token, err := middleware.GenToken(user.Id, user.Username, user.Nickname)
+	token, err := middleware.GenToken(u.Id, u.Username, u.Nickname)
 	if err != nil {
 		response.FailWithMessage("生成Token错误", c)
 		return
 	}
-	user.Password = ""
-	response.OkWithDetail(gin.H{"token": token, "userInfo": user}, "登录成功"+extMsg, c)
+	u.Password = ""
+	response.OkWithDetail(gin.H{"token": token, "userInfo": u}, "登录成功"+extMsg, c)
 
 }
 
