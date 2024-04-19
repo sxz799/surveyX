@@ -12,5 +12,6 @@ func Common(e *gin.Engine) {
 	e.POST("/api/logout", commonApi.Logout)
 	e.POST("/api/oauth/github", commonApi.LoginByGithub)
 	e.GET("/api/oauth/loginUrl", githubOauth2.GetLoginUrl)
+	e.PUT("/api/changePwd", commonApi.ChangePwd)
 
 }

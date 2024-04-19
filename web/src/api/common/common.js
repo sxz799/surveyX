@@ -22,6 +22,15 @@ export function loginByGithub(code) {
     })
 }
 
+
+export function changPwd(data) {
+    return request({
+        url: '/changePwd',
+        method: 'put',
+        data: data
+    })
+}
+
 export function logout() {
     return request({
         url: '/logout',

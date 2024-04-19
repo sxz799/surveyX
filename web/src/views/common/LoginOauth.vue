@@ -9,7 +9,7 @@
 
 <script setup>
 
-import {loginByGithub} from '@/api/common/login.js'
+import {loginByGithub} from '@/api/common/common.js'
 import {onMounted} from "vue";
 import {useRouter} from "vue-router";
 import {ElMessage} from "element-plus";
@@ -29,6 +29,7 @@ function LoginByGithub(code) {
     if (res.success) {
       ElMessage.success(res.message)
       localStorage.setItem("token",res.data.token)
+      localStorage.setItem('userInfo', JSON.stringify(res.data.userInfo))
       router.push({path: '/admin'})
     } else {
       ElMessage.error(res.message)

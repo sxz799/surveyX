@@ -164,7 +164,7 @@ import Analysis from "@/views/admin/Analysis.vue";
 import {Delete, Plus, Search, Refresh, Link, UploadFilled, VideoPlay, VideoPause} from "@element-plus/icons";
 import useClipboard from 'vue-clipboard3';
 import router from "@/utils/router.js";
-import {logout} from "@/api/common/login.js";
+import {logout} from "@/api/common/common.js";
 import {ElMessage} from "element-plus";
 import Header from "@/views/admin/Header.vue";
 

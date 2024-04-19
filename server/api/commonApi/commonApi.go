@@ -7,6 +7,7 @@ import (
 	"github.com/sxz799/surveyX/model/entity"
 	githubOauth2 "github.com/sxz799/surveyX/oauth/github"
 	"github.com/sxz799/surveyX/service"
+	"log"
 )
 
 var us service.UserService
@@ -30,7 +31,8 @@ func Login(c *gin.Context) {
 		response.FailWithMessage("生成Token错误!", c)
 		return
 	}
-	response.OkWithDetail(gin.H{"token": token}, "登录成功", c)
+	u.Password = ""
+	response.OkWithDetail(gin.H{"token": token, "userInfo": u}, "登录成功", c)
 
 }
 
@@ -60,8 +62,24 @@ func LoginByGithub(c *gin.Context) {
 		response.FailWithMessage("生成Token错误", c)
 		return
 	}
-	response.OkWithDetail(token, "登录成功"+extMsg, c)
+	user.Password = ""
+	response.OkWithDetail(gin.H{"token": token, "userInfo": user}, "登录成功"+extMsg, c)
 
+}
+
+func ChangePwd(c *gin.Context) {
+	var u entity.User
+	err := c.ShouldBind(&u)
+	if err != nil {
+		response.FailWithMessage("参数有误", c)
+		return
+	}
+	log.Println(u)
+	if err = us.Update(u); err == nil {
+		response.OkWithMessage("更新成功", c)
+	} else {
+		response.FailWithMessage(err.Error(), c)
+	}
 }
 
 func Logout(c *gin.Context) {

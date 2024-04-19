@@ -30,7 +30,7 @@
 
 <script setup>
 
-import {login, getGithubLoginUrl} from '@/api/common/login.js'
+import {login, getGithubLoginUrl} from '@/api/common/common.js'
 import {ref,} from "vue";
 import {useRouter} from "vue-router";
 
@@ -44,6 +44,7 @@ function Login() {
     if (res.success) {
       ElMessage.success(res.message)
       localStorage.setItem('token', res.data.token)
+      localStorage.setItem('userInfo', JSON.stringify(res.data.userInfo))
       router.push({path: '/admin'})
     } else {
       ElMessage.error(res.message)
