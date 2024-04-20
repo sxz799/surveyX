@@ -1,29 +1,27 @@
 <template>
-  <div class="logo">
-    <img src="@/assets/favicon.png" class="logo-img" alt="SurveyX logo">
-    <span class="main-title">SurveyX</span>
-    <span class="subtitle">——免费的问卷调查系统</span>
-  </div>
-  <div class="logout-button">
 
-
-    <el-dropdown>
+    <div class="logo">
+      <img src="@/assets/favicon.png" class="logo-img" alt="SurveyX logo">
+      <span class="main-title">SurveyX</span>
+      <span class="subtitle">——免费的问卷调查系统</span>
+    </div>
+    <div class="user-button">
+      <el-dropdown>
       <span class="el-dropdown-link">
         欢迎您,{{ userInfo.nickname }}
         <el-icon>
-          <arrow-down />
+          <arrow-down/>
         </el-icon>
       </span>
-      <template #dropdown>
-        <el-dropdown-menu>
-          <el-dropdown-item @click="visable = true">修改密码</el-dropdown-item>
-          <el-dropdown-item @click="Logout">退出登录</el-dropdown-item>
-        </el-dropdown-menu>
-      </template>
-    </el-dropdown>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item @click="visable = true">修改密码</el-dropdown-item>
+            <el-dropdown-item @click="Logout">退出登录</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </div>
 
-
-  </div>
   <el-dialog v-model="visable" title="修改密码" width="20%" append-to-body>
     <el-form label-width="auto">
       <el-form-item label="新密码" prop="newPwd">
@@ -46,12 +44,12 @@
 <script setup>
 
 
-import { logout } from "@/api/common/common.js";
-import { ElMessage } from "element-plus";
+import {logout} from "@/api/common/common.js";
+import {ElMessage} from "element-plus";
 import router from "@/utils/router.js";
-import { changPwd } from "@/api/common/common.js";
-import { onMounted, ref } from "vue";
-import { ArrowDown } from "@element-plus/icons";
+import {changPwd} from "@/api/common/common.js";
+import {onMounted, ref} from "vue";
+import {ArrowDown} from "@element-plus/icons";
 
 const userInfo = ref({})
 
@@ -64,7 +62,7 @@ onMounted(() => {
 })
 
 function changePwd() {
-  changPwd({ "id": userInfo.value.id, "password": newPwd.value }).then(res => {
+  changPwd({"id": userInfo.value.id, "password": newPwd.value}).then(res => {
     if (res.success) {
       ElMessage.success(res.message)
       visable.value = false
@@ -91,20 +89,22 @@ function Logout() {
 </script>
 
 <style scoped>
+
+
 .logo {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   position: relative;
+  float: left;
 }
 
-.logout-button {
+.user-button {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   position: relative;
-  top: 0;
-  right: 0;
+  float: right;
 }
 
 .logo-img {
