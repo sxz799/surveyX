@@ -136,12 +136,14 @@ import {Delete, Link, Plus, Refresh, Search, UploadFilled, VideoPause, VideoPlay
 import {onMounted, ref} from "vue";
 import {add, del, get, list, update} from "@/api/admin/survey.js";
 import {ElMessage} from "element-plus";
-import useClipboard from 'vue-clipboard3';
 
 const emit = defineEmits(['updateSurveyId'])
 
 const headers=ref({"Authorization":"Bearer "+localStorage.getItem("token")})
-const { toClipboard } = useClipboard();
+
+
+const toClipboard=(text)=> navigator.clipboard.writeText(text);
+
 const surveyRef = ref()
 
 const open = ref(false)
