@@ -93,24 +93,26 @@ function Logout() {
 
 .logo {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   position: relative;
   float: left;
+  height: 100%;
 }
 
 .user-button {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: flex-end;
   position: relative;
   float: right;
+  height: 100%;
 }
 
 .logo-img {
   height: 80px;
   width: auto;
-  margin-right: 0;
+  margin-right: 10px; /* 增加一些间距 */
 }
 
 .main-title {
