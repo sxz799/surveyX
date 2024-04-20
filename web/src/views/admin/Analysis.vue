@@ -13,12 +13,23 @@
     <el-col :span="6">
       <el-statistic title="联系方式数量" group-separator=","   :value="analysisSurveyData.ContactCount" />
     </el-col>
+
     <el-col :span="12">
-      <el-statistic title="第一次填写时间" group-separator=","   :value="analysisSurveyData.FirstCreateAt" />
+        <el-tag>第一次填写时间:{{ analysisSurveyData.FirstCreateAt }}</el-tag>
     </el-col>
+
     <el-col :span="12">
-      <el-statistic title="最后一次填写时间" group-separator=","   :value="analysisSurveyData.LastCreateAt" />
+        <el-tag>最后一次填写时间:{{ analysisSurveyData.LastCreateAt }}</el-tag>
     </el-col>
+
+
+
+<!--    <el-col :span="12">-->
+<!--      <el-statistic title="第一次填写时间" group-separator=","   :value="analysisSurveyData.FirstCreateAt" />-->
+<!--    </el-col>-->
+<!--    <el-col :span="12">-->
+<!--      <el-statistic title="最后一次填写时间" group-separator=","   :value="analysisSurveyData.LastCreateAt" />-->
+<!--    </el-col>-->
   </el-row>
 
 
@@ -94,8 +105,8 @@ const analysisSurveyData = ref({
   KeyCount: 0,
   ContactCount: 0,
   FingerCount: 0,
-  LastCreateAt: '',
-  FirstCreateAt: '',
+  LastCreateAt: null,
+  FirstCreateAt: null,
   QuestionCount: 0,
 });
 
@@ -113,8 +124,8 @@ watch(() => props.surveyId, (newValue) => {
       KeyCount: 0,
       ContactCount: 0,
       FingerCount: 0,
-      LastCreateAt: '',
-      FirstCreateAt: '',
+      LastCreateAt: null,
+      FirstCreateAt: null,
       QuestionCount: 0,
     }
     return
