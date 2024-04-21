@@ -1,28 +1,36 @@
 <template>
 
-    <div class="logo">
-      <img src="@/assets/favicon.png" class="logo-img" alt="SurveyX logo">
-      <span class="main-title">SurveyX</span>
-      <span class="subtitle">——免费的问卷调查系统</span>
-    </div>
-    <div class="user-button">
-      <el-dropdown>
+  <div class="logo">
+    <img src="@/assets/favicon.png" class="logo-img" alt="SurveyX logo">
+    <span class="main-title">SurveyX</span>
+    <span class="subtitle">——免费的问卷调查系统</span>
+  </div>
+  <div class="user-button">
+    <el-switch style="padding: 20px" v-model="isDark">
+      <template #active-action>
+        <Moon/>
+      </template>
+      <template #inactive-action>
+        <Sunny/>
+      </template>
+    </el-switch>
+    <el-dropdown>
       <span class="el-dropdown-link">
         欢迎您,{{ userInfo.nickname }}
         <el-icon>
           <arrow-down/>
         </el-icon>
       </span>
-        <template #dropdown>
-          <el-dropdown-menu>
-            <el-dropdown-item @click="visable = true">修改密码</el-dropdown-item>
-            <el-dropdown-item @click="Logout">退出登录</el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
-    </div>
+      <template #dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item @click="visible = true">修改密码</el-dropdown-item>
+          <el-dropdown-item @click="Logout">退出登录</el-dropdown-item>
+        </el-dropdown-menu>
+      </template>
+    </el-dropdown>
+  </div>
 
-  <el-dialog v-model="visable" title="修改密码" width="20%" append-to-body>
+  <el-dialog v-model="visible" title="修改密码" width="20%" append-to-body>
     <el-form label-width="auto">
       <el-form-item label="新密码" prop="newPwd">
         <el-input v-model="newPwd" placeholder="请输入新密码"></el-input>
@@ -35,7 +43,7 @@
     <template #footer>
       <div class="dialog-footer">
         <el-button type="primary" @click="changePwd">确 定</el-button>
-        <el-button @click="visable = false">取 消</el-button>
+        <el-button @click="visible = false">取 消</el-button>
       </div>
     </template>
   </el-dialog>
@@ -49,11 +57,16 @@ import {ElMessage} from "element-plus";
 import router from "@/utils/router.js";
 import {changPwd} from "@/api/common/common.js";
 import {onMounted, ref} from "vue";
-import {ArrowDown} from "@element-plus/icons";
+import {ArrowDown, Moon, Sunny} from "@element-plus/icons";
+import {useDark} from '@vueuse/core'
+
+
+const isDark = useDark()
+
 
 const userInfo = ref({})
 
-const visable = ref(false)
+const visible = ref(false)
 const newPwd = ref('')
 const newPwd2 = ref('')
 
@@ -65,7 +78,7 @@ function changePwd() {
   changPwd({"id": userInfo.value.id, "password": newPwd.value}).then(res => {
     if (res.success) {
       ElMessage.success(res.message)
-      visable.value = false
+      visible.value = false
     } else {
       ElMessage.error(res.message)
     }
@@ -116,7 +129,7 @@ function Logout() {
 }
 
 .main-title {
-  color: #303133;
+  color: #0055ff;
   font-size: 20px;
   font-weight: 600;
 }
@@ -124,7 +137,7 @@ function Logout() {
 .subtitle {
   font-size: 13px;
   margin-left: 5px;
-  color: #606266;
+  color: #3d6ac6;
 }
 
 .el-dropdown-link {
@@ -133,4 +146,11 @@ function Logout() {
   display: flex;
   align-items: center;
 }
+
+.el-switch {
+  --el-switch-on-color: #010207;
+  --el-switch-off-color: #dcdfe6;
+  --el-switch-border-color: #dcdfe6;
+}
+
 </style>
