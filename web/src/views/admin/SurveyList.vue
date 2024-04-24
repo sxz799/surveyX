@@ -145,9 +145,7 @@ const headers=ref({"Authorization":"Bearer "+localStorage.getItem("token")})
 const toClipboard=(text)=> navigator.clipboard.writeText(text);
 
 const surveyRef = ref()
-
 const open = ref(false)
-const openDetails = ref(false)
 const surveyList = ref([])
 const total = ref(0)
 const title = ref('新 增')
@@ -190,6 +188,7 @@ function resetQuery() {
   queryParams.value.pageNum = 1;
   queryParams.value.pageSize = 10;
   getList();
+  reset();
 }
 
 function getList() {
@@ -215,6 +214,8 @@ function handleCurrentChange(val) {
 
 function reset() {
   form.value = { options: [] };
+  emit("updateSurveyId","")
+  open.value = false
 }
 
 function handleAdd() {
@@ -274,7 +275,7 @@ function handleSelectionChange(val) {
 function handleClickRow(row) {
   title.value = '修 改'
   emit("updateSurveyId",row.id)
-  openDetails.value = true
+
 
   get(row.id).then(res => {
     open.value = true

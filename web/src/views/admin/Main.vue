@@ -43,7 +43,7 @@ const surveyId = ref('')
 
 function updateSurveyId(newValue){
   surveyId.value = newValue
-  openDetails.value = true
+  openDetails.value = newValue!==''
 }
 
 </script>
