@@ -1,4 +1,4 @@
-package answerApi
+package answer
 
 import (
 	"github.com/gin-gonic/gin"

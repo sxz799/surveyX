@@ -1,4 +1,4 @@
-package questionApi
+package question
 
 import (
 	"github.com/gin-gonic/gin"

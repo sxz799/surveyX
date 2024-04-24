@@ -1,4 +1,4 @@
-package surveyApi
+package survey
 
 import (
 	"github.com/gin-gonic/gin"
