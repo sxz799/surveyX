@@ -26,7 +26,7 @@
       </el-main>
     </el-container>
     <div style="position: static; bottom: 0; left: 0; right: 0; text-align: center; padding: 20px 0;">
-      <el-link type="info" href="https://github.com/sxz799/surveyX">SurveyX 提供技术支持</el-link>
+      <el-link type="info" target="_blank" href="https://github.com/sxz799/surveyX">SurveyX 提供技术支持</el-link>
     </div>
   </div>
 </template>

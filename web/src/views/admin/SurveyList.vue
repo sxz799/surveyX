@@ -53,7 +53,7 @@
             <el-tag type="danger" v-if="scope.row.status === 'stop'">停止</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center">
+        <el-table-column label="操作" width="80" align="center">
           <template #default="scope">
             <el-popconfirm confirm-button-text="确定" cancel-button-text="取消" @confirm="handleDelete(scope.row)"
                            title="确定要删除吗?">
@@ -92,31 +92,31 @@
           <el-date-picker v-model="form.end_time" type="datetime" placeholder="选择结束日期时间" />
         </el-form-item>
         <el-form-item label="填写联系方式" prop="need_contact">
-          <el-select @change="(val)=>{if(val==='no'){form.repeat_check='finger'}}" v-model="form.need_contact" placeholder="请选择">
-            <el-option label="是" value="yes"></el-option>
-            <el-option label="否" value="no"></el-option>
-          </el-select>
+          <el-radio-group @change="(val)=>{if(val==='no'){form.repeat_check='finger'}}" v-model="form.need_contact" placeholder="请选择">
+            <el-radio-button  value="yes">是</el-radio-button>
+            <el-radio-button  value="no">否</el-radio-button>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="联系方式类型" v-if="form.need_contact === 'yes'" prop="contact_type">
-          <el-select v-model="form.contact_type" placeholder="请选择">
-            <el-option label="手机号" value="phone"></el-option>
-            <el-option label="邮箱" value="email"></el-option>
-            <el-option label="手机号或邮箱" value="phone|mail"></el-option>
-            <el-option label="不限制" value="other"></el-option>
-          </el-select>
+          <el-radio-group v-model="form.contact_type" placeholder="请选择">
+            <el-radio-button value="phone">手机号</el-radio-button>
+            <el-radio-button value="email">邮箱</el-radio-button>
+            <el-radio-button value="phone|mail">手机号或邮箱</el-radio-button>
+            <el-radio-button value="other">不限制</el-radio-button>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="可重复提交" prop="repeat">
-          <el-select v-model="form.repeat" placeholder="请选择">
-            <el-option label="是" value="yes"></el-option>
-            <el-option label="否" value="no"></el-option>
-            <el-option label="更新" value="update"></el-option>
-          </el-select>
+          <el-radio-group v-model="form.repeat" placeholder="请选择">
+            <el-radio-button value="yes">是</el-radio-button>
+            <el-radio-button value="no">否</el-radio-button>
+            <el-radio-button value="update">更新</el-radio-button>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="重复提交检查方式" prop="repeat_check">
-          <el-select v-model="form.repeat_check" placeholder="请选择">
-            <el-option v-if="form.need_contact === 'yes'" label="联系方式" value="contact"></el-option>
-            <el-option label="浏览器指纹" value="finger"></el-option>
-          </el-select>
+          <el-radio-group v-model="form.repeat_check" placeholder="请选择">
+            <el-radio-button v-if="form.need_contact === 'yes'"  value="contact">联系方式</el-radio-button>
+            <el-radio-button  value="finger">浏览器指纹</el-radio-button>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="水印" prop="water_mark">
           <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" v-model="form.water_mark"

@@ -10,10 +10,11 @@
           <div class="question-container" v-for="(question , index) in survey.questions">
             <el-form-item :prop="'answers.' + question.id ">
               <!--题目-->
-              <el-tag v-if="question.type === 'radio'">{{ index + 1 }} [单选]</el-tag>
-              <el-tag type="warning" v-if="question.type === 'checkbox'">{{ index + 1 }} [多选]</el-tag>
-              <el-tag type="success" v-if="question.type === 'text'">{{ index + 1 }} [简答]</el-tag>
-              <el-text>{{ question.text }}</el-text>
+              <el-text>{{ index + 1 }}. {{ question.text }}</el-text>
+              <el-tag v-if="question.type === 'radio'"> [单选]</el-tag>
+              <el-tag type="warning" v-if="question.type === 'checkbox'">[多选]</el-tag>
+              <el-tag type="success" v-if="question.type === 'text'"> [简答]</el-tag>
+
               <br>
               <!--简答-->
               <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 5 }" v-model="form.answers[question.id]"
@@ -69,7 +70,7 @@
         </el-form>
         <el-button class="submit-button" v-if="allowSubmit" @click="checkAnswer(formRef)">提交</el-button>
         <div style="position: relative; bottom: 0; left: 0; right: 0; text-align: center; padding: 20px 0;">
-          <el-link type="info" href="https://github.com/sxz799/surveyX">SurveyX 提供技术支持</el-link>
+          <el-link type="info" target="_blank" href="https://github.com/sxz799/surveyX">SurveyX 提供技术支持</el-link>
         </div>
       </el-col>
       <el-col :span="6" :xs="0"/>
@@ -135,6 +136,16 @@ onMounted(() => {
 async function initSurvey() {
   const surveyData = await get(surveyId);
   const datetime = new Date();
+  console.log(surveyData.data.status)
+  if (surveyData.data.status !== 'collecting') {
+    ElNotification({
+      title: '抱歉',
+      message: '当前问卷不在收集状态!',
+      type: 'warning',
+    })
+    allowSubmit.value = false
+    return
+  }
   if (datetime < new Date(surveyData.data.start_time) || datetime > new Date(surveyData.data.end_time)) {
     ElNotification({
       title: '抱歉',

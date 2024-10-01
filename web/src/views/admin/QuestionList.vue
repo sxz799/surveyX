@@ -83,8 +83,12 @@
                   <el-input  type="textarea" :autosize="{ minRows: 1, maxRows: 5 }" v-model="form.options[index].value"></el-input>
                 </el-col>
                 <el-col :span="3">
-                  <el-checkbox  v-model="form.options[index].has_ext_msg" true-label="yes" false-label="no" label="备注" />
-                  <el-icon  @click.prevent="removeOption(option)"><DeleteFilled style="color:red;"/></el-icon>
+                  <div style="text-align: center">
+                    <el-checkbox  v-model="form.options[index].has_ext_msg" true-label="yes" false-value="no" label="备注" />
+                    <el-divider direction="vertical" />
+                    <el-icon  @click.prevent="removeOption(option)"><DeleteFilled style="color:red;"/></el-icon>
+                  </div>
+
                 </el-col>
             </el-form-item>
           </el-col>
