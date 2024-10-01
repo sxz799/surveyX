@@ -47,11 +47,16 @@
       @current-change="handleCurrentChange" @size-change="handleSizeChange" />
 
     <el-dialog :title="title" v-model="open" :width="dialogWidth" append-to-body>
-      <el-form ref="questionRef" :model="form" :rules="rules" label-width="auto">
+      <el-form ref="questionRef" :model="form" :inline="false" :rules="rules" label-width="auto">
         <el-row :gutter="10">
           <el-col :span="24">
             <el-form-item label="问卷ID" prop="surveyId">
               <el-input disabled v-model="form.survey_id" placeholder="请输入标题"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="题目排序" prop="order">
+              <el-input-number v-model="form.order" placeholder="请输入排序"></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -62,38 +67,28 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="题目类型" prop="type">
-              <el-select v-model="form.type" placeholder="请选择题目类型">
-                <el-option label="单选" value="radio"></el-option>
-                <el-option label="多选" value="checkbox"></el-option>
-                <el-option label="简答" value="text"></el-option>
-              </el-select>
+              <el-radio-group v-model="form.type" >
+                <el-radio-button value="radio" >单选</el-radio-button>
+                <el-radio-button value="checkbox" >多选</el-radio-button>
+                <el-radio-button value="text" >简答</el-radio-button>
+              </el-radio-group>
               <el-divider v-if="form.type !== 'text'" direction="vertical" />
-              <el-button v-if="form.type !== 'text'" type="success" @click="addOption">新增选项</el-button>
+              <el-button size="small"  v-if="form.type !== 'text'" type="info" @click="addOption"><el-icon><Plus /></el-icon>新增选项</el-button>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
-            <el-form-item v-if="form.type !== 'text'" v-for="(option, index) in form.options"
-              :label="'选项 ' + String.fromCharCode(65 + index)" :key="option.key" :prop="'options.' + index + '.value'">
-              <div style="display: contents;vertical-align: middle;">
-                <div style="padding: 3px;width: 60%">
-                  <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 5 }"
-                    v-model="form.options[index].value"></el-input>
-                </div>
-                <div style="padding: 3px">
-                  <el-checkbox-button v-model="form.options[index].has_ext_msg" true-label="yes" false-label="no"
-                    label="填写备注" />
-                </div>
-                <div style="padding: 3px">
-                  <el-button type="danger" @click.prevent="removeOption(option)">删除</el-button>
-                </div>
-              </div>
+
+          <el-col style="background: rgba(76,71,71,0.11)" :span="24">
+            <el-form-item  v-if="form.type !== 'text'" v-for="(option, index) in form.options" :label="'选项 ' + String.fromCharCode(65 + index)" :key="option.key" :prop="'options.' + index + '.value'">
+                <el-col :span="21">
+                  <el-input  type="textarea" :autosize="{ minRows: 1, maxRows: 5 }" v-model="form.options[index].value"></el-input>
+                </el-col>
+                <el-col :span="3">
+                  <el-checkbox  v-model="form.options[index].has_ext_msg" true-label="yes" false-label="no" label="备注" />
+                  <el-icon  @click.prevent="removeOption(option)"><DeleteFilled style="color:red;"/></el-icon>
+                </el-col>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
-            <el-form-item label="排序" prop="order">
-              <el-input-number v-model="form.order" placeholder="请输入排序"></el-input-number>
-            </el-form-item>
-          </el-col>
+
         </el-row>
 
 
@@ -114,7 +109,7 @@
 import { computed, onMounted, reactive, ref, toRefs, watch } from 'vue'
 import { list, add, del, update, get } from "@/api/admin/question.js";
 import {ElMessage} from "element-plus";
-import { Delete, Edit, Plus } from "@element-plus/icons";
+import {Delete, DeleteFilled, Edit, Plus} from "@element-plus/icons";
 
 
 const props = defineProps({
@@ -126,7 +121,7 @@ const title = ref('')
 const questionList = ref([])
 const total = ref(0)
 const dialogWidth = computed(() => {
-  return window.innerWidth > 768 ? '60%' : '95%'
+  return window.innerWidth > 768 ? '50%' : '95%'
 })
 
 const data = reactive({

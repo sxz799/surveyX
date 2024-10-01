@@ -11,6 +11,7 @@
           </el-col>
           <el-col :span="16" :xs="24">
             <el-card>
+              <span>当前问卷:</span><span style="color: #0055ff">{{surveyName}}</span>
               <el-tabs>
                 <el-tab-pane label="题目管理">
                   <QuestionList v-if="openDetails" :surveyId="surveyId" />
@@ -40,10 +41,11 @@ import {ref} from "vue";
 
 const openDetails = ref(false)
 const surveyId = ref('')
-
-function updateSurveyId(newValue){
-  surveyId.value = newValue
-  openDetails.value = newValue!==''
+const surveyName = ref('')
+function updateSurveyId(params){
+  surveyId.value = params[0]
+  surveyName.value = params[1]
+  openDetails.value = params[0]!==''
 }
 
 </script>

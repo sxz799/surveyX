@@ -75,7 +75,7 @@
       <template #header>
         <span>{{ title }}</span>
       </template>
-      <el-form ref="surveyRef" :model="form" :inline="true"
+      <el-form ref="surveyRef" :model="form" :inline="false"
                size="small" :rules="rules">
         <el-form-item label="标题" prop="title">
           <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" v-model="form.title"
@@ -122,7 +122,7 @@
           <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" v-model="form.water_mark"
                     placeholder="请输入水印"></el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item style="padding-left: 90%">
           <el-button type="primary" @click="submitForm(surveyRef)">确定</el-button>
         </el-form-item>
       </el-form>
@@ -214,7 +214,7 @@ function handleCurrentChange(val) {
 
 function reset() {
   form.value = { options: [] };
-  emit("updateSurveyId","")
+  emit("updateSurveyId",["",""])
   open.value = false
 }
 
@@ -228,7 +228,7 @@ function handleDelete(row) {
   del(row.id).then(res => {
     if (res.success) {
       ElMessage.success('删除成功！');
-      emit("updateSurveyId","")
+      emit("updateSurveyId",["",""])
       getList()
     } else {
       ElMessage.error('删除失败！');
@@ -274,7 +274,7 @@ function handleSelectionChange(val) {
 
 function handleClickRow(row) {
   title.value = '修 改'
-  emit("updateSurveyId",row.id)
+  emit("updateSurveyId",[row.id,row.title])
 
 
   get(row.id).then(res => {
