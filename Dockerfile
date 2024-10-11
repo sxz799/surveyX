@@ -5,7 +5,7 @@ COPY ./web/ .
 
 RUN sed -i 's#//sed_tag/base#base#g' vite.config.js
 
-RUN yarn build
+RUN yarn install && yarn build
 
 
 
