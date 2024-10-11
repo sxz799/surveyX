@@ -1,11 +1,11 @@
-FROM node:16
+FROM node:20
 
 WORKDIR /go/src/github.com/sxz799/surveyX/web
 COPY ./web/ .
 
 RUN sed -i 's#//sed_tag/base#base#g' vite.config.js
 
-RUN yarn && yarn build
+RUN yarn build
 
 
 
