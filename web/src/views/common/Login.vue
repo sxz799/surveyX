@@ -7,7 +7,7 @@
         <h2 class="login-title">欢迎使用 SurveyX</h2>
         <el-input :autofocus="true" v-model="username" placeholder="请输入用户名" @keyup.enter="Login"
                   class="login-input"></el-input>
-        <el-input v-model="password" placeholder="请输入密码" @keyup.enter="Login" class="login-input"></el-input>
+        <el-input v-model="password" show-password placeholder="请输入密码" @keyup.enter="Login" class="login-input"></el-input>
         <el-row>
 
 

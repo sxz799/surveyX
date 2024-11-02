@@ -1,16 +1,11 @@
 .DS_Store
 node_modules
 dist/
-*.db
+
 
 server/surveyX
-server/conf.yaml
 
 
-
-# local env files
-.env.local
-.env.*.local
 
 
 # Log files
@@ -22,9 +17,5 @@ pnpm-debug.log*
 # Editor directories and files
 .idea
 .vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+
 

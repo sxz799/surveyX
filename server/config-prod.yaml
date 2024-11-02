@@ -1,0 +1,12 @@
+db :
+  sqlType : sqlite  # mysql || sqlite || postgres
+  sqlUrl: survey.db
+  #sqlUrl : username:password@tcp(host:port)/database?charset=utf8mb4&parseTime=True&loc=Local #mysql
+  #sqlUrl : postgres://default:s8kKoq3BfrFv@ep-bold-bird-66330765-pooler.ap-southeast-1.postgres.vercel-storage.com:5432/verceldb  #postgres
+
+
+port : 65534
+
+oauth:
+  clientId : your_clientId
+  clientSecret : your_clientSecret

@@ -26,7 +26,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	token, err := middleware.GenToken(u.Id, u.Username, u.Nickname)
+	token, err := middleware.GenToken(user)
 	if err != nil {
 		response.FailWithMessage("生成Token错误!", c)
 		return
@@ -58,7 +58,7 @@ func LoginByGithub(c *gin.Context) {
 		u.Id = id
 		extMsg = "(已为您注册账号,账号:" + u.Username + ",密码:123456)"
 	}
-	token, err := middleware.GenToken(u.Id, u.Username, u.Nickname)
+	token, err := middleware.GenToken(u)
 	if err != nil {
 		response.FailWithMessage("生成Token错误", c)
 		return

@@ -2,7 +2,6 @@ package survey
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sxz799/surveyX/middleware"
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
 	"github.com/sxz799/surveyX/service"
@@ -19,12 +18,13 @@ func List(c *gin.Context) {
 		return
 	}
 
-	claims, err := middleware.ParseToken(c)
-	if err != nil {
-		response.FailWithMessage("Token Expired!", c)
+	value, exists := c.Get("userInfo")
+	if !exists {
+		response.FailWithExpire(c)
+		c.Abort()
 		return
 	}
-	s.Survey.UserId = claims.UserId
+	s.Survey.UserId = value.(entity.User).Id
 
 	if list, err := ss.List(s); err == nil {
 		response.OkWithData(list, c)
@@ -41,12 +41,13 @@ func Add(c *gin.Context) {
 		response.FailWithMessage("参数有误", c)
 		return
 	}
-	claims, err := middleware.ParseToken(c)
-	if err != nil {
-		response.FailWithMessage("Token Expired!", c)
+	value, exists := c.Get("userInfo")
+	if !exists {
+		response.FailWithExpire(c)
+		c.Abort()
 		return
 	}
-	s.UserId = claims.UserId
+	s.UserId = value.(entity.User).Id
 	if err = ss.Add(s); err == nil {
 		response.OkWithMessage("添加成功", c)
 	} else {
@@ -106,13 +107,13 @@ func Import(c *gin.Context) {
 		response.FailWithMessage("没有获取到文件!", c)
 		return
 	}
-	claims, err := middleware.ParseToken(c)
-	if err != nil {
-		response.FailWithMessage("Token Expired!", c)
+	value, exists := c.Get("userInfo")
+	if !exists {
+		response.FailWithExpire(c)
 		c.Abort()
 		return
 	}
-	err = ss.Import(claims.UserId, file)
+	err = ss.Import(value.(entity.User).Id, file)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return

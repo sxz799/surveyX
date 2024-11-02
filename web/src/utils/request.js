@@ -26,14 +26,12 @@ service.interceptors.request.use(
 );
 
 // 响应拦截器
-service.interceptors.response.use(
-    (response) => {
-        if (response.data.message === "Token Expired!") {
-            router.push({path: '/login'})
-        }
-        // 在这里可以对响应数据进行处理
-        return response.data;
-    },
+service.interceptors.response.use((response) => {
+    if (response.data.code === 401) { // 401 token过去 重定向到登录页
+        router.push({ path: '/login' })
+    }
+    return response.data;
+},
     (error) => {
         return Promise.reject(error);
     }
