@@ -25,9 +25,7 @@
                 <div v-for="option in question.options">
                   <el-row>
                     <el-col :span="16" :xs="24">
-                      <el-radio :label=option.label>
-                        {{ option.label }} {{ option.value }}
-                      </el-radio>
+                      <el-radio :value=option.label>{{ option.label }} {{ option.value }}</el-radio>
                     </el-col>
                     <el-col :span="8" :xs="24">
                       <div style="margin: auto;padding-left: 5%">
@@ -45,9 +43,7 @@
                 <div v-for="option in question.options">
                   <el-row>
                     <el-col :span="16" :xs="24">
-                      <el-checkbox :label=option.label>
-                        {{ option.label }} {{ option.value }}
-                      </el-checkbox>
+                      <el-checkbox :value=option.label>{{ option.label }} {{ option.value }}</el-checkbox>
                     </el-col>
                     <el-col :span="8" :xs="24">
                       <div style="margin: auto;padding-left: 5%">
@@ -65,7 +61,7 @@
           </div>
           <el-form-item style="width: 80%;" v-if="survey.need_contact==='yes'" label="联系方式:" label-width="35%"
                         prop="contact">
-            <el-input v-model="form.contact" placeholder="请填写联系方式"></el-input>
+            <el-input v-model="form.contact" :placeholder=contactTypeTitle ></el-input>
           </el-form-item>
         </el-form>
         <el-button class="submit-button" v-if="allowSubmit" @click="checkAnswer(formRef)">提交</el-button>
@@ -80,9 +76,9 @@
         :show-close="false"
         v-model="confirmDialogVisible"
         width="300px" center>
-        <div style="text-align: center;">
-          <span style="font-size: larger;">确定提交?</span>
-        </div>
+      <div style="text-align: center;">
+        <span style="font-size: larger;">确定提交?</span>
+      </div>
       <template #footer>
         <el-button @click="confirmDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="submitAnswer()">确 定</el-button>
@@ -102,7 +98,6 @@ import Fingerprint2 from 'fingerprintjs2';
 import {ElNotification} from "element-plus";
 
 
-
 const confirmDialogVisible = ref(false)
 const disabled = ref(false)
 const allowSubmit = ref(true)
@@ -117,6 +112,7 @@ const survey = reactive({
   questions: [],
 })
 const formRef = ref()
+const contactTypeTitle = ref('')
 
 
 const form = reactive({
@@ -164,6 +160,21 @@ async function initSurvey() {
   survey.questions.forEach((q) => {
     rules[`answers.${q.id}`] = [{required: true, message: "请填写", trigger: q.type === 'text' ? "blur" : "change"}];
   });
+
+  switch (survey.contact_type) {
+    case 'phone':
+      contactTypeTitle.value = '请填写联系方式(手机号)'
+      break;
+    case 'email':
+      contactTypeTitle.value = '请填写联系方式(邮箱)'
+      break;
+    case 'phone|email':
+      contactTypeTitle.value = '请填写联系方式(手机号或邮箱)'
+      break;
+    case 'other':
+      contactTypeTitle.value = '请填写联系方式'
+      break;
+  }
 }
 
 function checkAnswer(elForm) {
@@ -176,40 +187,44 @@ function checkAnswer(elForm) {
       return
     }
     if (survey.need_contact === 'yes') {
-      if (survey.contact_type === 'phone') {
-        const reg = /^[1][3-9][0-9]{9}$/
-        if (!reg.test(form.contact)) {
-          ElNotification({
-            title: '联系方式不正确！',
-            message: '请填写正确的手机号码',
-            type: 'warning',
-          })
-          return
-        }
+      const phoneReg = /^1[3-9][0-9]{9}$/
+      const emailReg = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
+      let passFail = false
+      switch (survey.contact_type) {
+        case 'phone':
+          if (!phoneReg.test(form.contact)) {
+            ElNotification({
+              title: '联系方式不正确！',
+              message: '请填写正确的手机号码',
+              type: 'warning',
+            })
+            passFail = true
+          }
+          break;
+        case 'email':
+          if (!emailReg.test(form.contact)) {
+            ElNotification({
+              title: '联系方式不正确！',
+              message: '请填写正确的邮箱',
+              type: 'warning',
+            })
+            passFail = true
+          }
+          break;
+        case 'phone|email':
+          if (!phoneReg.test(form.contact) && !emailReg.test(form.contact)) {
+            ElNotification({
+              title: '联系方式不正确！',
+              message: '请填写正确的手机号码或邮箱',
+              type: 'warning',
+            })
+            passFail = true
+          }
+          break;
       }
-      if (survey.contact_type === 'email') {
-        const reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/
-        if (!reg.test(form.contact)) {
-          ElNotification({
-            title: '联系方式不正确！',
-            message: '请填写正确的邮箱',
-            type: 'warning',
-          })
-          return
-        }
-      }
-      if (survey.contact_type === 'phone|mail') {
-        //手机号或者邮箱
-        const reg1 = /^[1][3-9][0-9]{9}$/
-        const reg2 = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/
-        if (!reg1.test(form.contact) && !reg2.test(form.contact)) {
-          ElNotification({
-            title: '联系方式不正确！',
-            message: '请填写正确的手机号码或邮箱',
-            type: 'warning',
-          })
-          return
-        }
+      if (passFail){
+        return;
       }
     }
 

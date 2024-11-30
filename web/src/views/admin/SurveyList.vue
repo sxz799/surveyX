@@ -101,7 +101,7 @@
           <el-radio-group v-model="form.contact_type" placeholder="请选择">
             <el-radio-button value="phone">手机号</el-radio-button>
             <el-radio-button value="email">邮箱</el-radio-button>
-            <el-radio-button value="phone|mail">手机号或邮箱</el-radio-button>
+            <el-radio-button value="phone|email">手机号或邮箱</el-radio-button>
             <el-radio-button value="other">不限制</el-radio-button>
           </el-radio-group>
         </el-form-item>
