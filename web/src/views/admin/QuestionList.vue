@@ -11,7 +11,6 @@
       <el-table-column label="序号" width="70" type="index" align="center" />
       <el-table-column label="题目" align="left" key="text" prop="text" :show-overflow-tooltip="true">
         <template #default="scope">
-
           <el-tag v-if="scope.row.type === 'radio'">单选</el-tag>
           <el-tag type="warning" v-if="scope.row.type === 'checkbox'">多选</el-tag>
           <el-tag type="success" v-if="scope.row.type === 'text'">简答</el-tag>
@@ -51,12 +50,12 @@
         <el-row :gutter="10">
           <el-col :span="24">
             <el-form-item label="问卷ID" prop="surveyId">
-              <el-input disabled v-model="form.survey_id" placeholder="请输入标题"></el-input>
+              <el-text  type="info">{{ form.survey_id }}</el-text >
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="题目排序" prop="order">
-              <el-input-number v-model="form.order" placeholder="请输入排序"></el-input-number>
+              <el-input-number v-model="form.order" :min=0 :max=1000 placeholder="请输入排序"></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -77,14 +76,14 @@
             </el-form-item>
           </el-col>
 
-          <el-col style="background: rgba(76,71,71,0.11)" :span="24">
+          <el-col style="background: rgba(46,43,43,0.05);border-radius: 15px;padding: 10px" :span="24">
             <el-form-item  v-if="form.type !== 'text'" v-for="(option, index) in form.options" :label="'选项 ' + String.fromCharCode(65 + index)" :key="option.key" :prop="'options.' + index + '.value'">
                 <el-col :span="21">
                   <el-input  type="textarea" :autosize="{ minRows: 1, maxRows: 5 }" v-model="form.options[index].value"></el-input>
                 </el-col>
                 <el-col :span="3">
                   <div style="text-align: center">
-                    <el-checkbox  v-model="form.options[index].has_ext_msg" true-label="yes" false-value="no" label="备注" />
+                    <el-checkbox v-model="form.options[index].has_ext_msg" true-value="yes" false-value="no" label="备注" />
                     <el-divider direction="vertical" />
                     <el-icon  @click.prevent="removeOption(option)"><DeleteFilled style="color:red;"/></el-icon>
                   </div>
@@ -183,7 +182,7 @@ function handleEdit(row) {
     title.value = '修改'
     //添加校验项
     for (let i = 0; i < form.value.options.length; i++) {
-      rules['options.' + i + '.value'] = [{ required: true, message: '不能为空', trigger: 'blur' }]
+      rules['options.' + i + '.value'] = [{ required: true, message: '选项内容不能为空!', trigger: 'change' }]
     }
   })
 }
@@ -254,7 +253,7 @@ function addOption() {
   )
   //添加校验项
   const index = form.value.options.length - 1
-  rules['options.' + index + '.value'] = [{ required: true, message: '不能为空', trigger: 'blur' }]
+  rules['options.' + index + '.value'] = [{ required: true, message: '选项内容不能为空!', trigger: 'chage' }]
 }
 
 function removeOption(op) {

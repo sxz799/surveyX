@@ -44,7 +44,7 @@
                 @selection-change="handleSelectionChange">
         <el-table-column type="selection" align="center" />
         <el-table-column label="序号" width="70" align="center" type="index" />
-        <el-table-column label="标题" align="center" key="title" prop="title" :show-overflow-tooltip="false" />
+        <el-table-column label="标题" align="center" key="title" prop="title" min-width="150" :show-overflow-tooltip="false" />
         <el-table-column label="状态" align="center"  key="title" prop="status"
                          :show-overflow-tooltip="false">
           <template #default="scope">
@@ -53,7 +53,7 @@
             <el-tag type="danger" v-if="scope.row.status === 'stop'">停止</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="80" align="center">
+        <el-table-column fixed="right" label="操作" width="80" align="center">
           <template #default="scope">
             <el-popconfirm confirm-button-text="确定" cancel-button-text="取消" @confirm="handleDelete(scope.row)"
                            title="确定要删除吗?">
@@ -138,12 +138,8 @@ import {add, del, get, list, update} from "@/api/admin/survey.js";
 import {ElMessage} from "element-plus";
 
 const emit = defineEmits(['updateSurveyId'])
-
 const headers=ref({"Authorization":"Bearer "+localStorage.getItem("token")})
-
-
 const toClipboard=(text)=> navigator.clipboard.writeText(text);
-
 const surveyRef = ref()
 const open = ref(false)
 const surveyList = ref([])
