@@ -77,7 +77,6 @@ func (s *Service) Del(id string) (err error) {
 		Id: id,
 	}
 	_ = s.questionService.DelBySurveyId(id)
-	_ = s.questionService.DelBySurveyId(id)
 	err = s.db.Delete(&su).Error
 	return
 }

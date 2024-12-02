@@ -9,11 +9,11 @@ import (
 
 type Service struct {
 	db             *gorm.DB
-	optionsService *answer.OptionService
+	optionsService *OptionService
 	answerService  *answer.Service
 }
 
-func NewService(db *gorm.DB, ops *answer.OptionService, ans *answer.Service) *Service {
+func NewService(db *gorm.DB, ops *OptionService, ans *answer.Service) *Service {
 	return &Service{
 		db:             db,
 		optionsService: ops,

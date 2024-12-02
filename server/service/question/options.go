@@ -1,4 +1,4 @@
-package answer
+package question
 
 import (
 	"github.com/sxz799/surveyX/model/entity"
