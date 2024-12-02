@@ -5,16 +5,22 @@ import (
 	"github.com/google/uuid"
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
-	"github.com/sxz799/surveyX/utils"
+	"gorm.io/gorm"
 	"strings"
 	"time"
 )
 
-type Service struct{}
+type Service struct {
+	db *gorm.DB
+}
 
-func (as *Service) List(a entity.AnswerSearch) (response.PageResult, error) {
+func NewService(db *gorm.DB) *Service {
+	return &Service{db: db}
+}
+
+func (s *Service) List(a entity.AnswerSearch) (response.PageResult, error) {
 	var answers []entity.Answer
-	db := utils.DB.Model(&entity.Answer{})
+	db := s.db.Model(&entity.Answer{})
 	answer := a.Answer
 	pi := a.PageInfo
 	limit := pi.PageSize
@@ -41,13 +47,13 @@ func (as *Service) List(a entity.AnswerSearch) (response.PageResult, error) {
 		PageSize: pi.PageSize}, err
 }
 
-func (as *Service) Add(ans []entity.Answer) (err error) {
+func (s *Service) Add(ans []entity.Answer) (err error) {
 	var survey entity.Survey
 	var surveyId string
 	var contact, finger string
 	if len(ans) > 0 {
 		surveyId = ans[0].SurveyId
-		err = utils.DB.Where("id = ?", surveyId).First(&survey).Error
+		err = s.db.Where("id = ?", surveyId).First(&survey).Error
 		if err != nil {
 			return
 		}
@@ -61,13 +67,13 @@ func (as *Service) Add(ans []entity.Answer) (err error) {
 		switch check {
 		case "contact":
 			var num int64
-			utils.DB.Model(&entity.Answer{}).Where("contact = ? and survey_id=?", contact, surveyId).Count(&num)
+			s.db.Model(&entity.Answer{}).Where("contact = ? and survey_id=?", contact, surveyId).Count(&num)
 			if num > 0 {
 				return errors.New("该问卷不允许重复提交")
 			}
 		case "finger":
 			var num int64
-			utils.DB.Model(&entity.Answer{}).Where("finger = ? and survey_id=?", finger, surveyId).Count(&num)
+			s.db.Model(&entity.Answer{}).Where("finger = ? and survey_id=?", finger, surveyId).Count(&num)
 			if num > 0 {
 				return errors.New("该问卷不允许重复提交")
 			}
@@ -75,9 +81,9 @@ func (as *Service) Add(ans []entity.Answer) (err error) {
 	case "update":
 		switch check {
 		case "contact":
-			utils.DB.Model(&entity.Answer{}).Delete(&entity.Answer{}, "contact = ? and survey_id=?", contact, surveyId)
+			s.db.Model(&entity.Answer{}).Delete(&entity.Answer{}, "contact = ? and survey_id=?", contact, surveyId)
 		case "finger":
-			utils.DB.Model(&entity.Answer{}).Delete(&entity.Answer{}, "finger = ? and survey_id=?", finger, surveyId)
+			s.db.Model(&entity.Answer{}).Delete(&entity.Answer{}, "finger = ? and survey_id=?", finger, surveyId)
 		}
 	}
 
@@ -86,17 +92,17 @@ func (as *Service) Add(ans []entity.Answer) (err error) {
 	for _, a := range ans {
 		a.Key = key
 		a.CreateAt = time.Now()
-		err = utils.DB.Create(&a).Error
+		err = s.db.Create(&a).Error
 	}
 	return
 }
 
-func (as *Service) DelBySurveyId(surveyId string) (err error) {
-	err = utils.DB.Delete(&entity.Answer{}, "survey_id = ?", surveyId).Error
+func (s *Service) DelBySurveyId(surveyId string) (err error) {
+	err = s.db.Delete(&entity.Answer{}, "survey_id = ?", surveyId).Error
 	return
 }
 
-func (as *Service) DelByQuestionId(questionId int) (err error) {
-	err = utils.DB.Delete(&entity.Answer{}, "question_id = ?", questionId).Error
+func (s *Service) DelByQuestionId(questionId int) (err error) {
+	err = s.db.Delete(&entity.Answer{}, "question_id = ?", questionId).Error
 	return
 }

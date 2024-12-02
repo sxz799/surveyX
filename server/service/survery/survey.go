@@ -2,31 +2,36 @@ package survery
 
 import (
 	"errors"
-	"github.com/sxz799/surveyX/service/question"
-	"mime/multipart"
-	"strings"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
-	"github.com/sxz799/surveyX/utils"
+	"github.com/sxz799/surveyX/service/question"
 	"github.com/xuri/excelize/v2"
+	"gorm.io/gorm"
+	"mime/multipart"
+	"strings"
+	"time"
 )
 
-type Service struct{}
+type Service struct {
+	db              *gorm.DB
+	questionService *question.Service
+}
 
-var questionService question.Service
+func NewService(db *gorm.DB, qs *question.Service) *Service {
+	return &Service{db: db, questionService: qs}
 
-func (ts *Service) List(s entity.SurveySearch) (response.PageResult, error) {
+}
+
+func (s *Service) List(ss entity.SurveySearch) (response.PageResult, error) {
 	var surveys []entity.Survey
 	var total int64
-	pi := s.PageInfo
+	pi := ss.PageInfo
 	limit := pi.PageSize
 	offset := pi.PageSize * (pi.PageNum - 1)
-	db := utils.DB.Model(&entity.Survey{})
+	db := s.db.Model(&entity.Survey{})
 
-	survey := s.Survey
+	survey := ss.Survey
 
 	if survey.Title != "" {
 		db = db.Where("title like ?", "%"+survey.Title+"%")
@@ -55,35 +60,35 @@ func (ts *Service) List(s entity.SurveySearch) (response.PageResult, error) {
 		PageSize: pi.PageSize}, err
 }
 
-func (ts *Service) Add(s entity.Survey) (err error) {
-	s.Id = uuid.New().String()
-	s.Status = "new"
-	err = utils.DB.Create(&s).Error
+func (s *Service) Add(su entity.Survey) (err error) {
+	su.Id = uuid.New().String()
+	su.Status = "new"
+	err = s.db.Create(&su).Error
 	return
 }
 
-func (ts *Service) Update(s entity.Survey) error {
-	err := utils.DB.Where("id=?", s.Id).Updates(&s).Error
+func (s *Service) Update(su entity.Survey) error {
+	err := s.db.Where("id=?", su.Id).Updates(&su).Error
 	return err
 }
 
-func (ts *Service) Del(id string) (err error) {
-	s := entity.Survey{
+func (s *Service) Del(id string) (err error) {
+	su := entity.Survey{
 		Id: id,
 	}
-	_ = questionService.DelBySurveyId(id)
-	_ = questionService.DelBySurveyId(id)
-	err = utils.DB.Delete(&s).Error
+	_ = s.questionService.DelBySurveyId(id)
+	_ = s.questionService.DelBySurveyId(id)
+	err = s.db.Delete(&su).Error
 	return
 }
 
-func (ts *Service) Get(id string) (s entity.Survey, err error) {
-	s.Id = id
-	err = utils.DB.First(&s).Error
+func (s *Service) Get(id string) (su entity.Survey, err error) {
+	su.Id = id
+	err = s.db.First(&su).Error
 	return
 }
 
-func (ts *Service) Analysis(id string) (any, error) {
+func (s *Service) Analysis(id string) (any, error) {
 	var result struct {
 		KeyCount      int
 		QuestionCount int
@@ -92,7 +97,7 @@ func (ts *Service) Analysis(id string) (any, error) {
 		FirstCreateAt string
 		LastCreateAt  string
 	}
-	err := utils.DB.Table("answers").
+	err := s.db.Table("answers").
 		Select("COUNT(DISTINCT key) as key_count, COUNT(DISTINCT question_id) as question_count, COUNT(DISTINCT finger) as finger_count, COUNT(DISTINCT contact) as contact_count, min(create_at) as first_create_at, max(create_at) as last_create_at").
 		Where("survey_id = ?", id).
 		Scan(&result).Error
@@ -106,7 +111,7 @@ func (ts *Service) Analysis(id string) (any, error) {
 	return result, err
 }
 
-func (ts *Service) Import(userId int, file *multipart.FileHeader) (err error) {
+func (s *Service) Import(userId int, file *multipart.FileHeader) (err error) {
 	// 1. 读取文件
 	r, err := file.Open()
 	if err != nil {
@@ -197,10 +202,10 @@ func (ts *Service) Import(userId int, file *multipart.FileHeader) (err error) {
 	}
 
 	survey.UserId = userId
-	utils.DB.Create(&survey)
+	s.db.Create(&survey)
 	for _, question := range questions {
 		question.SurveyId = survey.Id
-		if err := questionService.Add(question); err != nil {
+		if err := s.questionService.Add(question); err != nil {
 			return err
 		}
 	}

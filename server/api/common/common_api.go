@@ -14,19 +14,19 @@ var us user.Service
 
 func Login(c *gin.Context) {
 
-	var e entity.User
-	err := c.ShouldBind(&e)
+	var user entity.User
+	err := c.ShouldBind(&user)
 	if err != nil {
 		response.FailWithMessage("参数错误!", c)
 		return
 	}
-	u, err := us.Login(e)
+	u, err := us.Login(user)
 	if err != nil {
 		response.FailWithMessage("账号或密码错误!", c)
 		return
 	}
 
-	token, err := middleware.GenToken(e)
+	token, err := middleware.GenToken(user)
 	if err != nil {
 		response.FailWithMessage("生成Token错误!", c)
 		return

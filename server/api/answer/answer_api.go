@@ -7,17 +7,25 @@ import (
 	"github.com/sxz799/surveyX/service/answer"
 )
 
-var as answer.Service
+type Api struct {
+	answerService *answer.Service
+}
+
+func NewApi(as *answer.Service) *Api {
+	return &Api{
+		answerService: as,
+	}
+}
 
 // Add godoc
-func Add(c *gin.Context) {
-	var a []entity.Answer
-	err := c.ShouldBind(&a)
+func (a *Api) Add(c *gin.Context) {
+	var answers []entity.Answer
+	err := c.ShouldBind(&answers)
 	if err != nil {
 		response.FailWithMessage("参数有误", c)
 		return
 	}
-	if err = as.Add(a); err == nil {
+	if err = a.answerService.Add(answers); err == nil {
 		response.OkWithMessage("提交成功", c)
 	} else {
 		response.FailWithMessage(err.Error(), c)
@@ -26,14 +34,14 @@ func Add(c *gin.Context) {
 }
 
 // List godoc
-func List(c *gin.Context) {
-	var a entity.AnswerSearch
-	err := c.ShouldBindQuery(&a)
+func (a *Api) List(c *gin.Context) {
+	var as entity.AnswerSearch
+	err := c.ShouldBindQuery(&as)
 	if err != nil {
 		response.FailWithMessage("参数有误", c)
 		return
 	}
-	if list, err := as.List(a); err == nil {
+	if list, err := a.answerService.List(as); err == nil {
 		response.OkWithData(list, c)
 	} else {
 		response.Fail(c)

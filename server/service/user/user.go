@@ -2,38 +2,44 @@ package user
 
 import (
 	"github.com/sxz799/surveyX/model/entity"
-	"github.com/sxz799/surveyX/utils"
+	"gorm.io/gorm"
 )
 
-type Service struct{}
+type Service struct {
+	db *gorm.DB
+}
 
-func (us *Service) Add(user entity.User) (id int, err error) {
-	err = utils.DB.Create(&user).Error
+func NewService(db *gorm.DB) *Service {
+	return &Service{db: db}
+}
+
+func (s *Service) Add(user entity.User) (id int, err error) {
+	err = s.db.Create(&user).Error
 	id = user.Id
 	return
 }
 
-func (us *Service) Update(user entity.User) (err error) {
-	err = utils.DB.Updates(&user).Error
+func (s *Service) Update(user entity.User) (err error) {
+	err = s.db.Updates(&user).Error
 	return
 }
 
-func (us *Service) Delete(user entity.User) (err error) {
-	err = utils.DB.Delete(&user).Error
+func (s *Service) Delete(user entity.User) (err error) {
+	err = s.db.Delete(&user).Error
 	return
 }
 
-func (us *Service) List(user entity.User) (users []entity.User, err error) {
-	err = utils.DB.Model(&user).Find(&users).Error
+func (s *Service) List(user entity.User) (users []entity.User, err error) {
+	err = s.db.Model(&user).Find(&users).Error
 	return
 }
 
-func (us *Service) GetByGithubId(id int) (u entity.User, err error) {
-	err = utils.DB.Where("github_uid=?", id).First(&u).Error
+func (s *Service) GetByGithubId(id int) (u entity.User, err error) {
+	err = s.db.Where("github_uid=?", id).First(&u).Error
 	return
 }
 
-func (us *Service) Login(user entity.User) (u entity.User, err error) {
-	err = utils.DB.Where("username = ? AND password = ?", user.Username, user.Password).First(&u).Error
+func (s *Service) Login(user entity.User) (u entity.User, err error) {
+	err = s.db.Where("username = ? AND password = ?", user.Username, user.Password).First(&u).Error
 	return
 }

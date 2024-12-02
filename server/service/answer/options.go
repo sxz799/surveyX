@@ -2,31 +2,37 @@ package answer
 
 import (
 	"github.com/sxz799/surveyX/model/entity"
-	"github.com/sxz799/surveyX/utils"
+	"gorm.io/gorm"
 )
 
-type OptionService struct{}
+type OptionService struct {
+	db *gorm.DB
+}
 
-func (ts *OptionService) List(qid int) (ops []entity.Option) {
-	db := utils.DB.Model(&entity.Option{})
+func NewOptionService(db *gorm.DB) *OptionService {
+	return &OptionService{db: db}
+}
+
+func (s *OptionService) List(qid int) (ops []entity.Option) {
+	db := s.db.Model(&entity.Option{})
 	db.Where("question_id=?", qid).Find(&ops)
 	return
 }
 
-func (ts *OptionService) Add(ops []entity.Option) {
+func (s *OptionService) Add(ops []entity.Option) {
 	for _, op := range ops {
-		utils.DB.Create(&op)
+		s.db.Create(&op)
 	}
 }
 
-func (ts *OptionService) Del(questionId int) {
+func (s *OptionService) Del(questionId int) {
 
-	utils.DB.Where("question_id=?", questionId).Delete(&entity.Option{})
+	s.db.Where("question_id=?", questionId).Delete(&entity.Option{})
 
 }
 
-func (ts *OptionService) DelBySurveyId(sId string) {
+func (s *OptionService) DelBySurveyId(sId string) {
 
-	utils.DB.Where("survey_id=?", sId).Delete(&entity.Option{})
+	s.db.Where("survey_id=?", sId).Delete(&entity.Option{})
 
 }

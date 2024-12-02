@@ -4,27 +4,36 @@ import (
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
 	"github.com/sxz799/surveyX/service/answer"
-	"github.com/sxz799/surveyX/utils"
+	"gorm.io/gorm"
 )
 
-type Service struct{}
+type Service struct {
+	db             *gorm.DB
+	optionsService *answer.OptionService
+	answerService  *answer.Service
+}
 
-var optionsService answer.OptionService
-var answerService answer.Service
+func NewService(db *gorm.DB, ops *answer.OptionService, ans *answer.Service) *Service {
+	return &Service{
+		db:             db,
+		optionsService: ops,
+		answerService:  ans,
+	}
+}
 
-func (ts *Service) List(q entity.QuestionSearch) (response.PageResult, error) {
+func (s *Service) List(q entity.QuestionSearch) (response.PageResult, error) {
 	var qs []entity.Question
 	var total int64
 	pi := q.PageInfo
 	sId := q.Question.SurveyId
 	limit := pi.PageSize
 	offset := pi.PageSize * (pi.PageNum - 1)
-	db := utils.DB.Model(&entity.Question{})
+	db := s.db.Model(&entity.Question{})
 	db.Where("survey_id=?", sId)
 	db.Count(&total)
 	err := db.Limit(limit).Offset(offset).Order("`order`").Find(&qs).Error
 	for i := range qs {
-		ops := optionsService.List(qs[i].Id)
+		ops := s.optionsService.List(qs[i].Id)
 		qs[i].Options = ops
 	}
 	return response.PageResult{
@@ -34,56 +43,56 @@ func (ts *Service) List(q entity.QuestionSearch) (response.PageResult, error) {
 		PageSize: pi.PageSize}, err
 }
 
-func (ts *Service) Add(q entity.Question) (err error) {
+func (s *Service) Add(q entity.Question) (err error) {
 
-	err = utils.DB.Create(&q).Error
+	err = s.db.Create(&q).Error
 
 	for i := range q.Options {
 		q.Options[i].QuestionId = q.Id
 		q.Options[i].SurveyId = q.SurveyId
 	}
 
-	optionsService.Add(q.Options)
+	s.optionsService.Add(q.Options)
 	return
 }
 
-func (ts *Service) Update(q entity.Question) (err error) {
+func (s *Service) Update(q entity.Question) (err error) {
 
-	err = utils.DB.Updates(&q).Error
+	err = s.db.Updates(&q).Error
 	for i := range q.Options {
 		q.Options[i].QuestionId = q.Id
 		q.Options[i].SurveyId = q.SurveyId
 	}
-	optionsService.Del(q.Id)
-	optionsService.Add(q.Options)
+	s.optionsService.Del(q.Id)
+	s.optionsService.Add(q.Options)
 	return
 }
 
-func (ts *Service) Del(id int) (err error) {
+func (s *Service) Del(id int) (err error) {
 	q := entity.Question{
 		Id: id,
 	}
-	err = utils.DB.Delete(&q).Error
-	optionsService.Del(id)
-	answerService.DelByQuestionId(id)
+	err = s.db.Delete(&q).Error
+	s.optionsService.Del(id)
+	s.answerService.DelByQuestionId(id)
 	return
 }
 
-func (ts *Service) DelBySurveyId(surveyId string) (err error) {
-	err = utils.DB.Delete(&entity.Question{}, "survey_id=?", surveyId).Error
-	optionsService.DelBySurveyId(surveyId)
+func (s *Service) DelBySurveyId(surveyId string) (err error) {
+	err = s.db.Delete(&entity.Question{}, "survey_id=?", surveyId).Error
+	s.optionsService.DelBySurveyId(surveyId)
 	return
 }
 
-func (ts *Service) Get(id int) (q entity.Question, err error) {
+func (s *Service) Get(id int) (q entity.Question, err error) {
 	q.Id = id
-	err = utils.DB.Find(&q).Error
-	ops := optionsService.List(id)
+	err = s.db.Find(&q).Error
+	ops := s.optionsService.List(id)
 	q.Options = ops
 	return
 }
 
-func (ts *Service) Analysis(id string) (any, error) {
+func (s *Service) Analysis(id string) (any, error) {
 	type TAnswer struct {
 		QuestionId int    `json:"question_id" form:"question_id"`
 		Content    string `json:"content" form:"content"`
@@ -93,7 +102,7 @@ func (ts *Service) Analysis(id string) (any, error) {
 		CreateAt   string `json:"create_at" form:"create_at"`
 	}
 	var answers []TAnswer
-	err := utils.DB.Table("answers").Where("question_id=?", id).Order("key").Find(&answers).Error
+	err := s.db.Table("answers").Where("question_id=?", id).Order("key").Find(&answers).Error
 	contactMap := make(map[string]struct{})
 	fingerMap := make(map[string]struct{})
 	labelMap := make(map[string]int)
