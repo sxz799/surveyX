@@ -1,5 +1,0 @@
-package service
-
-var questionService QuestionService
-var answerService AnswerService
-var optionService OptionService

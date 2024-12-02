@@ -4,11 +4,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
-	"github.com/sxz799/surveyX/service"
+	"github.com/sxz799/surveyX/service/question"
 	"strconv"
 )
 
-var qs service.QuestionService
+var qs question.Service
 
 // List godoc
 func List(c *gin.Context) {

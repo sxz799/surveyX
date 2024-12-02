@@ -4,13 +4,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
-	"github.com/sxz799/surveyX/service"
+	"github.com/sxz799/surveyX/service/answer"
 )
 
-var as service.AnswerService
+var as answer.Service
 
 // Add godoc
-
 func Add(c *gin.Context) {
 	var a []entity.Answer
 	err := c.ShouldBind(&a)

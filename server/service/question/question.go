@@ -1,16 +1,18 @@
-package service
+package question
 
 import (
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
+	"github.com/sxz799/surveyX/service/answer"
 	"github.com/sxz799/surveyX/utils"
 )
 
-type QuestionService struct {}
+type Service struct{}
 
+var optionsService answer.OptionService
+var answerService answer.Service
 
-
-func (ts *QuestionService) List(q entity.QuestionSearch) (response.PageResult, error) {
+func (ts *Service) List(q entity.QuestionSearch) (response.PageResult, error) {
 	var qs []entity.Question
 	var total int64
 	pi := q.PageInfo
@@ -22,7 +24,7 @@ func (ts *QuestionService) List(q entity.QuestionSearch) (response.PageResult, e
 	db.Count(&total)
 	err := db.Limit(limit).Offset(offset).Order("`order`").Find(&qs).Error
 	for i := range qs {
-		ops := optionService.List(qs[i].Id)
+		ops := optionsService.List(qs[i].Id)
 		qs[i].Options = ops
 	}
 	return response.PageResult{
@@ -32,7 +34,7 @@ func (ts *QuestionService) List(q entity.QuestionSearch) (response.PageResult, e
 		PageSize: pi.PageSize}, err
 }
 
-func (ts *QuestionService) Add(q entity.Question) (err error) {
+func (ts *Service) Add(q entity.Question) (err error) {
 
 	err = utils.DB.Create(&q).Error
 
@@ -41,48 +43,48 @@ func (ts *QuestionService) Add(q entity.Question) (err error) {
 		q.Options[i].SurveyId = q.SurveyId
 	}
 
-	optionService.Add(q.Options)
+	optionsService.Add(q.Options)
 	return
 }
 
-func (ts *QuestionService) Update(q entity.Question) (err error) {
+func (ts *Service) Update(q entity.Question) (err error) {
 
 	err = utils.DB.Updates(&q).Error
 	for i := range q.Options {
 		q.Options[i].QuestionId = q.Id
 		q.Options[i].SurveyId = q.SurveyId
 	}
-	optionService.Del(q.Id)
-	optionService.Add(q.Options)
+	optionsService.Del(q.Id)
+	optionsService.Add(q.Options)
 	return
 }
 
-func (ts *QuestionService) Del(id int) (err error) {
+func (ts *Service) Del(id int) (err error) {
 	q := entity.Question{
 		Id: id,
 	}
 	err = utils.DB.Delete(&q).Error
-	optionService.Del(id)
+	optionsService.Del(id)
 	answerService.DelByQuestionId(id)
 	return
 }
 
-func (ts *QuestionService) DelBySurveyId(surveyId string) (err error) {
+func (ts *Service) DelBySurveyId(surveyId string) (err error) {
 	err = utils.DB.Delete(&entity.Question{}, "survey_id=?", surveyId).Error
-	optionService.DelBySurveyId(surveyId)
+	optionsService.DelBySurveyId(surveyId)
 	return
 }
 
-func (ts *QuestionService) Get(id int) (q entity.Question, err error) {
+func (ts *Service) Get(id int) (q entity.Question, err error) {
 	q.Id = id
 	err = utils.DB.Find(&q).Error
-	ops := optionService.List(id)
+	ops := optionsService.List(id)
 	q.Options = ops
 	return
 }
 
-func (ts *QuestionService) Analysis(id string) (any, error) {
-	type answer struct {
+func (ts *Service) Analysis(id string) (any, error) {
+	type TAnswer struct {
 		QuestionId int    `json:"question_id" form:"question_id"`
 		Content    string `json:"content" form:"content"`
 		Label      string `json:"label" form:"label"`
@@ -90,7 +92,7 @@ func (ts *QuestionService) Analysis(id string) (any, error) {
 		Finger     string `json:"finger" form:"finger"`
 		CreateAt   string `json:"create_at" form:"create_at"`
 	}
-	var answers []answer
+	var answers []TAnswer
 	err := utils.DB.Table("answers").Where("question_id=?", id).Order("key").Find(&answers).Error
 	contactMap := make(map[string]struct{})
 	fingerMap := make(map[string]struct{})

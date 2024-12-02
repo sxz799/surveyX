@@ -1,7 +1,8 @@
-package service
+package survery
 
 import (
 	"errors"
+	"github.com/sxz799/surveyX/service/question"
 	"mime/multipart"
 	"strings"
 	"time"
@@ -13,9 +14,11 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-type SurveyService struct{}
+type Service struct{}
 
-func (ts *SurveyService) List(s entity.SurveySearch) (response.PageResult, error) {
+var questionService question.Service
+
+func (ts *Service) List(s entity.SurveySearch) (response.PageResult, error) {
 	var surveys []entity.Survey
 	var total int64
 	pi := s.PageInfo
@@ -52,35 +55,35 @@ func (ts *SurveyService) List(s entity.SurveySearch) (response.PageResult, error
 		PageSize: pi.PageSize}, err
 }
 
-func (ts *SurveyService) Add(s entity.Survey) (err error) {
+func (ts *Service) Add(s entity.Survey) (err error) {
 	s.Id = uuid.New().String()
 	s.Status = "new"
 	err = utils.DB.Create(&s).Error
 	return
 }
 
-func (ts *SurveyService) Update(s entity.Survey) error {
+func (ts *Service) Update(s entity.Survey) error {
 	err := utils.DB.Where("id=?", s.Id).Updates(&s).Error
 	return err
 }
 
-func (ts *SurveyService) Del(id string) (err error) {
+func (ts *Service) Del(id string) (err error) {
 	s := entity.Survey{
 		Id: id,
 	}
 	_ = questionService.DelBySurveyId(id)
-	_ = answerService.DelBySurveyId(id)
+	_ = questionService.DelBySurveyId(id)
 	err = utils.DB.Delete(&s).Error
 	return
 }
 
-func (ts *SurveyService) Get(id string) (s entity.Survey, err error) {
+func (ts *Service) Get(id string) (s entity.Survey, err error) {
 	s.Id = id
 	err = utils.DB.First(&s).Error
 	return
 }
 
-func (ts *SurveyService) Analysis(id string) (any, error) {
+func (ts *Service) Analysis(id string) (any, error) {
 	var result struct {
 		KeyCount      int
 		QuestionCount int
@@ -103,7 +106,7 @@ func (ts *SurveyService) Analysis(id string) (any, error) {
 	return result, err
 }
 
-func (ts *SurveyService) Import(userId int, file *multipart.FileHeader) (err error) {
+func (ts *Service) Import(userId int, file *multipart.FileHeader) (err error) {
 	// 1. 读取文件
 	r, err := file.Open()
 	if err != nil {

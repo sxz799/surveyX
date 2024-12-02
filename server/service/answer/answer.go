@@ -1,4 +1,4 @@
-package service
+package answer
 
 import (
 	"errors"
@@ -10,9 +10,9 @@ import (
 	"time"
 )
 
-type AnswerService struct {}
+type Service struct{}
 
-func (as *AnswerService) List(a entity.AnswerSearch) (response.PageResult, error) {
+func (as *Service) List(a entity.AnswerSearch) (response.PageResult, error) {
 	var answers []entity.Answer
 	db := utils.DB.Model(&entity.Answer{})
 	answer := a.Answer
@@ -41,7 +41,7 @@ func (as *AnswerService) List(a entity.AnswerSearch) (response.PageResult, error
 		PageSize: pi.PageSize}, err
 }
 
-func (as *AnswerService) Add(ans []entity.Answer) (err error) {
+func (as *Service) Add(ans []entity.Answer) (err error) {
 	var survey entity.Survey
 	var surveyId string
 	var contact, finger string
@@ -91,12 +91,12 @@ func (as *AnswerService) Add(ans []entity.Answer) (err error) {
 	return
 }
 
-func (as *AnswerService) DelBySurveyId(surveyId string) (err error) {
+func (as *Service) DelBySurveyId(surveyId string) (err error) {
 	err = utils.DB.Delete(&entity.Answer{}, "survey_id = ?", surveyId).Error
 	return
 }
 
-func (as *AnswerService) DelByQuestionId(questionId int) (err error) {
+func (as *Service) DelByQuestionId(questionId int) (err error) {
 	err = utils.DB.Delete(&entity.Answer{}, "question_id = ?", questionId).Error
 	return
 }

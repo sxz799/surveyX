@@ -1,11 +1,11 @@
-package service
+package answer
 
 import (
 	"github.com/sxz799/surveyX/model/entity"
 	"github.com/sxz799/surveyX/utils"
 )
 
-type OptionService struct {}
+type OptionService struct{}
 
 func (ts *OptionService) List(qid int) (ops []entity.Option) {
 	db := utils.DB.Model(&entity.Option{})
