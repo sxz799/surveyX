@@ -7,10 +7,18 @@ import (
 	"github.com/sxz799/surveyX/service/survery"
 )
 
-var ss survery.Service
+type Api struct {
+	surveyService *survery.Service
+}
+
+func NewApi(ss *survery.Service) *Api {
+	return &Api{
+		surveyService: ss,
+	}
+}
 
 // List godoc
-func List(c *gin.Context) {
+func (a *Api) List(c *gin.Context) {
 	var s entity.SurveySearch
 	err := c.ShouldBindQuery(&s)
 	if err != nil {
@@ -26,7 +34,7 @@ func List(c *gin.Context) {
 	}
 	s.Survey.UserId = value.(entity.User).Id
 
-	if list, err := ss.List(s); err == nil {
+	if list, err := a.surveyService.List(s); err == nil {
 		response.OkWithData(list, c)
 	} else {
 		response.Fail(c)
@@ -34,7 +42,7 @@ func List(c *gin.Context) {
 }
 
 // Add godoc
-func Add(c *gin.Context) {
+func (a *Api) Add(c *gin.Context) {
 	var s entity.Survey
 	err := c.ShouldBind(&s)
 	if err != nil {
@@ -48,7 +56,7 @@ func Add(c *gin.Context) {
 		return
 	}
 	s.UserId = value.(entity.User).Id
-	if err = ss.Add(s); err == nil {
+	if err = a.surveyService.Add(s); err == nil {
 		response.OkWithMessage("添加成功", c)
 	} else {
 		response.FailWithMessage(err.Error(), c)
@@ -57,14 +65,14 @@ func Add(c *gin.Context) {
 }
 
 // Update godoc
-func Update(c *gin.Context) {
+func (a *Api) Update(c *gin.Context) {
 	var s entity.Survey
 	err := c.ShouldBind(&s)
 	if err != nil {
 		response.FailWithMessage("参数有误", c)
 		return
 	}
-	if err = ss.Update(s); err == nil {
+	if err = a.surveyService.Update(s); err == nil {
 		response.OkWithMessage("更新成功", c)
 	} else {
 		response.FailWithMessage(err.Error(), c)
@@ -72,13 +80,13 @@ func Update(c *gin.Context) {
 }
 
 // Get godoc
-func Get(c *gin.Context) {
+func (a *Api) Get(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
 		response.FailWithMessage("参数有误", c)
 		return
 	}
-	if result, err := ss.Get(id); err == nil {
+	if result, err := a.surveyService.Get(id); err == nil {
 		response.OkWithData(result, c)
 	} else {
 		response.FailWithMessage(err.Error(), c)
@@ -87,13 +95,13 @@ func Get(c *gin.Context) {
 }
 
 // Del godoc
-func Del(c *gin.Context) {
+func (a *Api) Del(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
 		response.FailWithMessage("参数有误", c)
 		return
 	}
-	if err := ss.Del(id); err == nil {
+	if err := a.surveyService.Del(id); err == nil {
 		response.OkWithMessage("删除成功", c)
 	} else {
 		response.FailWithMessage(err.Error(), c)
@@ -101,7 +109,7 @@ func Del(c *gin.Context) {
 }
 
 // Import godoc
-func Import(c *gin.Context) {
+func (a *Api) Import(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
 		response.FailWithMessage("没有获取到文件!", c)
@@ -113,7 +121,7 @@ func Import(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	err = ss.Import(value.(entity.User).Id, file)
+	err = a.surveyService.Import(value.(entity.User).Id, file)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -123,13 +131,13 @@ func Import(c *gin.Context) {
 }
 
 // Analysis godoc
-func Analysis(c *gin.Context) {
+func (a *Api) Analysis(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
 		response.FailWithMessage("参数有误", c)
 		return
 	}
-	if result, err := ss.Analysis(id); err == nil {
+	if result, err := a.surveyService.Analysis(id); err == nil {
 		response.OkWithData(result, c)
 	} else {
 		response.FailWithMessage(err.Error(), c)

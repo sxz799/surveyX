@@ -2,18 +2,21 @@ package answer
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sxz799/surveyX/api/answer"
+	answerApi "github.com/sxz799/surveyX/api/answer"
 	"github.com/sxz799/surveyX/middleware"
+	answerService "github.com/sxz799/surveyX/service/answer"
 )
 
-func Answer(e *gin.Engine) {
+func Answer(e *gin.Engine, service *answerService.Service) {
+	api := answerApi.NewApi(service)
+
 	g := e.Group("/api/user/answer")
 	{
-		g.POST("/", answer.Add)
+		g.POST("/", api.Add)
 	}
 
 	g2 := e.Group("/api/admin/answer", middleware.JWTAuth())
 	{
-		g2.GET("/list", answer.List)
+		g2.GET("/list", api.List)
 	}
 }

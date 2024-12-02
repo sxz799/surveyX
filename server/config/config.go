@@ -2,9 +2,10 @@ package config
 
 import (
 	"flag"
-	"github.com/spf13/viper"
 	"log"
 	"os"
+
+	"github.com/spf13/viper"
 )
 
 var (

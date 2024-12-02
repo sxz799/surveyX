@@ -10,49 +10,48 @@ import (
 	"log"
 )
 
-var DB *gorm.DB
-
-func InitDB() {
+func InitDB() (db *gorm.DB) {
 	sqlType := config.SqlType
 	dsn := config.SqlUrl
 	switch sqlType {
 	case "postgres":
 		var err error
-		DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		if err != nil {
 			log.Panicln("postgres数据库连接失败。", err)
 		}
 	case "mysql":
 		var err error
-		DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 		if err != nil {
 			log.Panicln("mysql数据库连接失败。", err)
 		}
 	case "sqlite":
 		var err error
-		DB, err = gorm.Open(sqlite.Open(dsn), &gorm.Config{})
+		db, err = gorm.Open(sqlite.Open(dsn), &gorm.Config{})
 		if err != nil {
 			log.Panicln("sqlite数据库连接失败。", err)
 		}
 	}
-	initDBTables()
+	initDBTables(db)
+	return db
 }
 
-func initDBTables() {
-	_ = DB.AutoMigrate(entity.Survey{})
-	_ = DB.AutoMigrate(entity.Question{})
-	_ = DB.AutoMigrate(entity.Option{})
-	_ = DB.AutoMigrate(entity.Answer{})
-	_ = DB.AutoMigrate(entity.User{})
-	initUser()
+func initDBTables(db *gorm.DB) {
+	_ = db.AutoMigrate(entity.Survey{})
+	_ = db.AutoMigrate(entity.Question{})
+	_ = db.AutoMigrate(entity.Option{})
+	_ = db.AutoMigrate(entity.Answer{})
+	_ = db.AutoMigrate(entity.User{})
+	initUser(db)
 }
 
-func initUser() {
+func initUser(db *gorm.DB) {
 
 	users := []entity.User{
 		{Nickname: "管理员", Username: "admin", Password: "admin"},
 		{Nickname: "33", Username: "33", Password: "33"},
 	}
 
-	_ = DB.Create(&users)
+	_ = db.Create(&users)
 }

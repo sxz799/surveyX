@@ -10,9 +10,17 @@ import (
 	"log"
 )
 
-var us user.Service
+type Api struct {
+	userService *user.Service
+}
 
-func Login(c *gin.Context) {
+func NewApi(us *user.Service) *Api {
+	return &Api{
+		userService: us,
+	}
+}
+
+func (a *Api) Login(c *gin.Context) {
 
 	var user entity.User
 	err := c.ShouldBind(&user)
@@ -20,7 +28,7 @@ func Login(c *gin.Context) {
 		response.FailWithMessage("参数错误!", c)
 		return
 	}
-	u, err := us.Login(user)
+	u, err := a.userService.Login(user)
 	if err != nil {
 		response.FailWithMessage("账号或密码错误!", c)
 		return
@@ -36,7 +44,7 @@ func Login(c *gin.Context) {
 
 }
 
-func LoginByGithub(c *gin.Context) {
+func (a *Api) LoginByGithub(c *gin.Context) {
 	code := c.Query("code")
 	if code == "" {
 		response.FailWithMessage("code为空", c)
@@ -48,14 +56,14 @@ func LoginByGithub(c *gin.Context) {
 		return
 	}
 	githubId := githubUser.ID
-	u, _ := us.GetByGithubId(githubId)
+	u, _ := a.userService.GetByGithubId(githubId)
 	extMsg := ""
 	if u.Id == 0 {
 		u.Username = githubUser.Login
 		u.Nickname = githubUser.Login
 		u.Password = "123456"
 		u.GithubUID = githubId
-		id, _ := us.Add(u)
+		id, _ := a.userService.Add(u)
 		u.Id = id
 		extMsg = "(已为您注册账号,账号:" + u.Username + ",密码:123456)"
 	}
@@ -69,7 +77,7 @@ func LoginByGithub(c *gin.Context) {
 
 }
 
-func ChangePwd(c *gin.Context) {
+func (a *Api) ChangePwd(c *gin.Context) {
 	var u entity.User
 	err := c.ShouldBind(&u)
 	if err != nil {
@@ -77,13 +85,13 @@ func ChangePwd(c *gin.Context) {
 		return
 	}
 	log.Println(u)
-	if err = us.Update(u); err == nil {
+	if err = a.userService.Update(u); err == nil {
 		response.OkWithMessage("更新成功", c)
 	} else {
 		response.FailWithMessage(err.Error(), c)
 	}
 }
 
-func Logout(c *gin.Context) {
+func (a *Api) Logout(c *gin.Context) {
 	response.OkWithMessage("退出成功", c)
 }

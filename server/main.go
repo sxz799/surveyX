@@ -16,7 +16,7 @@ var content embed.FS
 
 func main() {
 	config.Init()
-	utils.InitDB()
+
 	startGin()
 }
 
@@ -25,8 +25,8 @@ func startGin() {
 	r := gin.Default()
 	r.Use(cors.Default())
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
-
-	router.RegRouter(r)
+	db := utils.InitDB()
+	router.RegRouter(r, db)
 	router.RegWebRouter(r, content)
 	log.Println("服务启动中,当前使用端口：", config.Port)
 

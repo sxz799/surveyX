@@ -2,22 +2,29 @@ package router
 
 import (
 	"embed"
+	"html/template"
+	"io/fs"
+	"log"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/sxz799/surveyX/router/answer"
 	"github.com/sxz799/surveyX/router/common"
 	"github.com/sxz799/surveyX/router/question"
 	"github.com/sxz799/surveyX/router/survey"
-	"html/template"
-	"io/fs"
-	"log"
-	"net/http"
+	"github.com/sxz799/surveyX/service"
+	"gorm.io/gorm"
 )
 
-func RegRouter(e *gin.Engine) {
-	survey.Survey(e)
-	question.Question(e)
-	answer.Answer(e)
-	common.Common(e)
+func RegRouter(e *gin.Engine, db *gorm.DB) {
+	// 创建服务容器
+	container := service.NewContainer(db)
+
+	// 注册各模块路由
+	survey.Survey(e, container.SurveyService)
+	question.Question(e, container.QuestionService)
+	answer.Answer(e, container.AnswerService)
+	common.Common(e, container.UserService)
 }
 
 func RegWebRouter(e *gin.Engine, content embed.FS) {

@@ -8,17 +8,25 @@ import (
 	"strconv"
 )
 
-var qs question.Service
+type Api struct {
+	questionService *question.Service
+}
+
+func NewApi(qs *question.Service) *Api {
+	return &Api{
+		questionService: qs,
+	}
+}
 
 // List godoc
-func List(c *gin.Context) {
+func (a *Api) List(c *gin.Context) {
 	var q entity.QuestionSearch
 	err := c.ShouldBindQuery(&q)
 	if err != nil {
 		response.FailWithMessage("参数有误", c)
 		return
 	}
-	if list, err := qs.List(q); err == nil {
+	if list, err := a.questionService.List(q); err == nil {
 		response.OkWithData(list, c)
 	} else {
 		response.Fail(c)
@@ -26,14 +34,14 @@ func List(c *gin.Context) {
 }
 
 // Add godoc
-func Add(c *gin.Context) {
+func (a *Api) Add(c *gin.Context) {
 	var q entity.Question
 	err := c.ShouldBind(&q)
 	if err != nil {
 		response.FailWithMessage("参数有误", c)
 		return
 	}
-	if err = qs.Add(q); err == nil {
+	if err = a.questionService.Add(q); err == nil {
 		response.OkWithMessage("添加成功", c)
 	} else {
 		response.FailWithMessage(err.Error(), c)
@@ -42,14 +50,14 @@ func Add(c *gin.Context) {
 }
 
 // Update godoc
-func Update(c *gin.Context) {
+func (a *Api) Update(c *gin.Context) {
 	var q entity.Question
 	err := c.ShouldBind(&q)
 	if err != nil {
 		response.FailWithMessage("参数有误", c)
 		return
 	}
-	if err = qs.Update(q); err == nil {
+	if err = a.questionService.Update(q); err == nil {
 		response.OkWithMessage("更新成功", c)
 	} else {
 		response.FailWithMessage(err.Error(), c)
@@ -57,13 +65,13 @@ func Update(c *gin.Context) {
 }
 
 // Get godoc
-func Get(c *gin.Context) {
+func (a *Api) Get(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		response.FailWithMessage("参数有误", c)
 		return
 	}
-	if result, err := qs.Get(id); err == nil {
+	if result, err := a.questionService.Get(id); err == nil {
 		response.OkWithData(result, c)
 	} else {
 		response.FailWithMessage(err.Error(), c)
@@ -72,13 +80,13 @@ func Get(c *gin.Context) {
 }
 
 // Del godoc
-func Del(c *gin.Context) {
+func (a *Api) Del(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		response.FailWithMessage("参数有误", c)
 		return
 	}
-	if err = qs.Del(id); err == nil {
+	if err = a.questionService.Del(id); err == nil {
 		response.OkWithMessage("删除成功", c)
 	} else {
 		response.FailWithMessage(err.Error(), c)
@@ -87,9 +95,9 @@ func Del(c *gin.Context) {
 }
 
 // Analysis godoc
-func Analysis(c *gin.Context) {
+func (a *Api) Analysis(c *gin.Context) {
 	id := c.Param("id")
-	if result, err := qs.Analysis(id); err == nil {
+	if result, err := a.questionService.Analysis(id); err == nil {
 		response.OkWithData(result, c)
 	} else {
 		response.FailWithMessage(err.Error(), c)
