@@ -21,8 +21,8 @@
         <template #default="scope">
           <span v-if="scope.row.type !== 'text'">
             <span v-for="(option, index) in scope.row.options" :key="option.key">
-              <span v-if="index !== 0">,</span>
-              <span>{{ option.value }}</span>
+              <span v-if="index !== 0">  </span>
+              <span>{{ String.fromCharCode(65 + index) + ':' + option.value }}</span>
             </span>
           </span>
         </template>

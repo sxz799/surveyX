@@ -13,7 +13,11 @@ func Question(e *gin.Engine, service *questionService.Service) {
 	g1 := e.Group("/api/admin/question", middleware.JWTAuth())
 	{
 		g1.GET("/list", api.List)
-		// ... 其他路由
+		g1.POST("/", api.Add)
+		g1.PUT("/", api.Update)
+		g1.GET("/:id", api.Get)
+		g1.DELETE("/:id", api.Del)
+		g1.GET("/analysis/:id", api.Analysis)
 	}
 
 	g2 := e.Group("/api/user/question")
