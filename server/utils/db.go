@@ -1,16 +1,17 @@
 package utils
 
 import (
+	"log"
+
 	"github.com/glebarez/sqlite"
 	"github.com/sxz799/surveyX/config"
 	"github.com/sxz799/surveyX/model/entity"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"log"
 )
 
-func InitDB() (db *gorm.DB) {
+func InitDB(config *config.Config) (db *gorm.DB) {
 	sqlType := config.SqlType
 	dsn := config.SqlUrl
 	switch sqlType {

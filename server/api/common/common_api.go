@@ -1,22 +1,25 @@
 package common
 
 import (
+	"log"
+
 	"github.com/gin-gonic/gin"
 	"github.com/sxz799/surveyX/middleware"
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
 	githubOauth2 "github.com/sxz799/surveyX/oauth/github"
 	"github.com/sxz799/surveyX/service/user"
-	"log"
 )
 
 type Api struct {
 	userService *user.Service
+	githubOAuth *githubOauth2.GithubOAuth
 }
 
-func NewApi(us *user.Service) *Api {
+func NewApi(us *user.Service, githubOAuth *githubOauth2.GithubOAuth) *Api {
 	return &Api{
 		userService: us,
+		githubOAuth: githubOAuth,
 	}
 }
 
@@ -50,7 +53,7 @@ func (a *Api) LoginByGithub(c *gin.Context) {
 		response.FailWithMessage("code为空", c)
 		return
 	}
-	githubUser, err := githubOauth2.GetGithubUserInfo(code)
+	githubUser, err := a.githubOAuth.GetGithubUserInfo(code)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return

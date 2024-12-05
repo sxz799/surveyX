@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sxz799/surveyX/config"
 	"github.com/sxz799/surveyX/router/answer"
 	"github.com/sxz799/surveyX/router/common"
 	"github.com/sxz799/surveyX/router/question"
@@ -16,7 +17,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func RegRouter(e *gin.Engine, db *gorm.DB) {
+func RegRouter(e *gin.Engine, db *gorm.DB, config *config.Config) {
 	// 创建服务容器
 	container := service.NewContainer(db)
 
@@ -24,7 +25,7 @@ func RegRouter(e *gin.Engine, db *gorm.DB) {
 	survey.Survey(e, container.SurveyService)
 	question.Question(e, container.QuestionService)
 	answer.Answer(e, container.AnswerService)
-	common.Common(e, container.UserService)
+	common.Common(e, container.UserService, config)
 }
 
 func RegWebRouter(e *gin.Engine, content embed.FS) {

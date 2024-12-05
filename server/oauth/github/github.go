@@ -2,11 +2,11 @@ package github
 
 import (
 	"encoding/json"
+	"time"
+
 	"github.com/gin-gonic/gin"
-	"github.com/sxz799/surveyX/config"
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/utils"
-	"time"
 )
 
 type Token struct {
@@ -62,19 +62,30 @@ type GithubUserInfo struct {
 	} `json:"plan"`
 }
 
-func GetLoginUrl(c *gin.Context) {
-	response.OkWithData("https://github.com/login/oauth/authorize?client_id="+config.OauthClientId, c)
+type GithubOAuth struct {
+	clientId     string
+	clientSecret string
 }
 
-func GetGithubUserInfo(code string) (GithubUserInfo, error) {
+func NewGithubOAuth(clientId, clientSecret string) *GithubOAuth {
+	return &GithubOAuth{
+		clientId:     clientId,
+		clientSecret: clientSecret,
+	}
+}
 
+func (g *GithubOAuth) GetLoginUrl(c *gin.Context) {
+	response.OkWithData("https://github.com/login/oauth/authorize?client_id="+g.clientId, c)
+}
+
+func (g *GithubOAuth) GetGithubUserInfo(code string) (GithubUserInfo, error) {
 	header := map[string]string{
 		"Accept":       "application/json",
 		"Content-Type": "application/json",
 	}
 	body := map[string]string{
-		"client_id":     config.OauthClientId,
-		"client_secret": config.OauthClientSecret,
+		"client_id":     g.clientId,
+		"client_secret": g.clientSecret,
 		"code":          code,
 	}
 	marshal, _ := json.Marshal(body)
