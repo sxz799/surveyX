@@ -25,7 +25,7 @@ func RegRouter(e *gin.Engine, db *gorm.DB, config *config.Config) {
 	survey.Survey(e, container.SurveyService)
 	question.Question(e, container.QuestionService)
 	answer.Answer(e, container.AnswerService)
-	common.Common(e, container.UserService, config)
+	common.Common(e, container.CommonService, container.UserService, config)
 }
 
 func RegWebRouter(e *gin.Engine, content embed.FS) {

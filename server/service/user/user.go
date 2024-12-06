@@ -38,8 +38,3 @@ func (s *Service) GetByGithubId(id int) (u entity.User, err error) {
 	err = s.db.Where("github_uid=?", id).First(&u).Error
 	return
 }
-
-func (s *Service) Login(user entity.User) (u entity.User, err error) {
-	err = s.db.Where("username = ? AND password = ?", user.Username, user.Password).First(&u).Error
-	return
-}

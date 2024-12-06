@@ -1,6 +1,7 @@
 package common
 
 import (
+	"github.com/sxz799/surveyX/service/common"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -12,14 +13,16 @@ import (
 )
 
 type Api struct {
-	userService *user.Service
-	githubOAuth *githubOauth2.GithubOAuth
+	commonService *common.Service
+	userService   *user.Service
+	githubOAuth   *githubOauth2.GithubOAuth
 }
 
-func NewApi(us *user.Service, githubOAuth *githubOauth2.GithubOAuth) *Api {
+func NewApi(cs *common.Service, us *user.Service, githubOAuth *githubOauth2.GithubOAuth) *Api {
 	return &Api{
-		userService: us,
-		githubOAuth: githubOAuth,
+		userService:   us,
+		commonService: cs,
+		githubOAuth:   githubOAuth,
 	}
 }
 
@@ -31,7 +34,7 @@ func (a *Api) Login(c *gin.Context) {
 		response.FailWithMessage("参数错误!", c)
 		return
 	}
-	u, err := a.userService.Login(user)
+	u, err := a.commonService.Login(user)
 	if err != nil {
 		response.FailWithMessage("账号或密码错误!", c)
 		return

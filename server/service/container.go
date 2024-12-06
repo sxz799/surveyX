@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/sxz799/surveyX/service/answer"
+	"github.com/sxz799/surveyX/service/common"
 	"github.com/sxz799/surveyX/service/question"
 	"github.com/sxz799/surveyX/service/survery"
 	"github.com/sxz799/surveyX/service/user"
@@ -14,6 +15,7 @@ type Container struct {
 	QuestionService *question.Service
 	SurveyService   *survery.Service
 	UserService     *user.Service
+	CommonService   *common.Service
 }
 
 func NewContainer(db *gorm.DB) *Container {
@@ -22,12 +24,13 @@ func NewContainer(db *gorm.DB) *Container {
 	questionService := question.NewService(db, optionService, answerService)
 	surveyService := survery.NewService(db, questionService)
 	userService := user.NewService(db)
-
+	commonService := common.NewService(db)
 	return &Container{
 		AnswerService:   answerService,
 		OptionService:   optionService,
 		QuestionService: questionService,
 		SurveyService:   surveyService,
 		UserService:     userService,
+		CommonService:   commonService,
 	}
 }
