@@ -78,16 +78,13 @@
 
           <el-col style="background: rgba(46,43,43,0.05);border-radius: 15px;padding: 10px" :span="24">
             <el-form-item  v-if="form.type !== 'text'" v-for="(option, index) in form.options" :label="'选项 ' + String.fromCharCode(65 + index)" :key="option.key" :prop="'options.' + index + '.value'">
-                <el-col :span="21">
+                <el-col :span="20">
                   <el-input  type="textarea" :autosize="{ minRows: 1, maxRows: 5 }" v-model="form.options[index].value"></el-input>
                 </el-col>
-                <el-col :span="3">
-                  <div style="text-align: center">
+                <el-col :span="4"  style="min-width: 100px;">
                     <el-checkbox v-model="form.options[index].has_ext_msg" true-value="yes" false-value="no" label="备注" />
                     <el-divider direction="vertical" />
                     <el-icon  @click.prevent="removeOption(option)"><DeleteFilled style="color:red;"/></el-icon>
-                  </div>
-
                 </el-col>
             </el-form-item>
           </el-col>

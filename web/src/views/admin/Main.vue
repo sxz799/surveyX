@@ -149,7 +149,7 @@ function Logout() {
 
 
 .app-container {
-  padding: 20px;
+  padding: 5px;
 }
 
 
@@ -178,7 +178,7 @@ function Logout() {
 }
 
 .main-title {
-  color: #0055ff;
+  color: #2874ee;
   font-size: 20px;
   font-weight: 600;
 }
