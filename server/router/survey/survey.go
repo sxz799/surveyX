@@ -21,7 +21,7 @@ func Survey(e *gin.Engine, service *surveyService.Service) {
 		g1.GET("/analysis/:id", api.Analysis)
 	}
 
-	g2 := e.Group("/api/user/survey")
+	g2 := e.Group("/api/guest/survey")
 	{
 		g2.GET("/:id", api.Get)
 	}

@@ -1,103 +1,229 @@
 <template>
+  <div class="login-page">
+    <div class="login-container">
+      <div class="login-box">
+        <h2 class="title">欢迎使用 SurveyX</h2>
 
-  <el-row style="padding-top: 100px">
-    <el-col :span="6" :xs="0"/>
-    <el-col :span="12" :xs="24">
-      <div class="login-container">
-        <h2 class="login-title">欢迎使用 SurveyX</h2>
-        <el-input :autofocus="true" v-model="username" placeholder="请输入用户名" @keyup.enter="Login"
-                  class="login-input"></el-input>
-        <el-input v-model="password" show-password placeholder="请输入密码" @keyup.enter="Login" class="login-input"></el-input>
-        <el-row>
+        <el-form :model="model" :rules="rules" ref="formRef" label-position="top" size="large">
+          <el-form-item prop="username">
+            <el-input v-model="model.username" placeholder="请输入用户名" :prefix-icon="User"
+              @keyup.enter="handleLogin"></el-input>
+          </el-form-item>
 
+          <el-form-item prop="password">
+            <el-input v-model="model.password" type="password" placeholder="请输入密码" :prefix-icon="Lock" show-password
+              @keyup.enter="handleLogin"></el-input>
+          </el-form-item>
 
-          <el-col :span="12" :xs="24">
-            <el-button type="primary" @click="Login" class="login-button">登录</el-button>
+          <div class="options">
+            <el-checkbox v-model="rememberMe">记住我</el-checkbox>
+            <el-link type="primary" :underline="false" @click="handleRestPasswrd">忘记密码？</el-link>
+          </div>
 
-          </el-col>
-          <el-col :span="12" :xs="24">
+          <div class="buttons">
+            <el-button type="primary" :loading="loading" @click="handleLogin" class="login-btn">登 录</el-button>
 
-            <el-button type="primary" @click="LoginWithGithub" class="login-button">GITHUB登录</el-button>
-          </el-col>
-        </el-row>
+            <el-button @click="handleRegister" class="register-btn">注 册</el-button>
+          </div>
+
+          <div class="divider">
+            <span>其他登录方式</span>
+          </div>
+
+          <div class="social-login">
+            <el-button type="primary" @click="loginWithGithub" class="github-btn" :icon="Platform">
+              Github 登录
+            </el-button>
+          </div>
+        </el-form>
       </div>
-    </el-col>
-    <el-col :span="6" :xs="0"/>
-  </el-row>
+    </div>
 
-
+    <Register ref="registerRef"></Register>
+    <RestPasswrd ref="restPasswrdRef"></RestPasswrd>
+  </div>
 </template>
 
 <script setup>
-
-import {login, getGithubLoginUrl} from '@/api/common/common.js'
-import {ref,} from "vue";
-import {useRouter} from "vue-router";
-
+import { ref } from "vue"
+import { ElMessage } from "element-plus"
+import { User, Lock, Platform } from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router'
+import { login, getGithubLoginUrl } from '@/api/common/common.js'
+import Register from './Register.vue'
+import RestPasswrd from './RestPasswrd.vue'
 const router = useRouter()
-const username = ref('')
-const password = ref('')
+const formRef = ref(null)
+const registerRef = ref(null)
+const restPasswrdRef = ref(null)
+const loading = ref(false)
+const rememberMe = ref(false)
 
+const model = ref({
+  username: '',
+  password: ''
+})
 
-function Login() {
-  login({username: username.value, password: password.value}).then(res => {
-    if (res.success) {
-      ElMessage.success(res.message)
-      localStorage.setItem('token', res.data.token)
-      localStorage.setItem('userInfo', JSON.stringify(res.data.userInfo))
-      router.push({path: '/admin'})
-    } else {
-      ElMessage.error(res.message)
+const rules = {
+  username: [
+    { required: true, message: '请输入用户名', trigger: 'blur' },
+  ],
+  password: [
+    { required: true, message: '请输入密码', trigger: 'blur' },
+  ]
+}
+
+async function handleLogin() {
+  if (!formRef.value) return
+
+  await formRef.value.validate(async (valid) => {
+    if (valid) {
+      try {
+        loading.value = true
+        const res = await login({
+          ...model.value,
+          remember_me: rememberMe.value
+        })
+        if (res.success) {
+          ElMessage.success(res.message || '登录成功')
+          localStorage.setItem('token', res.data.token)
+          localStorage.setItem('userInfo', JSON.stringify(res.data.userInfo))
+          router.push('/admin')
+        } else {
+          ElMessage.error(res.message || '登录失败')
+        }
+      } catch (error) {
+        ElMessage.error('登录失败，请稍后重试')
+      } finally {
+        loading.value = false
+      }
     }
   })
 }
 
-function LoginWithGithub() {
-  getGithubLoginUrl().then(res => {
+function handleRegister() {
+  registerRef.value?.Open()
+}
+
+function handleRestPasswrd() {
+  restPasswrdRef.value?.Open()
+}
+
+async function loginWithGithub() {
+  try {
+    const res = await getGithubLoginUrl()
     if (res.success) {
       window.location.href = res.data
     } else {
       ElMessage.error(res.message)
     }
-  })
-
+  } catch (error) {
+    ElMessage.error('获取Github登录链接失败')
+  }
 }
-
-
 </script>
 
 <style scoped>
-.login-container {
+.login-page {
+  min-height: 100vh;
   display: flex;
   justify-content: center;
-  flex-direction: column;
   align-items: center;
+  background-color: var(--el-bg-color-page);
+}
+
+.login-container {
+  width: 100%;
+  padding: 20px;
+}
+
+.login-box {
+  max-width: 400px;
   margin: 0 auto;
-  padding: 50px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
+  padding: 40px;
+  background: var(--el-bg-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
-.login-title {
+.title {
   text-align: center;
-  margin-bottom: 20px;
+  color: var(--el-text-color-primary);
+  margin-bottom: 30px;
+  font-size: 24px;
 }
 
-.login-input {
-  margin-bottom: 20px;
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
 }
 
-.login-button {
-  background-color: #24292e; /* GitHub 的主题颜色 */
-  color: #ffffff; /* 文字颜色为白色 */
-  border: none; /* 无边框 */
-  font-size: 16px; /* 字体大小 */
-  padding: 10px 20px; /* 内边距 */
-  border-radius: 4px; /* 圆角边框 */
-  transition: background-color 0.3s ease; /* 过渡效果 */
+.buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
 }
 
-.login-button:hover {
-  background-color: #444d56; /* 鼠标悬停时的背景颜色 */
+.login-btn,
+.register-btn,
+.github-btn {
+  flex: 1;
+  height: 40px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 24px 0;
+  color: var(--el-text-color-secondary);
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--el-border-color-lighter);
+}
+
+.divider span {
+  padding: 0 12px;
+  font-size: 14px;
+}
+
+.social-login {
+  display: flex;
+  justify-content: center;
+}
+
+.github-btn {
+  width: 100%;
+  background-color: #24292e;
+  border-color: #24292e;
+}
+
+.github-btn:hover {
+  background-color: #2c3238;
+  border-color: #2c3238;
+}
+
+:deep(.el-input) {
+  --el-input-hover-border-color: var(--el-primary-color);
+}
+
+:deep(.el-form-item) {
+  margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+  .login-box {
+    padding: 30px 20px;
+  }
+
+  .buttons {
+    flex-direction: column;
+  }
 }
 </style>

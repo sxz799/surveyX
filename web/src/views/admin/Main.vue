@@ -87,7 +87,8 @@ import SurveyList from "@/views/admin/SurveyList.vue";
 import {onMounted, ref} from "vue";
 import {ArrowDown, Moon, Sunny} from "@element-plus/icons";
 import {useDark} from "@vueuse/core";
-import {changPwd, logout} from "@/api/common/common.js";
+import {changPwd } from "@/api/user/user.js";
+import {logout } from "@/api/common/common.js";
 import {ElMessage} from "element-plus";
 import router from "@/utils/router.js";
 

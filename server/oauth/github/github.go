@@ -2,6 +2,7 @@ package github
 
 import (
 	"encoding/json"
+	"log"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -91,6 +92,7 @@ func (g *GithubOAuth) GetGithubUserInfo(code string) (GithubUserInfo, error) {
 	marshal, _ := json.Marshal(body)
 	respBody, err := utils.SendHTTPRequest("POST", "https://github.com/login/oauth/access_token", header, marshal)
 	if err != nil {
+		log.Println("err:", err)
 		return GithubUserInfo{}, err
 	}
 

@@ -20,7 +20,7 @@ func Question(e *gin.Engine, service *questionService.Service) {
 		g1.GET("/analysis/:id", api.Analysis)
 	}
 
-	g2 := e.Group("/api/user/question")
+	g2 := e.Group("/api/guest/question")
 	{
 		g2.GET("/list", api.List)
 	}

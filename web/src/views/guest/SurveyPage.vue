@@ -90,9 +90,9 @@
 <script setup>
 
 import {onMounted, reactive, ref} from "vue";
-import {get} from "@/api/user/survey.js";
-import {list} from "@/api/user/question.js";
-import {add} from "@/api/user/answer.js";
+import {get} from "@/api/guest/survey.js";
+import {list} from "@/api/guest/question.js";
+import {add} from "@/api/guest/answer.js";
 import {useRoute} from "vue-router";
 import Fingerprint2 from 'fingerprintjs2';
 import {ElNotification} from "element-plus";

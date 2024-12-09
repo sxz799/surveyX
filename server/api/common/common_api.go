@@ -1,15 +1,14 @@
 package common
 
 import (
-	"github.com/sxz799/surveyX/service/common"
-	"log"
-
 	"github.com/gin-gonic/gin"
 	"github.com/sxz799/surveyX/middleware"
 	"github.com/sxz799/surveyX/model/common/response"
 	"github.com/sxz799/surveyX/model/entity"
 	githubOauth2 "github.com/sxz799/surveyX/oauth/github"
+	"github.com/sxz799/surveyX/service/common"
 	"github.com/sxz799/surveyX/service/user"
+	"log"
 )
 
 type Api struct {
@@ -28,7 +27,7 @@ func NewApi(cs *common.Service, us *user.Service, githubOAuth *githubOauth2.Gith
 
 func (a *Api) Login(c *gin.Context) {
 
-	var user entity.User
+	var user entity.LoginUser
 	err := c.ShouldBind(&user)
 	if err != nil {
 		response.FailWithMessage("参数错误!", c)
@@ -40,7 +39,7 @@ func (a *Api) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := middleware.GenToken(user)
+	token, err := middleware.GenToken(u, user.RememberMe)
 	if err != nil {
 		response.FailWithMessage("生成Token错误!", c)
 		return
@@ -52,6 +51,7 @@ func (a *Api) Login(c *gin.Context) {
 
 func (a *Api) LoginByGithub(c *gin.Context) {
 	code := c.Query("code")
+	log.Println("code:", code)
 	if code == "" {
 		response.FailWithMessage("code为空", c)
 		return
@@ -73,7 +73,7 @@ func (a *Api) LoginByGithub(c *gin.Context) {
 		u.Id = id
 		extMsg = "(已为您注册账号,账号:" + u.Username + ",密码:123456)"
 	}
-	token, err := middleware.GenToken(u)
+	token, err := middleware.GenToken(u, false)
 	if err != nil {
 		response.FailWithMessage("生成Token错误", c)
 		return
@@ -81,21 +81,6 @@ func (a *Api) LoginByGithub(c *gin.Context) {
 	u.Password = ""
 	response.OkWithDetail(gin.H{"token": token, "userInfo": u}, "登录成功"+extMsg, c)
 
-}
-
-func (a *Api) ChangePwd(c *gin.Context) {
-	var u entity.User
-	err := c.ShouldBind(&u)
-	if err != nil {
-		response.FailWithMessage("参数有误", c)
-		return
-	}
-	log.Println(u)
-	if err = a.userService.Update(u); err == nil {
-		response.OkWithMessage("更新成功", c)
-	} else {
-		response.FailWithMessage(err.Error(), c)
-	}
 }
 
 func (a *Api) Logout(c *gin.Context) {

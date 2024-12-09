@@ -10,19 +10,26 @@ import (
 )
 
 var JwtKey = []byte("survey_secret_key")
+var JwtExpire = time.Hour * 2
 
 type Claims struct {
 	UserInfo entity.User `json:"user_info"`
 	jwt.RegisteredClaims
 }
 
-func GenToken(userInfo entity.User) (tokenStr string, err error) {
+func GenToken(userInfo entity.User, rememberMe bool) (tokenStr string, err error) {
+	var tJwtExpire time.Duration
+	if rememberMe {
+		tJwtExpire = time.Hour * 24 * 7
+	} else {
+		tJwtExpire = JwtExpire / 2
+	}
 	// 创建jwt accessClaims 设置过期时间25s
 	userInfo.Password = ""
 	claim := &Claims{
 		UserInfo: userInfo,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(120 * time.Minute)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(tJwtExpire * time.Minute)),
 		},
 	}
 

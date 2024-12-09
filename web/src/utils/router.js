@@ -2,8 +2,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import Main from '../views/admin/Main.vue';
-import Index from '../views/user/Index.vue';
-import SurveyPage from '../views/user/SurveyPage.vue';
+import Index from '../views/guest/Index.vue';
+import SurveyPage from '../views/guest/SurveyPage.vue';
 import Login from '../views/common/Login.vue';
 import LoginOauth from '../views/common/LoginOauth.vue';
 const routes = [

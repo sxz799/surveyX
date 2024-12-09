@@ -2,6 +2,7 @@ package router
 
 import (
 	"embed"
+	"github.com/sxz799/surveyX/router/user"
 	"html/template"
 	"io/fs"
 	"log"
@@ -26,6 +27,7 @@ func RegRouter(e *gin.Engine, db *gorm.DB, config *config.Config) {
 	question.Question(e, container.QuestionService)
 	answer.Answer(e, container.AnswerService)
 	common.Common(e, container.CommonService, container.UserService, config)
+	user.User(e, container.UserService)
 }
 
 func RegWebRouter(e *gin.Engine, content embed.FS) {

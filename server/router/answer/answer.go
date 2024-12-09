@@ -10,13 +10,13 @@ import (
 func Answer(e *gin.Engine, service *answerService.Service) {
 	api := answerApi.NewApi(service)
 
-	g := e.Group("/api/user/answer")
-	{
-		g.POST("/", api.Add)
-	}
-
 	g2 := e.Group("/api/admin/answer", middleware.JWTAuth())
 	{
 		g2.GET("/list", api.List)
+	}
+
+	g := e.Group("/api/guest/answer")
+	{
+		g.POST("/", api.Add)
 	}
 }

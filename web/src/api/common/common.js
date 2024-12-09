@@ -2,7 +2,7 @@ import request from '../../utils/request.js'
 
 export function login(data) {
     return request({
-        url: '/login',
+        url: '/common/login',
         method: 'post',
         data
     })
@@ -10,30 +10,24 @@ export function login(data) {
 
 export function getGithubLoginUrl() {
     return request({
-        url: '/oauth/loginUrl',
+        url: '/common/oauth/loginUrl',
         method: 'GET'
     })
 }
 
 export function loginByGithub(code) {
     return request({
-        url: '/oauth/github?code=' + code,
+        url: '/common/oauth/github?code=' + code,
         method: 'post'
     })
 }
 
 
-export function changPwd(data) {
-    return request({
-        url: '/changePwd',
-        method: 'put',
-        data: data
-    })
-}
+
 
 export function logout() {
     return request({
-        url: '/logout',
+        url: '/common/logout',
         method: 'post'
     })
 }
