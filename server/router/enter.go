@@ -2,20 +2,19 @@ package router
 
 import (
 	"embed"
-	"github.com/sxz799/surveyX/router/user"
-	"html/template"
-	"io/fs"
-	"log"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/sxz799/surveyX/config"
 	"github.com/sxz799/surveyX/router/answer"
 	"github.com/sxz799/surveyX/router/common"
 	"github.com/sxz799/surveyX/router/question"
 	"github.com/sxz799/surveyX/router/survey"
+	"github.com/sxz799/surveyX/router/user"
 	"github.com/sxz799/surveyX/service"
 	"gorm.io/gorm"
+	"html/template"
+	"io/fs"
+	"log"
+	"net/http"
 )
 
 func RegRouter(e *gin.Engine, db *gorm.DB, config *config.Config) {

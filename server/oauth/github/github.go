@@ -10,12 +10,6 @@ import (
 	"github.com/sxz799/surveyX/utils"
 )
 
-type Token struct {
-	AccessToken string `json:"access_token"`
-	TokenType   string `json:"token_type"`
-	Scope       string `json:"scope"`
-}
-
 type GithubUserInfo struct {
 	Login                   string      `json:"login"`
 	ID                      int         `json:"id"`
@@ -96,7 +90,11 @@ func (g *GithubOAuth) GetGithubUserInfo(code string) (GithubUserInfo, error) {
 		return GithubUserInfo{}, err
 	}
 
-	var githubToken Token
+	var githubToken = struct {
+		AccessToken string `json:"access_token"`
+		TokenType   string `json:"token_type"`
+		Scope       string `json:"scope"`
+	}{}
 	_ = json.Unmarshal(respBody, &githubToken)
 	accessToken := githubToken.AccessToken
 
