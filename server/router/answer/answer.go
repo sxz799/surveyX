@@ -17,6 +17,6 @@ func Answer(e *gin.Engine, service *answerService.Service) {
 
 	g := e.Group("/api/guest/answer")
 	{
-		g.POST("/", api.Add)
+		g.POST("", api.Add)
 	}
 }
