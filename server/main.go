@@ -4,7 +4,6 @@ import (
 	"embed"
 	"log"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/sxz799/surveyX/router"
@@ -20,7 +19,7 @@ func main() {
 	}
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
-	r.Use(cors.Default())
+	r.Use(gin.Recovery())
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
 	router.RegRouter(r, server.DB, server.Config)
 	router.RegWebRouter(r, content)

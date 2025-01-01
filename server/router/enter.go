@@ -18,6 +18,7 @@ import (
 )
 
 func RegRouter(e *gin.Engine, db *gorm.DB, config *config.Config) {
+	e.Use(cors())
 	// 创建服务容器
 	container := service.NewContainer(db)
 
@@ -38,4 +39,19 @@ func RegWebRouter(e *gin.Engine, content embed.FS) {
 		context.HTML(200, "index.html", "")
 	})
 	log.Println("已开启前后端整合模式！")
+}
+func cors() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "*")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(200)
+			return
+		}
+
+		c.Next()
+	}
 }
