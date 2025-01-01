@@ -7,12 +7,13 @@
         <el-form :model="model" :rules="rules" ref="formRef" label-position="top" size="large">
           <el-form-item prop="username">
             <el-input v-model="model.username" placeholder="请输入用户名" :prefix-icon="User"
-              @keyup.enter="handleLogin"></el-input>
+                      @keyup.enter="handleLogin"></el-input>
           </el-form-item>
 
           <el-form-item prop="password">
-            <el-input v-model="model.password" type="password" placeholder="请输入密码" :prefix-icon="Lock" show-password
-              @keyup.enter="handleLogin"></el-input>
+            <el-input v-model="model.password" type="password" placeholder="请输入密码" :prefix-icon="Lock"
+                      show-password
+                      @keyup.enter="handleLogin"></el-input>
           </el-form-item>
 
           <div class="options">
@@ -45,13 +46,14 @@
 </template>
 
 <script setup>
-import { ref } from "vue"
-import { ElMessage } from "element-plus"
-import { User, Lock, Platform } from '@element-plus/icons-vue'
-import { useRouter } from 'vue-router'
-import { login, getGithubLoginUrl } from '@/api/common/common.js'
+import {ref} from "vue"
+import {ElMessage} from "element-plus"
+import {User, Lock, Platform} from '@element-plus/icons-vue'
+import {useRouter} from 'vue-router'
+import {login, getGithubLoginUrl} from '@/api/common/common.js'
 import Register from './Register.vue'
 import RestPasswrd from './RestPasswrd.vue'
+
 const router = useRouter()
 const formRef = ref(null)
 const registerRef = ref(null)
@@ -66,10 +68,10 @@ const model = ref({
 
 const rules = {
   username: [
-    { required: true, message: '请输入用户名', trigger: 'blur' },
+    {required: true, message: '请输入用户名', trigger: 'blur'},
   ],
   password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
+    {required: true, message: '请输入密码', trigger: 'blur'},
   ]
 }
 

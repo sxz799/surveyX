@@ -1,24 +1,23 @@
-
 import request from '../../utils/request.js'
 
-export function list(data) {
-  return request({
-    url: '/admin/survey/list',
-    method: 'get',
-    params: data
-  })
+export function list(params) {
+    return request({
+        url: '/api/admin/survey/list',
+        method: 'get',
+        params: params
+    })
 }
 
 export function get(id) {
     return request({
-        url: '/admin/survey/'+id,
+        url: '/api/admin/survey/' + id,
         method: 'get',
     })
 }
 
 export function add(data) {
     return request({
-        url: '/admin/survey',
+        url: '/api/admin/survey',
         method: 'post',
         data
     })
@@ -26,7 +25,7 @@ export function add(data) {
 
 export function update(data) {
     return request({
-        url: '/admin/survey',
+        url: '/api/admin/survey',
         method: 'put',
         data
     })
@@ -34,14 +33,23 @@ export function update(data) {
 
 export function del(id) {
     return request({
-        url: '/admin/survey/'+id,
+        url: '/api/admin/survey/' + id,
         method: 'delete',
     })
 }
 
 export function analysis(id) {
     return request({
-        url: '/admin/survey/analysis/'+id,
+        url: '/api/admin/survey/analysis/' + id,
         method: 'get',
+    })
+}
+
+export function upload(formData) {
+    console.log(formData.get("file"))
+    return request({
+        url: '/api/admin/survey/import',
+        method: 'post',
+        data:formData,
     })
 }

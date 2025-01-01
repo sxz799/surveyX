@@ -3,7 +3,7 @@ import request from "@/utils/request.js";
 
 export function changPwd(data) {
     return request({
-        url: '/user/changePwd',
+        url: '/api/user/changePwd',
         method: 'put',
         data: data
     })
@@ -11,7 +11,7 @@ export function changPwd(data) {
 
 export function resetPwd(data) {
     return request({
-        url: '/user/resetPwd',
+        url: '/api/user/resetPwd',
         method: 'put',
         data: data
     })
@@ -19,7 +19,7 @@ export function resetPwd(data) {
 
 export function register(data) {
     return request({
-        url: '/user/register',
+        url: '/api/user/register',
         method: 'post',
         data: data
     })

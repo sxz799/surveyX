@@ -8,7 +8,7 @@
     </el-row>
 
     <el-table :data="questionList">
-      <el-table-column label="序号" width="70" type="index" align="center" />
+      <el-table-column label="序号" width="70" type="index" align="center"/>
       <el-table-column label="题目" align="left" key="text" prop="text" :show-overflow-tooltip="true">
         <template #default="scope">
           <el-tag v-if="scope.row.type === 'radio'">单选</el-tag>
@@ -27,12 +27,12 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="排序" width="70" align="center" key="order" prop="order" :show-overflow-tooltip="true" />
+      <el-table-column label="排序" width="70" align="center" key="order" prop="order" :show-overflow-tooltip="true"/>
       <el-table-column label="操作" align="center" width="150">
         <template #default="scope">
           <el-button link type="primary" @click="handleEdit(scope.row)" :icon="Edit">修改</el-button>
           <el-popconfirm confirm-button-text="确定" cancel-button-text="取消" @confirm="handleDelete(scope.row)"
-            title="确定要删除吗?">
+                         title="确定要删除吗?">
             <template #reference>
               <el-button link type="danger" :icon="Delete">删除</el-button>
             </template>
@@ -40,17 +40,17 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination style="padding-top: 20px" small :style="{ 'justify-content': 'center' }" :background="true"
-      :hide-on-single-page="false" :current-page="queryParams.pageNum" :page-size="queryParams.pageSize"
-      :page-sizes="[5, 10, 30, 50]" :total="total" layout=" sizes, prev, pager, next"
-      @current-change="handleCurrentChange" @size-change="handleSizeChange" />
+    <el-pagination style="padding-top: 20px" size="small" :style="{ 'justify-content': 'center' }" :background="true"
+                   :hide-on-single-page="false" :current-page="queryParams.pageNum" :page-size="queryParams.pageSize"
+                   :page-sizes="[5, 10, 30, 50]" :total="total" layout=" sizes, prev, pager, next"
+                   @current-change="handleCurrentChange" @size-change="handleSizeChange"/>
 
     <el-dialog :title="title" v-model="open" :width="dialogWidth" append-to-body>
       <el-form ref="questionRef" :model="form" :inline="false" :rules="rules" label-width="auto">
         <el-row :gutter="10">
           <el-col :span="24">
             <el-form-item label="问卷ID" prop="surveyId">
-              <el-text  type="info">{{ form.survey_id }}</el-text >
+              <el-text type="info">{{ form.survey_id }}</el-text>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -61,31 +61,41 @@
           <el-col :span="24">
             <el-form-item label="题目内容" prop="text">
               <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 5 }" v-model="form.text"
-                placeholder="请输入题目内容"></el-input>
+                        placeholder="请输入题目内容"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="题目类型" prop="type">
-              <el-radio-group v-model="form.type" >
-                <el-radio-button value="radio" >单选</el-radio-button>
-                <el-radio-button value="checkbox" >多选</el-radio-button>
-                <el-radio-button value="text" >简答</el-radio-button>
+              <el-radio-group v-model="form.type">
+                <el-radio-button value="radio">单选</el-radio-button>
+                <el-radio-button value="checkbox">多选</el-radio-button>
+                <el-radio-button value="text">简答</el-radio-button>
               </el-radio-group>
-              <el-divider v-if="form.type !== 'text'" direction="vertical" />
-              <el-button size="small"  v-if="form.type !== 'text'" type="info" @click="addOption"><el-icon><Plus /></el-icon>新增选项</el-button>
+              <el-divider v-if="form.type !== 'text'" direction="vertical"/>
+              <el-button size="small" v-if="form.type !== 'text'" type="info" @click="addOption">
+                <el-icon>
+                  <Plus/>
+                </el-icon>
+                新增选项
+              </el-button>
             </el-form-item>
           </el-col>
 
           <el-col style="background: rgba(46,43,43,0.05);border-radius: 15px;padding: 10px" :span="24">
-            <el-form-item  v-if="form.type !== 'text'" v-for="(option, index) in form.options" :label="'选项 ' + String.fromCharCode(65 + index)" :key="option.key" :prop="'options.' + index + '.value'">
-                <el-col :span="20">
-                  <el-input  type="textarea" :autosize="{ minRows: 1, maxRows: 5 }" v-model="form.options[index].value"></el-input>
-                </el-col>
-                <el-col :span="4"  style="min-width: 100px;">
-                    <el-checkbox v-model="form.options[index].has_ext_msg" true-value="yes" false-value="no" label="备注" />
-                    <el-divider direction="vertical" />
-                    <el-icon  @click.prevent="removeOption(option)"><DeleteFilled style="color:red;"/></el-icon>
-                </el-col>
+            <el-form-item v-if="form.type !== 'text'" v-for="(option, index) in form.options"
+                          :label="'选项 ' + String.fromCharCode(65 + index)" :key="option.key"
+                          :prop="'options.' + index + '.value'">
+              <el-col :span="20">
+                <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 5 }"
+                          v-model="form.options[index].value"></el-input>
+              </el-col>
+              <el-col :span="4" style="min-width: 100px;">
+                <el-checkbox v-model="form.options[index].has_ext_msg" true-value="yes" false-value="no" label="备注"/>
+                <el-divider direction="vertical"/>
+                <el-icon @click.prevent="removeOption(option)">
+                  <DeleteFilled style="color:red;"/>
+                </el-icon>
+              </el-col>
             </el-form-item>
           </el-col>
 
@@ -106,8 +116,8 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref, toRefs, watch } from 'vue'
-import { list, add, del, update, get } from "@/api/admin/question.js";
+import {computed, onMounted, reactive, ref, toRefs, watch} from 'vue'
+import {list, add, del, update, get} from "@/api/admin/question.js";
 import {ElMessage} from "element-plus";
 import {Delete, DeleteFilled, Edit, Plus} from "@element-plus/icons";
 
@@ -135,14 +145,13 @@ const data = reactive({
   },
 });
 
-const { queryParams, form } = toRefs(data);
+const {queryParams, form} = toRefs(data);
 
 const rules = ({
-  text: [{ required: true, message: '请输入题目内容', trigger: 'blur' }],
-  type: [{ required: true, message: '请选择题目类型', trigger: 'change' }],
-  order: [{ required: true, message: '请输入排序', trigger: 'blur' }],
+  text: [{required: true, message: '请输入题目内容', trigger: 'blur'}],
+  type: [{required: true, message: '请选择题目类型', trigger: 'change'}],
+  order: [{required: true, message: '请输入排序', trigger: 'blur'}],
 })
-
 
 
 watch(() => props.surveyId, (newValue) => {
@@ -179,7 +188,7 @@ function handleEdit(row) {
     title.value = '修改'
     //添加校验项
     for (let i = 0; i < form.value.options.length; i++) {
-      rules['options.' + i + '.value'] = [{ required: true, message: '选项内容不能为空!', trigger: 'change' }]
+      rules['options.' + i + '.value'] = [{required: true, message: '选项内容不能为空!', trigger: 'change'}]
     }
   })
 }
@@ -243,14 +252,14 @@ function reset() {
 
 function addOption() {
   form.value.options.push({
-    label: String.fromCharCode(65 + form.value.options.length), // A B C D
-    value: '', // 选项的值
-    key: Date.now() // 选项的唯一标识
-  }
+        label: String.fromCharCode(65 + form.value.options.length), // A B C D
+        value: '', // 选项的值
+        key: Date.now() // 选项的唯一标识
+      }
   )
   //添加校验项
   const index = form.value.options.length - 1
-  rules['options.' + index + '.value'] = [{ required: true, message: '选项内容不能为空!', trigger: 'chage' }]
+  rules['options.' + index + '.value'] = [{required: true, message: '选项内容不能为空!', trigger: 'chage'}]
 }
 
 function removeOption(op) {

@@ -77,7 +77,10 @@ function getQuestionAnalysis(question_id) {
     if (res.success) {
       option.value.legend.data = props.answerOptions.map(obj => obj.label + ":" + obj.value)
       option.value.series[0].data = res.data.label_info.map(obj => {
-        return {value: obj.count, name: obj.label + ":" + props.answerOptions.find(item => item.label === obj.label).value}
+        return {
+          value: obj.count,
+          name: obj.label + ":" + props.answerOptions.find(item => item.label === obj.label).value
+        }
       })
 
       for (let datum of option.value.legend.data) {

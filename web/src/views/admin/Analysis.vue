@@ -2,34 +2,33 @@
 
   <el-row class="mb8">
     <el-col :span="6">
-      <el-statistic title="题目数量" group-separator=","  :value="analysisSurveyData.QuestionCount" />
+      <el-statistic title="题目数量" group-separator="," :value="analysisSurveyData.QuestionCount"/>
     </el-col>
     <el-col :span="6">
-      <el-statistic title="填写次数" group-separator=","   :value="analysisSurveyData.KeyCount" />
+      <el-statistic title="填写次数" group-separator="," :value="analysisSurveyData.KeyCount"/>
     </el-col>
     <el-col :span="6">
-      <el-statistic title="浏览器数量" group-separator=","   :value="analysisSurveyData.FingerCount" />
+      <el-statistic title="浏览器数量" group-separator="," :value="analysisSurveyData.FingerCount"/>
     </el-col>
     <el-col :span="6">
-      <el-statistic title="联系方式数量" group-separator=","   :value="analysisSurveyData.ContactCount" />
+      <el-statistic title="联系方式数量" group-separator="," :value="analysisSurveyData.ContactCount"/>
     </el-col>
 
     <el-col :span="12">
-        <el-tag>第一次填写时间:{{ analysisSurveyData.FirstCreateAt }}</el-tag>
+      <el-tag>第一次填写时间:{{ analysisSurveyData.FirstCreateAt }}</el-tag>
     </el-col>
 
     <el-col :span="12">
-        <el-tag>最后一次填写时间:{{ analysisSurveyData.LastCreateAt }}</el-tag>
+      <el-tag>最后一次填写时间:{{ analysisSurveyData.LastCreateAt }}</el-tag>
     </el-col>
 
 
-
-<!--    <el-col :span="12">-->
-<!--      <el-statistic title="第一次填写时间" group-separator=","   :value="analysisSurveyData.FirstCreateAt" />-->
-<!--    </el-col>-->
-<!--    <el-col :span="12">-->
-<!--      <el-statistic title="最后一次填写时间" group-separator=","   :value="analysisSurveyData.LastCreateAt" />-->
-<!--    </el-col>-->
+    <!--    <el-col :span="12">-->
+    <!--      <el-statistic title="第一次填写时间" group-separator=","   :value="analysisSurveyData.FirstCreateAt" />-->
+    <!--    </el-col>-->
+    <!--    <el-col :span="12">-->
+    <!--      <el-statistic title="最后一次填写时间" group-separator=","   :value="analysisSurveyData.LastCreateAt" />-->
+    <!--    </el-col>-->
   </el-row>
 
 
@@ -57,7 +56,7 @@
 
   <el-pagination
       style="padding-top: 20px"
-      small
+      size="small"
       :style="{'justify-content':'center'}"
       :background="true"
       :hide-on-single-page="false"
@@ -71,7 +70,7 @@
   />
 
   <el-dialog title="答案详情" v-model="showDetails" width="70%" append-to-body>
-    <AnswerDetails :question-type="currType" :question-id="currQuestionId" ></AnswerDetails>
+    <AnswerDetails :question-type="currType" :question-id="currQuestionId"></AnswerDetails>
   </el-dialog>
 
 
@@ -118,9 +117,9 @@ const queryParams = reactive({
 
 
 watch(() => props.surveyId, (newValue) => {
-  if (newValue==='') {
+  if (newValue === '') {
     questionList.value = []
-    analysisSurveyData.value={
+    analysisSurveyData.value = {
       KeyCount: 0,
       ContactCount: 0,
       FingerCount: 0,
@@ -143,7 +142,7 @@ function ExpandChange(row, expandedRows) {
   //expandedRows是一个数组，里面包含了所有展开的行的数据,要过滤expandedRows，只保留当前行的数据
   expandedRows = expandedRows.filter(item => item.id === row.id)
   if (expandedRows.length > 0) {
-    currQuestionId.value=row.id
+    currQuestionId.value = row.id
   }
 
 }
@@ -182,10 +181,10 @@ function handleCurrentChange(val) {
   ListQuestion()
 }
 
-function handleAnswerDetails(type,qid) {
+function handleAnswerDetails(type, qid) {
   currType.value = type
-  currQuestionId.value=0
-  currQuestionId.value=qid
+  currQuestionId.value = 0
+  currQuestionId.value = qid
   showDetails.value = true
 }
 
@@ -196,10 +195,12 @@ function handleAnswerDetails(type,qid) {
 .mb8 {
   margin-bottom: 8px;
 }
+
 .el-tag {
   margin-bottom: 8px;
   margin-right: 8px;
 }
+
 .el-col {
   text-align: center;
 }

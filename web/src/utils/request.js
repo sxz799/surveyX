@@ -1,18 +1,17 @@
 import axios from 'axios'
 import router from "@/utils/router.js";
 
-
-axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 // 创建axios实例
-const service = axios.create({
+
+const request = axios.create({
     // axios中请求配置有baseURL选项，表示请求URL公共部分
-    baseURL: import.meta.env.VITE_APP_BASE_API,
+    baseURL: import.meta.env.VITE_BASE_URL,
     // 超时
     timeout: 10000
 })
 
 // request拦截器
-service.interceptors.request.use(
+request.interceptors.request.use(
     (config) => {
         // 在发送请求之前可以进行一些操作，比如添加请求头
         if (localStorage.getItem("token")) {
@@ -26,16 +25,16 @@ service.interceptors.request.use(
 );
 
 // 响应拦截器
-service.interceptors.response.use((response) => {
-    if (response.data.code === 401) { // 401 token过去 重定向到登录页
-        router.push({ path: '/login' })
-    }
-    return response.data;
-},
+request.interceptors.response.use((response) => {
+        if (response.data.code === 401) { // 401 token过去 重定向到登录页
+            router.push({path: '/login'})
+        }
+        return response.data;
+    },
     (error) => {
         return Promise.reject(error);
     }
 );
 
 
-export default service
+export default request

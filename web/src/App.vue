@@ -1,5 +1,3 @@
-
-
 <template>
   <el-config-provider :locale="zhCn">
     <router-link to="/"></router-link>

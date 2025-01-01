@@ -1,17 +1,18 @@
 // router.js
-import { createRouter, createWebHistory } from 'vue-router';
+import {createRouter, createWebHistory} from 'vue-router';
 
 import Main from '../views/admin/Main.vue';
 import Index from '../views/guest/Index.vue';
 import SurveyPage from '../views/guest/SurveyPage.vue';
 import Login from '../views/common/Login.vue';
 import LoginOauth from '../views/common/LoginOauth.vue';
+
 const routes = [
-    { path: '/', name: 'Index',component: Index},
-    { path: '/login', name: 'Login',component: Login},
-    { path: '/oauth-github', name: 'LoginOauth',component: LoginOauth},
-    { path: '/admin', name: 'Main',component: Main},
-    { path: '/survey/:id', name: 'SurveyPage',component: SurveyPage},
+    {path: '/', name: 'Index', component: Index},
+    {path: '/login', name: 'Login', component: Login},
+    {path: '/oauth-github', name: 'LoginOauth', component: LoginOauth},
+    {path: '/admin', name: 'Main', component: Main},
+    {path: '/survey/:id', name: 'SurveyPage', component: SurveyPage},
 ];
 
 const router = createRouter({

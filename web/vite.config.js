@@ -1,13 +1,14 @@
-import { defineConfig } from 'vite'
+import {defineConfig, loadEnv} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
 import viteCompression from 'vite-plugin-compression'
 
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import {ElementPlusResolver} from 'unplugin-vue-components/resolvers'
 
-export default defineConfig(({ mode, command }) => {
+export default defineConfig(({mode}) => {
+    const env = loadEnv(mode, process.cwd())
     return {
         plugins: [
             vue(),
@@ -21,13 +22,14 @@ export default defineConfig(({ mode, command }) => {
                 threshold: 10240 // 对大于 1mb 的文件进行压缩
             })
         ],
-        //sed_tag/base: '/dist/',
+        base: env.VITE_BASE_PATH,
         server: {
+            port: 5173,
             proxy: {
-                '/api': {
-                    target: 'http://127.0.0.1:65534/api',
+                '/dev-api': {
+                    target: 'http://localhost:65534',
                     changeOrigin: true,
-                    rewrite: (path) => path.replace(/^\/api/, '')
+                    rewrite: (path) => path.replace(/^\/dev-api/, '')
                 }
             }
         },

@@ -61,7 +61,7 @@
           </div>
           <el-form-item style="width: 80%;" v-if="survey.need_contact==='yes'" label="联系方式:" label-width="35%"
                         prop="contact">
-            <el-input v-model="form.contact" :placeholder=contactTypeTitle ></el-input>
+            <el-input v-model="form.contact" :placeholder=contactTypeTitle></el-input>
           </el-form-item>
         </el-form>
         <el-button class="submit-button" v-if="allowSubmit" @click="checkAnswer(formRef)">提交</el-button>
@@ -223,7 +223,7 @@ function checkAnswer(elForm) {
           }
           break;
       }
-      if (passFail){
+      if (passFail) {
         return;
       }
     }

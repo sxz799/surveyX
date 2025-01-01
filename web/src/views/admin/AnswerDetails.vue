@@ -1,5 +1,3 @@
-
-
 <template>
   <el-table fit border size="small" :data="answerList">
     <el-table-column width="50" align="center" v-if="questionType!=='text'" label="选项" prop="label"/>
@@ -7,7 +5,7 @@
     <el-table-column v-if="questionType==='text'" label="答案" prop="content"/>
     <el-table-column label="填写时间" prop="create_at">
       <template #default="scope">
-        <span>{{ scope.row.create_at.slice(0,19).replace("T"," ") }}</span>
+        <span>{{ scope.row.create_at.slice(0, 19).replace("T", " ") }}</span>
       </template>
     </el-table-column>
     <el-table-column label="联系方式" prop="contact"/>
@@ -16,7 +14,7 @@
   </el-table>
   <el-pagination
       style="padding-top: 20px"
-      small
+      size="small"
       :style="{'justify-content':'center'}"
       :background="true"
       :hide-on-single-page="false"
@@ -56,7 +54,7 @@ const total = ref(0)
 const {queryParams} = toRefs(data);
 
 watch(() => props.questionId, (newValue) => {
-  queryParams.value.question_id= newValue
+  queryParams.value.question_id = newValue
   getList()
 });
 
@@ -66,11 +64,11 @@ onMounted(() => {
 
 function getList() {
   list(queryParams.value).then(res => {
-    if(res.success){
+    if (res.success) {
       ElMessage.success(res.message)
       answerList.value = res.data.list
       total.value = res.data.total
-    }else{
+    } else {
       ElMessage.error(res.message)
     }
 
@@ -90,7 +88,6 @@ function handleCurrentChange(val) {
 </script>
 
 <style scoped>
-
 
 
 </style>

@@ -35,17 +35,17 @@
       <el-main>
         <el-row :gutter="4">
           <el-col :span="8" :xs="24">
-              <SurveyList @updateSurveyId="updateSurveyId"></SurveyList>
+            <SurveyList @updateSurveyId="updateSurveyId"></SurveyList>
           </el-col>
           <el-col :span="16" :xs="24">
             <el-card>
-              <span>当前问卷:</span> <span class="current-survey-title">{{surveyName}}</span>
+              <span>当前问卷:</span> <span class="current-survey-title">{{ surveyName }}</span>
               <el-tabs>
                 <el-tab-pane label="题目管理">
-                  <QuestionList v-if="openDetails" :surveyId="surveyId" />
+                  <QuestionList v-if="openDetails" :surveyId="surveyId"/>
                 </el-tab-pane>
                 <el-tab-pane label="问卷分析">
-                  <Analysis v-if="openDetails" :surveyId="surveyId" />
+                  <Analysis v-if="openDetails" :surveyId="surveyId"/>
                 </el-tab-pane>
               </el-tabs>
             </el-card>
@@ -87,8 +87,8 @@ import SurveyList from "@/views/admin/SurveyList.vue";
 import {onMounted, ref} from "vue";
 import {ArrowDown, Moon, Sunny} from "@element-plus/icons";
 import {useDark} from "@vueuse/core";
-import {changPwd } from "@/api/user/user.js";
-import {logout } from "@/api/common/common.js";
+import {changPwd} from "@/api/user/user.js";
+import {logout} from "@/api/common/common.js";
 import {ElMessage} from "element-plus";
 import router from "@/utils/router.js";
 
@@ -105,18 +105,16 @@ onMounted(() => {
 const openDetails = ref(false)
 const surveyId = ref('')
 const surveyName = ref('')
-function updateSurveyId(params){
+
+function updateSurveyId(params) {
   surveyId.value = params[0]
   surveyName.value = params[1]
-  openDetails.value = params[0]!==''
+  openDetails.value = params[0] !== ''
 }
 
 
-
-
-
 function changePwd() {
-  if(newPwd.value!==newPwd2.value){
+  if (newPwd.value !== newPwd2.value) {
     ElMessage.error("两次密码不一致")
     return
   }
@@ -203,7 +201,7 @@ function Logout() {
   --el-switch-border-color: #dcdfe6;
 }
 
-.current-survey-title{
+.current-survey-title {
   color: #318bca;
   font-size: 17px;
   font-weight: bolder;

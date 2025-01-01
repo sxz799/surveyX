@@ -3,10 +3,7 @@ FROM node:20
 WORKDIR /go/src/github.com/sxz799/surveyX/web
 COPY ./web/ .
 
-RUN sed -i 's#//sed_tag/base#base#g' vite.config.js
-
 RUN yarn install && yarn build
-
 
 
 # 使用官方 Golang 镜像作为基础镜像
