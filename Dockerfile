@@ -1,7 +1,7 @@
 # 前端-缓存
 FROM node:20 AS web-cached
 WORKDIR /survey-x/web
-COPY ./web/package.json ./web/yarn.lock ./
+COPY ./web/package.json ./
 RUN yarn install
 
 # 前端-编译
@@ -13,7 +13,7 @@ RUN yarn build
 FROM golang:1.23.4-alpine AS server-cached
 WORKDIR /survey-x/server
 COPY ./server/go.mod ./server/go.sum ./
-RUN go env -w GOPROXY=https://goproxy.io && \
+RUN go env -w GOPROXY=https://goproxy.cn,direct && \
     go mod tidy  && \
     go mod download
 
